@@ -1,44 +1,44 @@
 import React from "react";
-import { StyleSheet, Text, View, TextInput, Image} from "react-native";
+import { StyleSheet, Text, View, TextInput, Image, Button } from "react-native";
 
 export default function Login() {
 
     return<>
 
-    <View style={estilos.container}>
+        <View style={estilos.container}>
 
-        <View>
-          <Text style={estilos.areaTitulo}>Meu controle financeiro</Text> 
-          <Text style={estilos.areaTitulo2}>Financeiro</Text>
-          <Text style={estilos.areaTitulo3}>$</Text>
-        </View> 
+            <View>
+            <Text style={estilos.areaTitulo}>Meu controlo</Text> 
+            <Text style={estilos.areaTitulo2}>Financeiro</Text>
+            <Text style={estilos.areaTitulo3}>$</Text>
+            </View> 
 
-        <View>s
-            <TextInput
-            style={estilos.input}
-            placeholder="Email"
-             />
+            <View>s
+                <TextInput
+                style={estilos.input}
+                placeholder="E-Email ou usuário"
+                />
+            </View>
+
+            <View>
+                <TextInput
+                style={estilos.input}
+                placeholder="Palavra-passe"
+                />
+            </View>
+
+            <View style={estilos.passaword}>
+                <Text>Esquece plavra-passe?</Text>
+            </View>
+
+
+            <View>
+                <Button title="Entrar" onPress={handleLogin} />
+            </View>
+            <View>
+                <Button title="Acessar com a conta Google" onPress={handleGoogleLogin} />
+            </View>
         </View>
-
-        <View>
-            <TextInput
-            style={estilos.input}
-            placeholder="Email"
-             />
-        </View>
-
-        <View style={estilos.passaword}>
-            <Text>Esquece plavra-passe?</Text>
-        </View>
-
-
-        <View>
-            <Button title="Entrar" onPress={handleLogin} />
-        </View>
-        <View>
-            <Button title="Acessar com a conta Google" onPress={handleGoogleLogin} />
-        </View>
-    </View>
     </>
 }
 
@@ -54,7 +54,6 @@ const estilos = StyleSheet.create({
     },
 
     areaTitulo: {
-        
         // backgroundColor: "#486D31",
         fontSize: 30,
         width: 200,
@@ -69,7 +68,7 @@ const estilos = StyleSheet.create({
 
     areaTitulo3: {
 
-        // backgroundColor: "#486D31",
+        //backgroundColor: "#486D31",
         fontSize: 30,
         marginBottom: 60 ,
         
