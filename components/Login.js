@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, TextInput, Image, Button } from "react-native";
 
-export default function Login() {
+export default function Login({handleLogin, handleGoogleLogin}) {
 
     return<>
 
