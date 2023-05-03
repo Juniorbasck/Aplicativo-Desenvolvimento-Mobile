@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, TextInput, Image, Button } from "react-native";
 
-export default function Login() {
+export default function Login({handleLogin, handleGoogleLogin}) {
 
     return<>
 
@@ -13,7 +13,7 @@ export default function Login() {
             <Text style={estilos.areaTitulo3}>$</Text>
             </View> 
 
-            <View>s
+            <View>
                 <TextInput
                 style={estilos.input}
                 placeholder="E-Email ou usuário"
