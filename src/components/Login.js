@@ -13,7 +13,7 @@ export default function Login() {
             <Text style={estilos.areaTitulo3}>$</Text>
             </View> 
 
-            <View>s
+            <View>
                 <TextInput
                 style={estilos.input}
                 placeholder="E-Email ou usuário"
@@ -92,3 +92,9 @@ const estilos = StyleSheet.create({
         marginTop: 10,
     },
 });
+
+
+
+
+
+
