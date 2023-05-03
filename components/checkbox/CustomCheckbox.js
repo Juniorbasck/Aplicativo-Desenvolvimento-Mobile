@@ -70,7 +70,7 @@ const CustomCheckBox = (
                     }
                 }}
             >
-            {/* <Icon name='rocket'/> */}
+            <Icon name='rocket'/>
             </Pressable>
             {
                 textPosition === 'right' && textComponent()
