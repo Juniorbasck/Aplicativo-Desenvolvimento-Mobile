@@ -1,3 +1,3 @@
-# Projeto da matéria de Desenvolviemento Multiplataforma 
+# Projeto da matéria de Desenvolvimento Multiplataforma 
 
 ## Tema: Aplicativo de controle de finanças
