@@ -6,10 +6,9 @@ import {
 } from 'react-native';
 
 import { Colors } from '../../utils/Colors';
-import { Sizes } from '../../utils/Sizes';
 import { ResponsiveDimensions } from '../../utils/ResponsiveDimensions';
 
-const CustomTextInput = ({placeHolder, size=Sizes.small}) => {
+const CustomTextInput = ({placeHolder='', size='small', setState}) => {
     return ( 
         <TextInput
             placeholder={placeHolder}
@@ -22,6 +21,7 @@ const CustomTextInput = ({placeHolder, size=Sizes.small}) => {
                     }
                 ]
             }
+            onChangeText={(text) => setState(text)}
         />
     );
 }
