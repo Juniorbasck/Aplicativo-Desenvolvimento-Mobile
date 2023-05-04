@@ -92,3 +92,9 @@ const estilos = StyleSheet.create({
         marginTop: 10,
     },
 });
+
+
+
+
+
+
