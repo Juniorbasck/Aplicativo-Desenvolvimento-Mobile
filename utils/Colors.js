@@ -4,7 +4,8 @@ const Colors = {
     secondaryKeyColor: '#D3D3D3',
     onSecondaryKeyColor: '#000000',
     tertiaryKeyColor: '#486D31',
-    onTertiaryKeyColor: '#85BB65'
+    onTertiaryKeyColor: '#85BB65',
+    tertiaryKeyColorDisabled: '#ADD1AC'
 };
 
 export { Colors };

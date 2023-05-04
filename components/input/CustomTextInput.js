@@ -5,10 +5,13 @@ import { TextInput, StyleSheet} from 'react-native';
 import { Colors } from '../../utils/Colors';
 import { ResponsiveDimensions } from '../../utils/ResponsiveDimensions';
 
-const CustomTextInput = ({placeHolder='', size='small', setState}) => {
+const CustomTextInput = ({placeholder='', size='small', keyboardType='ascii-capable', hide=false, setState}) => {
     return ( 
         <TextInput
-            placeholder={placeHolder}
+            placeholder={placeholder}
+            keyboardType={keyboardType}
+            secureTextEntry={hide}
+            placeholderTextColor={Colors.onSecondaryKeyColor}
             style={
                 [
                     styles.textInput, 
@@ -26,12 +29,13 @@ const CustomTextInput = ({placeHolder='', size='small', setState}) => {
 const styles = StyleSheet.create({
     textInput: {
         backgroundColor: Colors.secondaryKeyColor,
-        color: Colors.onSecondaryKeyColor,
         borderColor: Colors.onSecondaryKeyColor,
         borderWidth: 1,
+        borderRadius: 5,
         padding: 10,
-        margin: 10
+        marginRight: 8,
+        marginLeft: 8
     }
 });
 
-export default CustomTextInput;
+export { CustomTextInput };
