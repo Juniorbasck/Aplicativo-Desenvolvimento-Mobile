@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { ResponsiveDimensions } from '../../utils/ResponsiveDimensions';
 import { Fonts } from '../../utils/Fonts';
+import { PermissionsAndroid } from 'react-native';
 
 const CustomButton = ({text, onPress, backgroundColor, textColor, widthPercentage, disabled=false}) => {
     return (
@@ -22,7 +23,8 @@ const CustomButton = ({text, onPress, backgroundColor, textColor, widthPercentag
 const styles = StyleSheet.create({
     button: {
         height: ResponsiveDimensions.customButton.height,
-        borderRadius: 20
+        borderRadius: 20,
+        margin: 10,
     },
     text: {
         textAlign: 'center',

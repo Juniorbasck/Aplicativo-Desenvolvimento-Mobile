@@ -1,41 +1,61 @@
 import React from 'react';
 import { View, StyleSheet,Text, TextInput, Button} from 'react-native';
 import { CustomButton } from '../components/button/CustomButton';
+import { Colors } from '../utils/Colors';
+import { Fonts } from '../utils/Fonts';
+import { CustomTextInput } from '../components/input/CustomTextInput';
 
 
 const LoginScreen = ({navigation}) => {
-    return (
-        <View style={estilos.outerContainer}>
 
-            <View>
-                <Text style={estilos.areaTitulo}>Meu controlo</Text> 
-                <Text style={estilos.areaTitulo2}>Financeiro</Text>
-                <Text style={estilos.areaTitulo3}>$</Text>
-            </View> 
+    const [email, setEmail] = React.useState('');   
+    const [password, setPassword] = React.useState('');
+
+
+    return (
+        <View style={styles.outerContainer}>
+
+        <View>
+            <Text style={styles.title}>Meu Controlo</Text>
+            <Text style={styles.subtitle}>financeiro</Text>
+        </View>
+        <Text style={styles.cifrao}>$</Text>
 
             <View>
                 <TextInput
-                style={estilos.input}
-                placeholder="E-Email ou usuário"
+                style={styles.input}
+                placeholder="E-email ou usuário"
                 />
             </View>
             
             <View>
                 <TextInput
-                style={estilos.input}
+                style={styles.input}
                 placeholder="Palavra-passe"
                 />
             </View>
 
-            <View style={estilos.passaword}>
+            <View style={styles.passaword}>
                 <Text>Esquece plavra-passe?</Text>
             </View>
 
             <View>
-                <Button title="Entrar"/>
+                <CustomButton style={styles.buttosignIn}
+                    text={'Entrar'}
+                    backgroundColor={'#486D31'}
+                    textColor={'white'}
+                    widthPercentage={88}
+                    padding={1}
+                />
             </View>
             <View>
-                <Button title="Acessar com a conta Google"/>
+                <CustomButton style={styles.buttosignIn}
+                    text={'Acessar com Google'}
+                    backgroundColor={'#fff'}
+                    textColor={'black'}
+                    widthPercentage={88}
+                    
+                />
             </View>
 
             <CustomButton
@@ -50,59 +70,62 @@ const LoginScreen = ({navigation}) => {
     );
 };
 
-const estilos = StyleSheet.create({
+const styles = StyleSheet.create({
 
             outerContainer: {
                 flex: 1,
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                backgroundColor: "#222222",
             },
 
-            container: {
-                flexDirection: "column",
-                backgroundColor: "#D3D3D3",
+            containerTitulo: {
+                flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
             },
+            
+            title: {
+                fontSize: 40,
+                textAlign: 'center',
+                color: '#FFFFFF',
+                fontWeight: 'bold',
+              },
+              
+            subtitle: {
+                fontSize: 40,
+                marginLeft: 35,
+                color: '#FFFFFF',
+                fontWeight: 'bold',
+              },
+
+              cifrao: {
+                fontSize: 40,
+                fontWeight: 'bold',
+                color: '#FFFFFF',
+              },
+            
+
         
-            areaTitulo: {
-                // backgroundColor: "#486D31",
-                fontSize: 30,
-                width: 200,
-                marginTop: 100,
-            }, 
-            areaTitulo2: {
-                
-                // backgroundColor: "#486D31",
-                fontSize: 30,
-                width: 200,
-            }, 
-        
-            areaTitulo3: {
-        
-                //backgroundColor: "#486D31",
-                fontSize: 30,
-                marginBottom: 60 ,
-                
-            }, 
-        
-        
-            ///froms 
+            
         
             input: {
                 borderWidth: 1,
                 borderColor: '#777',
                 padding: 8,
                 margin: 10,
-                width: 300,
-                borderRadius: 5,  
+                width: 350,
+                borderRadius: 2,  
+                backgroundColor: "#D3D3D3",
+
             },
-        
             passaword: {
                 alignSelf: "flex-end",
                 marginRight: 20,
                 marginTop: 10,
             },
+
+           
         });
         
 export { LoginScreen };

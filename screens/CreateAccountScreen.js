@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
     outerContainer: {
         backgroundColor: Colors.primaryKeyColor
     },
+
     scrollView: {
         height: Dimensions.get('screen').height,
         alignItems: 'center',
@@ -143,6 +144,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('screen').width,
         backgroundColor: Colors.secondaryKeyColor
     },
+    
     marginPaddingDefault: {
         margin: 10,
         padding: 10,
