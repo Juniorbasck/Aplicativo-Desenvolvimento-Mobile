@@ -6,6 +6,14 @@ import { Fonts } from '../utils/Fonts';
 import { CustomTextInput } from '../components/input/CustomTextInput';
 
 
+function validateData(email, passaword){
+
+    if(validateTextField(email) && validateTextField(passaword)){
+
+        message.header = 'Sucesso!';
+    }
+}
+
 const LoginScreen = ({navigation}) => {
 
     const [email, setEmail] = React.useState('');   
@@ -23,8 +31,10 @@ const LoginScreen = ({navigation}) => {
 
             <View>
                 <TextInput
-                style={styles.input}
+                style={[styles.input, styles.separandoConteudos]}
                 placeholder="E-email ou usuário"
+                setEmail={setEmail}
+                placeholderTextColor="black"
                 />
             </View>
             
@@ -32,11 +42,13 @@ const LoginScreen = ({navigation}) => {
                 <TextInput
                 style={styles.input}
                 placeholder="Palavra-passe"
+                setPassword={setPassword}
+                placeholderTextColor="black"
                 />
             </View>
 
             <View style={styles.passaword}>
-                <Text>Esquece plavra-passe?</Text>
+                <Text style={styles.Textpassaword}>Esquece plavra-passe?</Text>
             </View>
 
             <View>
@@ -46,6 +58,14 @@ const LoginScreen = ({navigation}) => {
                     textColor={'white'}
                     widthPercentage={88}
                     padding={1}
+                    onPress={() => {
+                        let res = validateData(email, password);
+                        Alert.alert(res.header, res.body);
+                        if (res.header == 'Conta criada com sucesso!') {
+                            // Save account data to database.
+                            // Log user in.
+                        }
+                    }}
                 />
             </View>
             <View>
@@ -58,13 +78,11 @@ const LoginScreen = ({navigation}) => {
                 />
             </View>
 
-            <CustomButton
-                text={'Ir para criar conta'}
-                onPress={() => navigation.navigate('CreateAccount')}
-                backgroundColor={'gray'}
-                textColor={'white'}
-                widthPercentage={61}
-            />
+            
+
+            <Text style={styles.createCount} onPress={() => navigation.navigate('CreateAccount')}>
+                Ir para criar conta
+            </Text> 
 
         </View>
     );
@@ -105,11 +123,11 @@ const styles = StyleSheet.create({
                 color: '#FFFFFF',
               },
             
-
-        
-            
-        
+            separandoConteudos:{
+                marginTop: 80,
+            },
             input: {
+                
                 borderWidth: 1,
                 borderColor: '#777',
                 padding: 8,
@@ -123,9 +141,20 @@ const styles = StyleSheet.create({
                 alignSelf: "flex-end",
                 marginRight: 20,
                 marginTop: 10,
+                marginBottom: 15,
             },
 
-           
+            Textpassaword:{
+                textDecorationLine: 'underline',
+                color: '#FFFFFF',
+            },
+            
+            createCount: {
+                textDecorationLine: 'underline',
+                color: '#FFFFFF',
+                textAlign: 'center',
+                marginTop: 35,
+            },  
         });
         
 export { LoginScreen };
