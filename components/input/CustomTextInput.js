@@ -8,11 +8,12 @@ import {
 import { Colors } from '../../utils/Colors';
 import { ResponsiveDimensions } from '../../utils/ResponsiveDimensions';
 
-const CustomTextInput = ({placeholder='', size='small', setState}) => {
+const CustomTextInput = ({placeholder='', size='small', keyboardType='ascii-capable', hide=false, setState}) => {
     return ( 
         <TextInput
             placeholder={placeholder}
-            keyboardType={'ascii-capable'}
+            keyboardType={keyboardType}
+            secureTextEntry={hide}
             placeholderTextColor={Colors.onSecondaryKeyColor}
             style={
                 [
