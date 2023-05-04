@@ -8,18 +8,18 @@ import {
 import { Colors } from '../../utils/Colors';
 import { ResponsiveDimensions } from '../../utils/ResponsiveDimensions';
 
-const CustomTextInput = ({placeholder='', size='small', setState}) => {
+const EmailInput = ({loginScreen=false, setState}) => {
     return ( 
         <TextInput
             placeholder={placeholder}
-            keyboardType={'ascii-capable'}
+            keyboardType={'email-address'}
             placeholderTextColor={Colors.onSecondaryKeyColor}
             style={
                 [
-                    styles.textInput, 
+                    styles.emailInput, 
                     {
-                        width: ResponsiveDimensions.customTextInput[size].width, 
-                        height: ResponsiveDimensions.customTextInput[size].height
+                        width: ResponsiveDimensions.customTextInput['big'].width, 
+                       
                     }
                 ]
             }
@@ -29,15 +29,16 @@ const CustomTextInput = ({placeholder='', size='small', setState}) => {
 }
 
 const styles = StyleSheet.create({
-    textInput: {
+    emailInput: {
         backgroundColor: Colors.secondaryKeyColor,
         borderColor: Colors.onSecondaryKeyColor,
         borderWidth: 1,
         borderRadius: 5,
         padding: 10,
         marginRight: 8,
-        marginLeft: 8
+        marginLeft: 8,
+        height: ResponsiveDimensions.customTextInput['big'].height
     }
 });
 
-export { CustomTextInput };
+export { EmailInput };

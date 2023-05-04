@@ -13,7 +13,7 @@ import { Fonts } from '../../utils/Fonts';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { CustomButton } from '../button/CustomButton';
 
-const TermsAndConditions = ({setChecked}) => {
+const TermsAndConditions = ({setState}) => {
     const [checked, toggleCheckbox] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [icon, setIcon] = useState('');
@@ -22,7 +22,6 @@ const TermsAndConditions = ({setChecked}) => {
         <View style={styles.container}>
             <Modal
                 animationType='fade'
-                transparent={true}
                 visible={modalVisible}
             >
                 <View style={styles.modalView}>
@@ -273,10 +272,10 @@ const TermsAndConditions = ({setChecked}) => {
                             toggleCheckbox(!checked);
                             if (checked) {
                                 setIcon('checkmark');
-                                setChecked(true);
+                                setState(true);
                             } else {
                                 setIcon('');
-                                setChecked(false);
+                                setState(false);
                             }
                         }}
                         style={{flexDirection: 'row'}}
@@ -300,7 +299,7 @@ const TermsAndConditions = ({setChecked}) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        margin: 10,
         alignItems: 'center',
         justifyContent: 'center',
     },
