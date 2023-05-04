@@ -8,19 +8,19 @@ import {
 import { Colors } from '../../utils/Colors';
 import { ResponsiveDimensions } from '../../utils/ResponsiveDimensions';
 import { Fonts } from '../../utils/Fonts';
-import { Icon } from 'react-native-vector-icons/Icon';
-
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const CustomCheckBox = (
     {
         text='', textPosition='right', textUnderline=false, useBorder=false,
-        textBold=false, shape='square', onCheckedBackgroundColor=Colors.onSecondaryKeyColor,
-        onUncheckedBackgroundColor=Colors.onPrimaryKeyColor, onCheckedIcon=null, 
-        onUncheckedIcon=null, setState
+        textBold=false, shape='square', onCheckedBackgroundColor=Colors.onPrimaryKeyColor,
+        onUncheckedBackgroundColor=Colors.onPrimaryKeyColor, onCheckedIcon='checked', 
+        onUncheckedIcon='', setState
     }
 ) => {
     const [checked, toggleCheckbox] = useState(false);
     const [backgroundColor, setBackgroundColor] = useState(onUncheckedBackgroundColor);
+    const [icon, setIcon] = useState(onUncheckedIcon);
 
     const textComponent = () => {
         return (
@@ -45,7 +45,7 @@ const CustomCheckBox = (
                 style={
                     [
                         styles.pressable, 
-                        useBorder ? {borderColor: Colors.onSecondaryKeyColor, borderWidth: 2} : {},
+                        useBorder ? {borderColor: Colors.onSecondaryKeyColor, borderWidth: 1} : {},
                         {
                             backgroundColor: backgroundColor,
                         },
@@ -64,13 +64,15 @@ const CustomCheckBox = (
                     if (checked) {
                         setBackgroundColor(onCheckedBackgroundColor);
                         setState('checked');
+                        setIcon('checkmark');
                     } else {
                         setBackgroundColor(onUncheckedBackgroundColor);
                         setState('unchecked');
+                        setIcon('');
                     }
                 }}
             >
-            <Icon name='rocket'/>
+                <Ionicons name={icon} size={20}/>
             </Pressable>
             {
                 textPosition === 'right' && textComponent()
@@ -89,7 +91,9 @@ const styles = StyleSheet.create({
         margin: 10
     },
     pressable: {
-        margin: 10
+        margin: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     text: {
         margin: 10
