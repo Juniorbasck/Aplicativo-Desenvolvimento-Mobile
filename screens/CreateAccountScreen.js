@@ -4,7 +4,6 @@ import {
     View,
     Text,
     StyleSheet,
-    Dimensions,
     Alert
 } from 'react-native';
 import { Colors } from '../utils/Colors';
@@ -13,6 +12,7 @@ import { CustomTextInput } from '../components/input/CustomTextInput';
 import { TermsAndConditions } from '../components/terms_and_conditions/TermsAndConditions'; 
 import { CustomButton } from '../components/button/CustomButton';
 import { validateEmail, validatePassword, validateTextField } from '../utils/Validator';
+import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 
 function validateData(name, surname, username, email, password, confirmPassword) {
     let message = {};
@@ -57,75 +57,75 @@ const CreateAccountScreen = ({navigation}) => {
 
     return (
         <View style={styles.outerContainer}>
-        <ScrollView 
-            keyboardDismissMode={'on-drag'}
-            contentContainerStyle={styles.scrollView}
-        >
-            <View style={[styles.marginPaddingDefault, {marginTop: 30}]}>
-                <Text style={[Fonts.displaySmall, {color: Colors.onSecondaryKeyColor}]}>Criar Conta</Text>
-            </View>
-            <View style={[styles.marginPaddingDefault, {flexDirection: 'row'}]}>
-                <CustomTextInput
-                    placeholder={'Nome'}
-                    setState={setName}
+            <ScrollView 
+                keyboardDismissMode={'on-drag'}
+                contentContainerStyle={styles.scrollView}
+            >
+                <View style={[styles.marginPaddingDefault, {marginTop: 30}]}>
+                    <Text style={[Fonts.displaySmall, {color: Colors.onSecondaryKeyColor}]}>Criar Conta</Text>
+                </View>
+                <View style={[styles.marginPaddingDefault, {flexDirection: 'row'}]}>
+                    <CustomTextInput
+                        placeholder={'Nome'}
+                        setState={setName}
+                    />
+                    <CustomTextInput
+                        placeholder={'Apelido'}
+                        setState={setSurname}
+                    />                    
+                </View>
+                <View style={styles.marginPaddingDefault}>
+                    <CustomTextInput
+                        placeholder={'Nome de utilizador'}
+                        size={'big'}
+                        setState={setUsername}
+                    />
+                </View>
+                <View style={styles.marginPaddingDefault}>
+                    <CustomTextInput
+                        placeholder={'E-mail'}
+                        size={'big'}
+                        setState={setEmail}
+                        keyboardType={'email-address'}
+                    />
+                </View>
+                <View style={styles.marginPaddingDefault}>
+                    <CustomTextInput
+                        placeholder={'Palavra-passe'}
+                        size={'big'}
+                        setState={setPassword}
+                        hide={true}
+                    />
+                </View>
+                <View style={styles.marginPaddingDefault}>
+                    <CustomTextInput
+                        placeholder={'Confirmar palavra-passe'}
+                        size={'big'}
+                        setState={setConfirmPassword}
+                        hide={true}
+                    />
+                </View>
+                <TermsAndConditions
+                    setState={setChecked}
                 />
-                <CustomTextInput
-                    placeholder={'Apelido'}
-                    setState={setSurname}
-                />                    
-            </View>
-            <View style={styles.marginPaddingDefault}>
-                <CustomTextInput
-                    placeholder={'Nome de utilizador'}
-                    size={'big'}
-                    setState={setUsername}
-                />
-            </View>
-            <View style={styles.marginPaddingDefault}>
-                <CustomTextInput
-                    placeholder={'E-mail'}
-                    size={'big'}
-                    setState={setEmail}
-                    keyboardType={'email-address'}
-                />
-            </View>
-            <View style={styles.marginPaddingDefault}>
-                <CustomTextInput
-                    placeholder={'Palavra-passe'}
-                    size={'big'}
-                    setState={setPassword}
-                    hide={true}
-                />
-            </View>
-            <View style={styles.marginPaddingDefault}>
-                <CustomTextInput
-                    placeholder={'Confirmar palavra-passe'}
-                    size={'big'}
-                    setState={setConfirmPassword}
-                    hide={true}
-                />
-            </View>
-            <TermsAndConditions
-                setState={setChecked}
-            />
-            <View style={{marginTop: 30}}>
-                <CustomButton
-                    text={'Criar'}
-                    onPress={() => {
-                        let res = validateData(name, surname, username, email, password, confirmPassword);
-                        Alert.alert(res.header, res.body);
-                        if (res.header == 'Conta criada com sucesso!') {
-                            // Save account data to database.
-                            // Log user in.
-                        }
-                    }}
-                    backgroundColor={checked ? Colors.tertiaryKeyColor : Colors.tertiaryKeyColorDisabled}
-                    textColor={Colors.onPrimaryKeyColor}
-                    widthPercentage={95}
-                    disabled={!checked}
-                />
-            </View>
-        </ScrollView>
+                <View style={{marginTop: 30}}>
+                    <CustomButton
+                        text={'Criar'}
+                        onPress={() => {
+                            let res = validateData(name, surname, username, email, password, confirmPassword);
+                            Alert.alert(res.header, res.body);
+                            if (res.header == 'Conta criada com sucesso!') {
+                                // Save account data to database.
+                                // Log user in.
+                            }
+                        }}
+                        backgroundColor={checked ? Colors.tertiaryKeyColor : Colors.tertiaryKeyColorDisabled}
+                        textColor={Colors.onPrimaryKeyColor}
+                        widthPercentage={95}
+                        disabled={!checked}
+                    />
+                </View>
+            </ScrollView>
         </View>
     );
 };
@@ -134,17 +134,15 @@ const styles = StyleSheet.create({
     outerContainer: {
         backgroundColor: Colors.primaryKeyColor
     },
-
     scrollView: {
-        height: Dimensions.get('screen').height,
+        height: ResponsiveDimensions.screen.height,
+        width: ResponsiveDimensions.screen.width,
         alignItems: 'center',
-        marginTop: .06 * Dimensions.get('screen').height,  // 6 %
+        marginTop: ResponsiveDimensions.screen.defaultMarginTop,
         borderTopLeftRadius: 60,
         borderTopRightRadius: 60,
-        width: Dimensions.get('screen').width,
         backgroundColor: Colors.secondaryKeyColor
     },
-    
     marginPaddingDefault: {
         margin: 10,
         padding: 10,
