@@ -32,7 +32,7 @@ const LoginScreen = ({navigation}) => {
             <View>
                 <TextInput
                 style={[styles.input, styles.separandoConteudos]}
-                placeholder="E-email ou usuário"
+                placeholder="E-mail ou usuário"
                 setEmail={setEmail}
                 placeholderTextColor="black"
                 />
@@ -48,7 +48,10 @@ const LoginScreen = ({navigation}) => {
             </View>
 
             <View style={styles.passaword}>
-                <Text style={styles.Textpassaword}>Esquece plavra-passe?</Text>
+                <Text 
+                    style={styles.Textpassaword} 
+                    onPress={() => navigation.navigate('ForgottenPassword')}
+                >Esqueceu palavra-passe?</Text>
             </View>
 
             <View>

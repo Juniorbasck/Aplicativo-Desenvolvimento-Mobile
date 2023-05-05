@@ -21,7 +21,17 @@ const ResponsiveDimensions = {
     },
     customButton: {
         height: 0.04777070063694267 * Dimensions.get('screen').height
-    }
+    },
+    smallSquareImageContainer: {
+        width: 0.24305555555555555 * Dimensions.get('screen').width,
+        height: 0.11942675159235669 * Dimensions.get('screen').height
+    },
+    screen: {
+        width: Dimensions.get('screen').width,
+        height: Dimensions.get('screen').height,
+        defaultMarginTop: .06 * Dimensions.get('screen').height
+    },
+
 };
 
 export { ResponsiveDimensions };
