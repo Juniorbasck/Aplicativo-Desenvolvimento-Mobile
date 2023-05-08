@@ -4,8 +4,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { LoginScreen } from '../screens/LoginScreen';
 import { CreateAccountScreen } from '../screens/CreateAccountScreen';
 import { ForgottenPasswordScreen } from '../screens/ForgottenPasswordScreen';
-import { HomeScreen } from '../screens/HomeScreen';
 import { Colors } from '../utils/Colors';
+import { HomeNavigator } from './HomeNavigator';
+import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 
 const Stack = createStackNavigator();
 
@@ -14,25 +15,30 @@ const RootNavigator = () => {
         <NavigationContainer>
             <Stack.Navigator
                 initialRouteName={'Login'}
-                screenOptions={{headerTitle: ''}}
+                screenOptions={
+                    {
+                        headerShown: true,
+                        headerTitle: '',
+                        headerStatusBarHeight: 20
+                    }
+                }
             >
                 <Stack.Screen 
                     name={'Login'} 
                     component={LoginScreen} 
                     options={
                         {
-                            headerShown: false
+                            // headerShown: true
                         }
                     }
-
                 />
                 <Stack.Screen 
                     name={'CreateAccount'} 
                     component={CreateAccountScreen} 
                     options={
-                        {
-                            headerStyle: { backgroundColor: Colors.primaryKeyColor }, 
-                            headerTintColor: Colors.onPrimaryKeyColor
+                        {   
+                            // headerStyle: { backgroundColor: Colors.primaryKeyColor}, 
+                            // headerTintColor: Colors.onPrimaryKeyColor
                         }
                     }
                 />
@@ -41,14 +47,14 @@ const RootNavigator = () => {
                     component={ForgottenPasswordScreen}
                     options={
                         {
-                            headerStyle: { backgroundColor: Colors.primaryKeyColor },
-                            headerTintColor: Colors.onPrimaryKeyColor
+                            // headerStyle: { backgroundColor: Colors.primaryKeyColor },
+                            // headerTintColor: Colors.onPrimaryKeyColor
                         }
                     }
                 />
                 <Stack.Screen
-                    name={'Home'}
-                    component={HomeScreen}
+                    name={'HomeNavigator'}
+                    component={HomeNavigator}
                     options={
                         {
                             headerShown: false
