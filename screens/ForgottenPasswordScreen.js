@@ -57,6 +57,7 @@ const ForgottenPasswordScreen = ({navigation}) => {
                             } else {
                                 Alert.alert('E-mail', 'E-mail inválido!');
                             }
+                            
                         }}
                         backgroundColor={Colors.tertiaryKeyColor}
                         widthPercentage={90}
