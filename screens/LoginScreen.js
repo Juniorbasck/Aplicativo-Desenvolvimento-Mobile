@@ -6,6 +6,7 @@ import { Fonts } from '../utils/Fonts';
 import { CustomTextInput } from '../components/input/CustomTextInput';
 import { validateEmail, validatePassword } from '../utils/Validator';
 import { StackActions } from '@react-navigation/native';
+import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 
 function validateData(email, password){
     let message = {};
@@ -32,11 +33,11 @@ const LoginScreen = ({navigation}) => {
 
     return (
         <View style={styles.outerContainer}>
-        <View>
-            <Text style={styles.title}>Meu Controlo</Text>
-            <Text style={styles.subtitle}>financeiro</Text>
-        </View>
-        <Text style={styles.cifrao}>$</Text>
+            <View>
+                <Text style={styles.title}>Meu Controlo</Text>
+                <Text style={styles.subtitle}>financeiro</Text>
+            </View>
+            <Text style={styles.cifrao}>$</Text>
             <View>
                 <TextInput
                 style={[styles.input, styles.separandoConteudos]}
@@ -69,11 +70,7 @@ const LoginScreen = ({navigation}) => {
                     onPress={() => {
                             let res = validateData(email, password);
                             if (res.header == 'Sucesso') {
-                                navigation.dispatch(
-                                    StackActions.replace('Home', {
-                                        userEmail: email
-                                    })
-                                );
+                                navigation.dispatch(StackActions.replace('HomeNavigator'));
                             } else {
                                 Alert.alert(res.header, res.body);
                             }
@@ -104,38 +101,32 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: "#222222",
     },
-
     containerTitulo: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
     },
-    
     title: {
         fontSize: 40,
         textAlign: 'center',
         color: '#FFFFFF',
         fontWeight: 'bold',
-        },
-        
+    },
     subtitle: {
         fontSize: 40,
         marginLeft: 35,
         color: '#FFFFFF',
         fontWeight: 'bold',
-        },
-
-        cifrao: {
+    },
+    cifrao: {
         fontSize: 40,
         fontWeight: 'bold',
-        color: '#FFFFFF',
-        },
-    
+        color: 'gold',
+    },
     separandoConteudos:{
         marginTop: 80,
     },
     input: {
-        
         borderWidth: 1,
         borderColor: '#777',
         padding: 8,
@@ -143,7 +134,6 @@ const styles = StyleSheet.create({
         width: 350,
         borderRadius: 2,  
         backgroundColor: "#D3D3D3",
-
     },
     passaword: {
         alignSelf: "flex-end",
@@ -151,12 +141,10 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 15,
     },
-
     Textpassaword:{
         textDecorationLine: 'underline',
         color: '#FFFFFF',
     },
-    
     createCount: {
         textDecorationLine: 'underline',
         color: '#FFFFFF',

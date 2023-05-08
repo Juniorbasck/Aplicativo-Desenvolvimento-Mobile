@@ -132,7 +132,7 @@ const CreateAccountScreen = ({navigation}) => {
 
 const styles = StyleSheet.create({
     outerContainer: {
-        backgroundColor: Colors.primaryKeyColor
+        backgroundColor: Colors.primaryKeyColor,
     },
     scrollView: {
         height: ResponsiveDimensions.screen.height,
