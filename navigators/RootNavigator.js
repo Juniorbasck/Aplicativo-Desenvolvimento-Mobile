@@ -28,7 +28,7 @@ const RootNavigator = () => {
                     component={LoginScreen} 
                     options={
                         {
-                            headerShown: true
+                            // headerShown: true
                         }
                     }
                 />

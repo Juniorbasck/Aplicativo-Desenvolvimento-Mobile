@@ -11,6 +11,7 @@ import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 import { ProfilePicture } from '../components/picture/ProfilePicture';
+import { ExpenseStatus } from '../components/expense_status/ExpenseStatus';
 
 const HomeScreen = ({route, navigation}) => {
     // const { userEmail } = route.params;
@@ -32,14 +33,24 @@ const HomeScreen = ({route, navigation}) => {
                     />
                 </View>
             </View>
+            <View style={styles.expenseStatus}>
+                <ExpenseStatus
+                    total={1000.68}
+                    toPay={30}
+                    paid={1000}
+                />
+            </View>
+            <View style={styles.expenseBoard}>
+
+            </View>
         </View>
     );
 };
 
-
 const styles = StyleSheet.create({
     outerContainer: {
         flex: 1,
+        flexDirection: 'column',
         backgroundColor: Colors.primaryKeyColor,
         marginTop: ResponsiveDimensions.screen.defaultMarginTop,
         alignItems: 'center',
@@ -49,7 +60,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignContent: 'center',
-        margin: 20
+        margin: ResponsiveDimensions.homeScreen.upperContainer.margin
     },
     flexStart: {
         flex: 1, 
@@ -62,6 +73,16 @@ const styles = StyleSheet.create({
     greetingText: {
         fontWeight: 'bold', 
         color: Colors.onPrimaryKeyColor
+    },
+    expenseStatus: {
+        flex: 1,
+        padding: ResponsiveDimensions.homeScreen.expenseStatus.padding,
+        margin: ResponsiveDimensions.homeScreen.expenseStatus.margin
+    },
+    expenseBoard: {
+        flex: 1,
+        backgroundColor: Colors.secondaryKeyColor,
+        width: ResponsiveDimensions.homeScreen.expenseBoard.width
     }
 });
 
