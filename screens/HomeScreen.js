@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     FlatList,
     View,
+    ScrollView,
     Text,
     StyleSheet,
     Alert,
@@ -12,10 +13,23 @@ import { Fonts } from '../utils/Fonts';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 import { ProfilePicture } from '../components/picture/ProfilePicture';
 import { ExpenseStatus } from '../components/expense_status/ExpenseStatus';
+import { ExpenseCard } from '../components/expense_card/ExpenseCard';
+import { getExpenses } from '../service';
 
 const HomeScreen = ({route, navigation}) => {
-    // const { userEmail } = route.params;
+    const [expenses, setExpenses] = useState([]);
+
+    useEffect(() => {
+        getExpenses(setExpenses);
+    }, []);
+
     let username = 'Marinna';
+    let toPay = expenses.filter((expense) => !expense.paid);
+    let total = toPay.reduce((accumulator, expense) => accumulator + expense.price, 0.0).toFixed(2);
+    let expenseTitle = 'Despesas Atuais';
+    if (!toPay.length) {
+        expenseTitle = 'Sem ' + expenseTitle;
+    }
     return (
         <View style={styles.outerContainer}>
             <View style={styles.upperContainer}>
@@ -35,13 +49,27 @@ const HomeScreen = ({route, navigation}) => {
             </View>
             <View style={styles.expenseStatus}>
                 <ExpenseStatus
-                    total={1000.68}
-                    toPay={30}
-                    paid={1000}
+                    total={total}
+                    toPay={toPay.length}
+                    paid={expenseData.length - toPay.length}
                 />
             </View>
-            <View style={styles.expenseBoard}>
-
+            <View 
+                style={
+                    [
+                        styles.expenseBoard,
+                        toPay.length > 1 ? {flex: 4} : toPay.length > 0 ? {flex: 2} : {flex: 1}
+                    ]
+                }
+            >
+                <View style={styles.currentExpensesTitleContainer}>
+                    <Text style={[Fonts.headlineMedium, styles.currentExpensesTitle]}>{expenseTitle}</Text>        
+                </View>
+                <FlatList
+                    data={toPay}
+                    renderItem={({item}) => <ExpenseCard title={item.title} entity={item.entity} price={item.price} dueDate={item.dueDate} paid={item.paid}/>}
+                    keyExtractor={item => item.id}
+                />
             </View>
         </View>
     );
@@ -75,14 +103,22 @@ const styles = StyleSheet.create({
         color: Colors.onPrimaryKeyColor
     },
     expenseStatus: {
-        flex: 1,
-        padding: ResponsiveDimensions.homeScreen.expenseStatus.padding,
-        margin: ResponsiveDimensions.homeScreen.expenseStatus.margin
+        flex: 4,
+        marginBottom: 20
     },
     expenseBoard: {
-        flex: 1,
+        borderTopRightRadius: 60,
+        borderTopLeftRadius: 60,
+        paddingHorizontal: 5,
         backgroundColor: Colors.secondaryKeyColor,
-        width: ResponsiveDimensions.homeScreen.expenseBoard.width
+        width: ResponsiveDimensions.screen.width
+    },
+    currentExpensesTitleContainer: {
+        margin: 20
+    },
+    currentExpensesTitle: {
+        fontWeight: 'bold', 
+        textAlign: 'center'
     }
 });
 

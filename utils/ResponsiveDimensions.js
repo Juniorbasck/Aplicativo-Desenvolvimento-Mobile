@@ -89,10 +89,12 @@ const ResponsiveDimensions = {
         expenseStatus: {
             padding: 0.011942675159235668 * Dimensions.get(SOURCE).height,
             margin: 0.011942675159235668 * Dimensions.get(SOURCE).height
-        },
-        expenseBoard: {
-            width: Dimensions.get('window').width
         }
+    },
+    expenseCard: {
+        padding: 0.035828025477707005 * Dimensions.get(SOURCE).height,
+        margin: 0.023885350318471336 * Dimensions.get(SOURCE) * height,
+        borderRadius: 0.011942675159235668 * Dimensions.get(SOURCE).height
     }
 };
 
