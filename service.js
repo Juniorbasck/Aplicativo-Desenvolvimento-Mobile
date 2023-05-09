@@ -1,24 +1,9 @@
+import expenses from './expenses.json';
+
 const USE_MOCK_DATA = true;
 
-const GENERATE_MOCK_DATA = false;
-
-const EXPENSES = 10;
-
-const FILE = 'expenses.json';
-
-const getExpenses = (onFetchData, email='') => {
+const getExpenses = async (onFetchData, email='') => {
     if (USE_MOCK_DATA) {
-        let fs = require('react-native-fs');
-        if (GENERATE_MOCK_DATA) {
-            fs.writeFile(FILE, JSON.stringify(generateExpenseData(EXPENSES)));
-        }
-        let expenses;
-        try {
-            expenses = JSON.parse(fs.readFile(FILE));
-        } catch(e) {
-            expenses = generateExpenseData(EXPENSES);
-            fs.writeFile(FILE, JSON.stringify(expenses));
-        }
         onFetchData(expenses);
     } else {
         // Fetch data from database using `email` as primary key.

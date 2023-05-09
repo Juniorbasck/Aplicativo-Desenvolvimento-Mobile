@@ -7,7 +7,7 @@ import { CustomTextInput } from '../components/input/CustomTextInput';
 import { validateEmail, validatePassword } from '../utils/Validator';
 import { StackActions } from '@react-navigation/native';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
-import { GoogleSignin } from 'react-native-google-signin';
+// import { GoogleSignin } from 'react-native-google-signin';
 
 function validateData(email, password){
     let message = {};
@@ -28,17 +28,17 @@ function validateData(email, password){
     return message;
 }
 
-async function handleGoogleSignIn(){
+// async function handleGoogleSignIn(){
 
-    try {
-        await GoogleSignin.configure();
-        const { idToken } = await GoogleSignin.signIn();
-        // Faça alguma coisa com o token, como enviar para o servidor
-      } catch (error) {
-        console.error(error);
-      }
+//     try {
+//         await GoogleSignin.configure();
+//         const { idToken } = await GoogleSignin.signIn();
+//         // Faça alguma coisa com o token, como enviar para o servidor
+//       } catch (error) {
+//         console.error(error);
+//       }
       
-}
+// }
 
 
 const LoginScreen = ({navigation}) => {
@@ -98,7 +98,7 @@ const LoginScreen = ({navigation}) => {
                     backgroundColor={'#fff'}
                     textColor={'black'}
                     widthPercentage={88}
-                    onPress={() => handleGoogleSignIn()}
+                    // onPress={() => handleGoogleSignIn()}
                     
                 />
             </View>

@@ -51,7 +51,7 @@ const HomeScreen = ({route, navigation}) => {
                 <ExpenseStatus
                     total={total}
                     toPay={toPay.length}
-                    paid={expenseData.length - toPay.length}
+                    paid={expenses.length - toPay.length}
                 />
             </View>
             <View 
@@ -67,7 +67,7 @@ const HomeScreen = ({route, navigation}) => {
                 </View>
                 <FlatList
                     data={toPay}
-                    renderItem={({item}) => <ExpenseCard title={item.title} entity={item.entity} price={item.price} dueDate={item.dueDate} paid={item.paid}/>}
+                    renderItem={({item}) => <ExpenseCard title={item.title} entity={item.entity} price={item.price} dueDate={new Date(item.dueDate)} paid={item.paid}/>}
                     keyExtractor={item => item.id}
                 />
             </View>
