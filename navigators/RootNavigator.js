@@ -17,7 +17,7 @@ const RootNavigator = () => {
                 initialRouteName={'Login'}
                 screenOptions={
                     {
-                        headerShown: true,
+                        headerShown: false,
                         headerTitle: '',
                         headerStatusBarHeight: 20
                     }
@@ -26,40 +26,18 @@ const RootNavigator = () => {
                 <Stack.Screen 
                     name={'Login'} 
                     component={LoginScreen} 
-                    options={
-                        {
-                            // headerShown: true
-                        }
-                    }
                 />
                 <Stack.Screen 
                     name={'CreateAccount'} 
                     component={CreateAccountScreen} 
-                    options={
-                        {   
-                            // headerStyle: { backgroundColor: Colors.primaryKeyColor}, 
-                            // headerTintColor: Colors.onPrimaryKeyColor
-                        }
-                    }
                 />
                 <Stack.Screen 
                     name={'ForgottenPassword'} 
                     component={ForgottenPasswordScreen}
-                    options={
-                        {
-                            // headerStyle: { backgroundColor: Colors.primaryKeyColor },
-                            // headerTintColor: Colors.onPrimaryKeyColor
-                        }
-                    }
                 />
                 <Stack.Screen
                     name={'HomeNavigator'}
                     component={HomeNavigator}
-                    options={
-                        {
-                            headerShown: false
-                        }
-                    }
                 />
             </Stack.Navigator>
         </NavigationContainer>

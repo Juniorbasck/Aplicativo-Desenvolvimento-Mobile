@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         backgroundColor: Colors.primaryKeyColor,
-        marginTop: ResponsiveDimensions.screen.defaultMarginTop,
         alignItems: 'center',
         justifyContent: 'center'
     },
