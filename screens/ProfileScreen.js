@@ -15,6 +15,7 @@ import { ProfilePicture } from '../components/picture/ProfilePicture';
 import { ExpenseStatus } from '../components/expense_status/ExpenseStatus';
 import { ExpenseCard } from '../components/expense_card/ExpenseCard';
 import { getExpenses } from '../service';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ProfileScreen = ({route, navigation}) => {
     const [expenses, setExpenses] = useState([]);
@@ -54,7 +55,10 @@ const ProfileScreen = ({route, navigation}) => {
                 <View style={styles.currentExpensesTitleContainer}>
                     <Text style={[Fonts.headlineMedium, styles.currentExpensesTitle]}>{Title}</Text>
 
-                    <Text style={[Fonts.headlineSmall, styles.textOpcoes]}>Detalhes da Conta</Text>       
+                    <View style="flexDirection: row, alignItems: 'center',">
+                        <Ionicons name="settings-outline" size={24} color={Colors.onSecondaryKeyColor}/>
+                        <Text style={[Fonts.headlineSmall, styles.textOpcoes]}>Detalhes da Conta</Text>   
+                    </View>    
                 </View>
             </View> 
         </View> 
@@ -72,11 +76,10 @@ const styles = StyleSheet.create({
     },
     profilePic: {
         flex: 2,
-        height: 50
     },
     upperContainer: {
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: 'column',
         alignContent: 'center',
         margin: ResponsiveDimensions.homeScreen.upperContainer.margin
     },
@@ -89,7 +92,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end'
     },
     greetingText: {
-        marginTop: 150,
+        marginTop: 10,
         fontWeight: 'bold', 
         color: Colors.onPrimaryKeyColor
     },
