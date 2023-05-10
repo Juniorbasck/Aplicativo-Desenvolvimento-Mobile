@@ -48,7 +48,7 @@ const ExpenseScreen = ({route, navigation}) => {
                 </View>
                 <FlatList
                     data={toPay}
-                    renderItem={({item}) => <ExpenseCard title={item.title} entity={item.entity} price={item.price} dueDate={new Date(item.dueDate)} paid={item.paid}/>}
+                    renderItem={(item) => <ExpenseCard data={{...item}}/>}
                     keyExtractor={item => item.id}
                 />
             </View>

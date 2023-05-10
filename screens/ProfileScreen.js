@@ -6,7 +6,9 @@ import {
     Text,
     StyleSheet,
     Alert,
-    Dimensions
+    Dimensions,
+    Button
+
 } from 'react-native';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
@@ -16,6 +18,7 @@ import { ExpenseStatus } from '../components/expense_status/ExpenseStatus';
 import { ExpenseCard } from '../components/expense_card/ExpenseCard';
 import { getExpenses } from '../service';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { CustomButton } from '../components/button/CustomButton';
 
 const ProfileScreen = ({route, navigation}) => {
     const [expenses, setExpenses] = useState([]);
@@ -57,7 +60,19 @@ const ProfileScreen = ({route, navigation}) => {
 
                     <View style="flexDirection: row, alignItems: 'center',">
                         <Ionicons name="settings-outline" size={24} color={Colors.onSecondaryKeyColor}/>
-                        <Text style={[Fonts.headlineSmall, styles.textOpcoes]}>Detalhes da Conta</Text>   
+                        <Text style={[Fonts.headlineSmall, styles.textOpcoes]}>Detalhes da Conta</Text> 
+
+                         <CustomButton style={styles.buttonLogout}
+                        text={'Terminar Sessão'}
+                        backgroundColor={'red'}
+                        textColor={'white'}
+                        widthPercentage={60}
+                        onPress={() =>() => navigation.navigate('LoginScreen')}
+                        size={'big'}
+
+                      />
+
+
                     </View>    
                 </View>
             </View> 
@@ -74,6 +89,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+
     profilePic: {
         flex: 2,
     },
@@ -109,7 +125,8 @@ const styles = StyleSheet.create({
         width: ResponsiveDimensions.screen.width
     },
     currentExpensesTitleContainer: {
-        margin: 20
+        margin: 20,
+        
     },
     currentExpensesTitle: {
         fontWeight: 'bold', 
