@@ -1,19 +1,22 @@
+import React, { useState } from 'react';
 import {
     View,
     Text,
     Pressable,
     StyleSheet,
-    Alert
+    Alert,
+    Modal
 } from 'react-native';
 import { Fonts } from '../../utils/Fonts';
 import { Colors } from '../../utils/Colors';
 
-const ExpenseCard = ({title, entity, price, dueDate, paid}) => {
+const ExpenseCard = props => {
+    const {title, entity, price, dueDate, paid, callback} = props.data.item;
     let backgroundColor;
     if (paid) {
         backgroundColor = Colors.onSecondaryKeyColor;
     } else {
-        let difference = (new Date() - dueDate.getTime()) / 86400000;
+        let difference = (new Date() - new Date(dueDate).getTime()) / 86400000;
         if (difference < -3) {
             backgroundColor = Colors.cardGreen;
         } else if (difference < 0) {
@@ -25,9 +28,7 @@ const ExpenseCard = ({title, entity, price, dueDate, paid}) => {
 
     return (
         <Pressable
-            onPress={() => {
-                Alert.alert('Expense card');
-            }}
+            onPress={callback}
         >
             <View style={[styles.pressableContainer, {backgroundColor: backgroundColor}]}>
                 <View style={{alignItems: 'flex-start'}}>
@@ -64,6 +65,13 @@ const styles = StyleSheet.create({
     price: {
         color: Colors.onPrimaryKeyColor, 
         fontWeight: 'bold'
+    },
+    modalView: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.secondaryKeyColor,
+        margin: 20
     }
 });
 

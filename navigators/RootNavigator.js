@@ -26,14 +26,17 @@ const RootNavigator = () => {
                 <Stack.Screen 
                     name={'Login'} 
                     component={LoginScreen} 
+                    options={{headerShown: true}}
                 />
                 <Stack.Screen 
                     name={'CreateAccount'} 
                     component={CreateAccountScreen} 
+                    options={{headerShown: true}}
                 />
                 <Stack.Screen 
                     name={'ForgottenPassword'} 
                     component={ForgottenPasswordScreen}
+                    options={{headerShown: true}}
                 />
                 <Stack.Screen
                     name={'HomeNavigator'}

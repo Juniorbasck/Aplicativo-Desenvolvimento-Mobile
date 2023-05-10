@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     FlatList,
     View,
-    ScrollView,
+    Modal,
     Text,
     StyleSheet,
     Alert,
@@ -15,9 +15,20 @@ import { ProfilePicture } from '../components/picture/ProfilePicture';
 import { ExpenseStatus } from '../components/expense_status/ExpenseStatus';
 import { ExpenseCard } from '../components/expense_card/ExpenseCard';
 import { getExpenses } from '../service';
+import { CustomButton } from '../components/button/CustomButton';
+import { CustomTextInput } from '../components/input/CustomTextInput'; 
 
 const HomeScreen = ({route, navigation}) => {
+    const handleOnPress = (item) => {
+        setSelectedItem(item);
+        setModalVisible(true);
+        console.log('Clicked');
+    }
+
     const [expenses, setExpenses] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedItem, setSelectedItem] = useState({});
+    const [title, setTitle] = useState('');
 
     useEffect(() => {
         getExpenses(setExpenses);
@@ -67,9 +78,29 @@ const HomeScreen = ({route, navigation}) => {
                 </View>
                 <FlatList
                     data={toPay}
-                    renderItem={({item}) => <ExpenseCard title={item.title} entity={item.entity} price={item.price} dueDate={new Date(item.dueDate)} paid={item.paid}/>}
+                    renderItem={(item) => <ExpenseCard data={{...item}}/>}
                     keyExtractor={item => item.id}
                 />
+                {/* <Modal
+                    animationType={'slide'}
+                    visible={modalVisible}
+                >
+                    <View style={styles.modalView}>
+                        <CustomTextInput
+                            value={selectedItem.title}
+                            placeholder={'Título'}
+                            setState={setTitle}
+                            size={'big'}
+                        />
+                        <CustomButton
+                            text={'Guardar'}
+                            onPress={() => setModalVisible(false)}
+                            backgroundColor={Colors.primaryKeyColor}
+                            textColor={Colors.onPrimaryKeyColor}
+                            widthPercentage={91}
+                        />
+                    </View>
+                </Modal> */}
             </View>
         </View>
     );
@@ -118,6 +149,9 @@ const styles = StyleSheet.create({
     currentExpensesTitle: {
         fontWeight: 'bold', 
         textAlign: 'center'
+    },
+    modalView: {
+
     }
 });
 

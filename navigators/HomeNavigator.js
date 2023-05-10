@@ -25,8 +25,8 @@ const HomeNavigator = () => {
                 },
                 tabBarActiveBackgroundColor: Colors.secondaryKeyColor,
                 tabBarInactiveBackgroundColor: Colors.secondaryKeyColor,
-                headerShown: false,
-                tabBarShowLabel: false,
+                headerShown: true,
+                tabBarShowLabel: true,
             })}
         >
             <Tab.Screen name={'Home'} component={HomeScreen}/>
