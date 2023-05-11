@@ -7,12 +7,20 @@ const SOURCE = useWindow ? 'window' : 'screen';
 const ResponsiveDimensions = {
     customTextInput: {
         big: {
-            width: 0.8385416666666666 * Dimensions.get(SOURCE).width,
+            width: '83%',
             height: 0.05254777070063694 * Dimensions.get(SOURCE).height,
         },
         small: {
             width: 0.40104166666666663 * Dimensions.get(SOURCE).width,
             height: 0.05254777070063694 * Dimensions.get(SOURCE).height,
+        }
+    },
+    customDatePicker: {
+        big: {
+            width: '83%',
+        },
+        small: {
+            width: '50%',
         }
     },
     squareCheckbox: {

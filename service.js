@@ -3,7 +3,7 @@ import expenses from './expenses.json';
 const USE_MOCK_DATA = true;
 
 const sort = exps => {
-    let sorted = exps.sort((exp1, exp2) => new Date(exp1.dueDate).getTime() - new Date(exp2.dueDate).getTime());
+    let sorted = exps.sort((exp1, exp2) => new Date(exp1.date).getTime() - new Date(exp2.date).getTime());
     let paid = [], notPaid = [];
     for (let exp of sorted) {
         if (exp.paid) {
@@ -24,6 +24,10 @@ const getExpenses = async (onFetchData, email='') => {
         // exps = databaseExps(email);
     }
     onFetchData(sort(exps));
+}
+
+const updateExpense = (expenseData) => {
+
 }
 
 export { getExpenses };

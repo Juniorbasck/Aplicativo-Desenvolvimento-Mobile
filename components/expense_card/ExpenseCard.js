@@ -11,12 +11,13 @@ import { Fonts } from '../../utils/Fonts';
 import { Colors } from '../../utils/Colors';
 
 const ExpenseCard = props => {
-    const {title, entity, price, dueDate, paid, callback} = props.data.item;
+    const {title, entity, price, paid, date} = props.data.item;
+    const {onPress} = props.data;
     let backgroundColor;
     if (paid) {
         backgroundColor = Colors.onSecondaryKeyColor;
     } else {
-        let difference = (new Date() - new Date(dueDate).getTime()) / 86400000;
+        let difference = (new Date() - new Date(date).getTime()) / 86400000;
         if (difference < -3) {
             backgroundColor = Colors.cardGreen;
         } else if (difference < 0) {
@@ -28,7 +29,7 @@ const ExpenseCard = props => {
 
     return (
         <Pressable
-            onPress={callback}
+            onPress={() => onPress(props.data.item)}
         >
             <View style={[styles.pressableContainer, {backgroundColor: backgroundColor}]}>
                 <View style={{alignItems: 'flex-start'}}>
@@ -53,7 +54,8 @@ const styles = StyleSheet.create({
         margin: 20,
         borderColor: 'black',
         borderWidth: 1,
-        borderRadius: 10
+        borderRadius: 10,
+        width: 350
     },
     title: {
         color: Colors.onPrimaryKeyColor, 
@@ -65,13 +67,6 @@ const styles = StyleSheet.create({
     price: {
         color: Colors.onPrimaryKeyColor, 
         fontWeight: 'bold'
-    },
-    modalView: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: Colors.secondaryKeyColor,
-        margin: 20
     }
 });
 

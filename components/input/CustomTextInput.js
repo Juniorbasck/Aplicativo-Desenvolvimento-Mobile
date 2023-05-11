@@ -1,27 +1,16 @@
 import React, { useState } from 'react';
-
 import { TextInput, StyleSheet} from 'react-native';
-
 import { Colors } from '../../utils/Colors';
-import { ResponsiveDimensions } from '../../utils/ResponsiveDimensions';
 
-const CustomTextInput = ({setState, value='',placeholder='', size='small', keyboardType='ascii-capable', hide=false}) => {
+const CustomTextInput = ({state, setState, placeholder='', size='small', keyboardType='ascii-capable', hide=false}) => {
     return ( 
         <TextInput
             placeholder={placeholder}
             keyboardType={keyboardType}
             secureTextEntry={hide}
             placeholderTextColor={Colors.onSecondaryKeyColor}
-            value={value}
-            style={
-                [
-                    styles.textInput, 
-                    {
-                        width: ResponsiveDimensions.customTextInput[size].width, 
-                        height: ResponsiveDimensions.customTextInput[size].height
-                    }
-                ]
-            }
+            defaultValue={state}
+            style={[styles.textInput, size == 'small' ? {width: '50%'} : {width: '83%'}]}
             onChangeText={(text) => setState(text)}
         />
     );
@@ -33,9 +22,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.onSecondaryKeyColor,
         borderWidth: 1,
         borderRadius: 5,
-        padding: 10,
-        marginRight: 8,
-        marginLeft: 8
+        padding: '2%',
     }
 });
 

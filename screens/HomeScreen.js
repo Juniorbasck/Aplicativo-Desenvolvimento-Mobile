@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
     FlatList,
+    ScrollView,
     View,
     Modal,
     Text,
     StyleSheet,
-    Alert,
-    Dimensions
 } from 'react-native';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
@@ -17,18 +16,31 @@ import { ExpenseCard } from '../components/expense_card/ExpenseCard';
 import { getExpenses } from '../service';
 import { CustomButton } from '../components/button/CustomButton';
 import { CustomTextInput } from '../components/input/CustomTextInput'; 
+import { CustomDatePicker } from '../components/date_picker/CustomDatePicker';
+import { format } from '../utils/DateFormatter';
 
 const HomeScreen = ({route, navigation}) => {
-    const handleOnPress = (item) => {
+    const handleOnPress = item => {
         setSelectedItem(item);
+        setTitle(item.title);
+        setEntity(item.entity);
+        setDate(item.date);
+        setPrice(item.price?.toString());
+        setPaymentMethod(item.paymentMethod);
+        setPaid(item.paid);
         setModalVisible(true);
-        console.log('Clicked');
     }
 
     const [expenses, setExpenses] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
-    const [title, setTitle] = useState('');
+
+    const [title, setTitle] = useState();
+    const [entity, setEntity] = useState();
+    const [date, setDate] = useState();
+    const [price, setPrice] = useState();
+    const [paymentMethod, setPaymentMethod] = useState();
+    const [paid, setPaid] = useState();
 
     useEffect(() => {
         getExpenses(setExpenses);
@@ -78,29 +90,61 @@ const HomeScreen = ({route, navigation}) => {
                 </View>
                 <FlatList
                     data={toPay}
-                    renderItem={(item) => <ExpenseCard data={{...item}}/>}
+                    renderItem={(item) => <ExpenseCard data={{...item, onPress: handleOnPress}}/>}
                     keyExtractor={item => item.id}
                 />
-                {/* <Modal
+                <Modal
                     animationType={'slide'}
                     visible={modalVisible}
+                    transparent={true}
                 >
-                    <View style={styles.modalView}>
+                    <ScrollView 
+                        contentContainerStyle={styles.modalView}
+                        keyboardDismissMode='on-drag'
+                    >   
+                        <View style={styles.defaultMarginPadding}>
+                            <Text style={[Fonts.headlineMedium, {fontWeight: 'bold'}]}>Editar Despesa</Text>
+                        </View>
                         <CustomTextInput
-                            value={selectedItem.title}
-                            placeholder={'Título'}
+                            state={title}
                             setState={setTitle}
-                            size={'big'}
+                            placeholder='Título'
+                            size='big'
+                        />
+                        <CustomTextInput
+                            state={entity}
+                            setState={setEntity}
+                            placeholder='Entidade'
+                            size='big'
+                        />
+                        <CustomTextInput
+                            state={price}
+                            setState={setPrice}
+                            keyboardType='numeric'
+                            placeholder='Preço'
+                            size='big'
+                        />
+                        <CustomDatePicker
+                            state={date}
+                            setState={setDate}
+                            size='big'
                         />
                         <CustomButton
                             text={'Guardar'}
-                            onPress={() => setModalVisible(false)}
+                            onPress={() => {
+                                    selectedItem.title = title;
+                                    selectedItem.entity = entity;
+                                    selectedItem.date = format(date, '-');
+                                    selectedItem.price = price;
+                                    setModalVisible(false);
+                                }
+                            }
                             backgroundColor={Colors.primaryKeyColor}
                             textColor={Colors.onPrimaryKeyColor}
-                            widthPercentage={91}
+                            widthPercentage={84}
                         />
-                    </View>
-                </Modal> */}
+                    </ScrollView>
+                </Modal>
             </View>
         </View>
     );
@@ -137,6 +181,8 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     expenseBoard: {
+        alignItems: 'center',
+        justifyContent: 'center',
         borderTopRightRadius: 60,
         borderTopLeftRadius: 60,
         paddingHorizontal: 5,
@@ -151,7 +197,23 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     modalView: {
-
+        position: 'absolute',
+        left: '5%',
+        top: '20%',
+        width: '90%',
+        height: '60%',
+        alignItems: 'center',
+        backgroundColor: Colors.onPrimaryKeyColor,
+        borderColor: Colors.primaryKeyColor,
+        borderWidth: 1,
+        borderRadius: 5,
+    },
+    defaultMarginPadding: {
+        marginBottom: '2%'
+    },
+    priceDateRow: {
+        flexDirection: 'row',
+        alignContent: 'space-between'
     }
 });
 

@@ -1,5 +1,16 @@
+function format(date, sep='-') {
+    if (typeof(date) != 'date') {
+        try {
+            date = new Date(date);
+        } catch (err) {
+            console.log(`Error parsing date: ${date}`)
+        }
+    }
+    return date.getFullYear() + sep + date.getMonth() + sep + date.getDate();
+}
+
 function randomDate(start, end) {
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+   return format(new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())));
 }
 
 function randomPaymentMethod() {
@@ -36,21 +47,22 @@ function generateExpenseData(qtd=10, priceLimit=10000) {
                     }
                 })[0],
                 price: parseFloat((Math.random() * priceLimit).toFixed(2)),
-                dueDate: randomDate(new Date(2023, 0, 1),  new Date(2024, 0, 1)),
+                date: randomDate(new Date(2023, 0, 1),  new Date(2024, 0, 1)),
                 paid: !!(parseInt(Math.round(Math.random() * 1))),
                 paymentMethod: randomPaymentMethod()
             }
         );
     }
-    return expenses.sort((ele) => ele.dueDate);
+    return expenses.sort((ele) => ele.date);
 }
 
-const data = JSON.stringify(generateExpenseData(5));
+const expenses = 10;
+const data = JSON.stringify(generateExpenseData(expenses));
 const file = 'expenses.json';
 var fs = require('fs');
 fs.writeFile(file, data, (error) => {
     if (error) {
         throw error;
     }
-    console.log(`File '${file}' created.`);
+    console.log(`File '${file}' created with ${expenses} expenses.`);
 });
