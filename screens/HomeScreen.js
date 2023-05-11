@@ -164,10 +164,13 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         margin: ResponsiveDimensions.homeScreen.upperContainer.margin
     },
+    
     flexStart: {
         flex: 1, 
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
+        marginLeft: 20,
     },
+
     flexEnd: {
         flex: 1, 
         alignItems: 'flex-end'
