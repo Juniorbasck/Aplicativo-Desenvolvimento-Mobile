@@ -7,8 +7,8 @@ import {
     Image,
     Alert
 } from 'react-native';
-import { CustomButton } from '../components/button/CustomButton';
-import { CustomTextInput } from '../components/input/CustomTextInput';
+import { CustomButton } from '../components/CustomButton';
+import { CustomTextInput } from '../components/CustomTextInput';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
@@ -36,14 +36,13 @@ const ForgottenPasswordScreen = ({navigation}) => {
                 <View style={styles.marginPaddingDefault}>
                     <Text style={[styles.subtitle, Fonts.bodyLarge]}>Indique o seu e-mail para receber as instruções para recuperar a palavra-passe</Text>
                 </View>
-                <View style={styles.marginPaddingDefault}>
-                    <CustomTextInput
-                        size={'big'}
-                        placeholder={'E-mail'}
-                        keyboardType={'email-address'}
-                        setState={setEmail}
-                    />
-                </View>
+                <CustomTextInput
+                    placeholder={'E-mail'}
+                    keyboardType={'email-address'}
+                    widthPercentage={90}
+                    state={email}
+                    setState={setEmail}
+                />
                 <View style={styles.marginPaddingDefault}>
                     <CustomButton
                         text={'Enviar'}

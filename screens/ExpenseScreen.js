@@ -11,9 +11,9 @@ import {
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
-import { ProfilePicture } from '../components/picture/ProfilePicture';
-import { ExpenseStatus } from '../components/expense_status/ExpenseStatus';
-import { ExpenseCard } from '../components/expense_card/ExpenseCard';
+import { ProfilePicture } from '../components/ProfilePicture';
+import { ExpenseStatus } from '../components/ExpenseStatus';
+import { ExpenseCard } from '../components/ExpenseCard';
 import { getExpenses } from '../service';
 
 const ExpenseScreen = ({route, navigation}) => {

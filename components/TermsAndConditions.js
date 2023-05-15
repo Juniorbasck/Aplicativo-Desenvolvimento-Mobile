@@ -7,15 +7,15 @@ import {
     ScrollView,
     Modal
 } from 'react-native';
-import { Colors } from '../../utils/Colors';
-import { ResponsiveDimensions } from '../../utils/ResponsiveDimensions';
-import { Fonts } from '../../utils/Fonts';
+import { Colors } from '../utils/Colors';
+import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
+import { Fonts } from '../utils/Fonts';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { CustomButton } from '../button/CustomButton';
+import { CustomButton } from './CustomButton';
 
 const TermsAndConditions = ({setState}) => {
-    const [checked, toggleCheckbox] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [checked, setChecked] = useState(false);
     const [icon, setIcon] = useState('');
 
     return (
@@ -269,7 +269,7 @@ const TermsAndConditions = ({setState}) => {
                 <View style={styles.termsAndConditionsContainer}>
                     <Pressable
                         onPress={() => {
-                            toggleCheckbox(!checked);
+                            setChecked(!checked);
                             if (checked) {
                                 setIcon('checkmark');
                                 setState(true);

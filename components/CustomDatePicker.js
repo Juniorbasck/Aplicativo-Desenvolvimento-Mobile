@@ -5,23 +5,22 @@ import {
     StyleSheet,
     View,
     Modal,
+    Dimensions
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Fonts } from '../../utils/Fonts';
-import { Colors } from '../../utils/Colors';
-import { format } from '../../utils/DateFormatter';
+import { Fonts } from '../utils/Fonts';
+import { Colors } from '../utils/Colors';
+import { format } from '../utils/DateFormatter';
 import DatePicker from 'react-native-modern-datepicker';
 
-const CustomDatePicker = ({state, setState, size='small'}) => {
+const CustomDatePicker = ({state, setState, widthPercentage=90, marginBottomPercentage=5}) => {
     
     const [open, setOpen] = useState(false);
     return (
-        <View
-            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
-         >
+        <View>
             <Pressable
                 onPress={() => setOpen(!open)}
-                style={[styles.pressableContainer, size == 'small' ? {width: '50%'} : {width: '83%'}]}
+                style={[styles.pressableContainer, {width: widthPercentage / 100 * Dimensions.get('window').width, marginBottom: marginBottomPercentage / 100 * Dimensions.get('window').height}]}
             >   
                 <View style={[styles.sideView, {alignItems: 'flex-start'}]}>
                     <Ionicons name={'calendar'} size={30} color={'black'}/>
@@ -68,18 +67,6 @@ const styles = StyleSheet.create({
     sideView: {
         flex: 1, 
         margin: '2%'
-    },
-    modalView: {
-        backgroundColor: Colors.secondaryKeyColor,
-        position: 'absolute', 
-        left: '15%', 
-        top: '25%', 
-        width: '70%', 
-        height: '38%', 
-        padding: '5%', 
-        borderColor: 'black', 
-        borderWidth: 1, 
-        borderRadius: 5
     }
 });
 

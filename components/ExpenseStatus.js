@@ -3,10 +3,10 @@ import {
     Text,
     StyleSheet
 } from 'react-native';
-import { Fonts } from '../../utils/Fonts';
-import { Colors } from '../../utils/Colors';
+import { Fonts } from '../utils/Fonts';
+import { Colors } from '../utils/Colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { ResponsiveDimensions } from '../../utils/ResponsiveDimensions';
+import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 
 const ExpenseStatus = ({total=0, toPay=0, paid=0}) => {
     return (

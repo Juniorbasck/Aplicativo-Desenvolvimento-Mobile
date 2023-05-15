@@ -1,46 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import {
     FlatList,
-    ScrollView,
     View,
-    Modal,
     Text,
     StyleSheet,
 } from 'react-native';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
-import { ProfilePicture } from '../components/picture/ProfilePicture';
-import { ExpenseStatus } from '../components/expense_status/ExpenseStatus';
-import { ExpenseCard } from '../components/expense_card/ExpenseCard';
+import { ProfilePicture } from '../components/ProfilePicture';
+import { ExpenseStatus } from '../components/ExpenseStatus';
+import { ExpenseCard } from '../components/ExpenseCard';
 import { getExpenses } from '../service';
-import { CustomButton } from '../components/button/CustomButton';
-import { CustomTextInput } from '../components/input/CustomTextInput'; 
-import { CustomDatePicker } from '../components/date_picker/CustomDatePicker';
-import { format } from '../utils/DateFormatter';
 
 const HomeScreen = ({route, navigation}) => {
     const handleOnPress = item => {
+        navigation.navigate('ExpenseEdit', {
+            item: item
+        });
         setSelectedItem(item);
-        setTitle(item.title);
-        setEntity(item.entity);
-        setDate(item.date);
-        setPrice(item.price?.toString());
-        setPaymentMethod(item.paymentMethod);
-        setPaid(item.paid);
-        setModalVisible(true);
     }
 
     const [expenses, setExpenses] = useState([]);
-    const [modalVisible, setModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
-
-    const [title, setTitle] = useState();
-    const [entity, setEntity] = useState();
-    const [date, setDate] = useState();
-    const [price, setPrice] = useState();
-    const [paymentMethod, setPaymentMethod] = useState();
-    const [paid, setPaid] = useState();
 
     useEffect(() => {
         getExpenses(setExpenses);
@@ -93,58 +75,6 @@ const HomeScreen = ({route, navigation}) => {
                     renderItem={(item) => <ExpenseCard data={{...item, onPress: handleOnPress}}/>}
                     keyExtractor={item => item.id}
                 />
-                <Modal
-                    animationType={'slide'}
-                    visible={modalVisible}
-                    transparent={true}
-                >
-                    <ScrollView 
-                        contentContainerStyle={styles.modalView}
-                        keyboardDismissMode='on-drag'
-                    >   
-                        <View style={styles.defaultMarginPadding}>
-                            <Text style={[Fonts.headlineMedium, {fontWeight: 'bold'}]}>Editar Despesa</Text>
-                        </View>
-                        <CustomTextInput
-                            state={title}
-                            setState={setTitle}
-                            placeholder='Título'
-                            size='big'
-                        />
-                        <CustomTextInput
-                            state={entity}
-                            setState={setEntity}
-                            placeholder='Entidade'
-                            size='big'
-                        />
-                        <CustomTextInput
-                            state={price}
-                            setState={setPrice}
-                            keyboardType='numeric'
-                            placeholder='Preço'
-                            size='big'
-                        />
-                        <CustomDatePicker
-                            state={date}
-                            setState={setDate}
-                            size='big'
-                        />
-                        <CustomButton
-                            text={'Guardar'}
-                            onPress={() => {
-                                    selectedItem.title = title;
-                                    selectedItem.entity = entity;
-                                    selectedItem.date = format(date, '-');
-                                    selectedItem.price = price;
-                                    setModalVisible(false);
-                                }
-                            }
-                            backgroundColor={Colors.primaryKeyColor}
-                            textColor={Colors.onPrimaryKeyColor}
-                            widthPercentage={84}
-                        />
-                    </ScrollView>
-                </Modal>
             </View>
         </View>
     );

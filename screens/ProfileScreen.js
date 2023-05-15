@@ -8,17 +8,17 @@ import {
     Alert,
     Dimensions,
     Button
-
 } from 'react-native';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
-import { ProfilePicture } from '../components/picture/ProfilePicture';
-import { ExpenseStatus } from '../components/expense_status/ExpenseStatus';
-import { ExpenseCard } from '../components/expense_card/ExpenseCard';
+import { ProfilePicture } from '../components/ProfilePicture';
+import { ExpenseStatus } from '../components/ExpenseStatus';
+import { ExpenseCard } from '../components/ExpenseCard';
 import { getExpenses } from '../service';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { CustomButton } from '../components/button/CustomButton';
+import { CustomButton } from '../components/CustomButton';
+import { StackActions } from '@react-navigation/native';
 
 const ProfileScreen = ({route, navigation}) => {
     const [expenses, setExpenses] = useState([]);
@@ -34,7 +34,6 @@ const ProfileScreen = ({route, navigation}) => {
             <View style={styles.upperContainer}>
                 <View style={styles.flexEnd}>
                     <ProfilePicture
-                        style="styles.profilePic"
                     />
                 </View>
                 <View style={styles.flexStart}>
@@ -63,16 +62,13 @@ const ProfileScreen = ({route, navigation}) => {
                         <Text style={[Fonts.headlineSmall, styles.textOpcoes]}>Detalhes da Conta</Text> 
 
                          <CustomButton style={styles.buttonLogout}
-                        text={'Terminar Sessão'}
-                        backgroundColor={'red'}
-                        textColor={'white'}
-                        widthPercentage={60}
-                        onPress={() =>() => navigation.navigate('LoginScreen')}
-                        size={'big'}
-
-                      />
-
-
+                            text={'Terminar Sessão'}
+                            backgroundColor={'red'}
+                            textColor={'white'}
+                            widthPercentage={60}
+                            onPress={() => navigation.dispatch(StackActions.replace('Login'))}
+                            size={'big'}
+                        />
                     </View>    
                 </View>
             </View> 

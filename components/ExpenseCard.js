@@ -7,8 +7,8 @@ import {
     Alert,
     Modal
 } from 'react-native';
-import { Fonts } from '../../utils/Fonts';
-import { Colors } from '../../utils/Colors';
+import { Fonts } from '../utils/Fonts';
+import { Colors } from '../utils/Colors';
 
 const ExpenseCard = props => {
     const {title, entity, price, paid, date} = props.data.item;

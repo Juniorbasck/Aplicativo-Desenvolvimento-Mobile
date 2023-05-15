@@ -4,15 +4,17 @@ import {
     View,
     Text,
     StyleSheet,
-    Alert
+    Alert,
+    Dimensions
 } from 'react-native';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
-import { CustomTextInput } from '../components/input/CustomTextInput';
-import { TermsAndConditions } from '../components/terms_and_conditions/TermsAndConditions'; 
-import { CustomButton } from '../components/button/CustomButton';
+import { CustomTextInput } from '../components/CustomTextInput';
+import { TermsAndConditions } from '../components/TermsAndConditions'; 
+import { CustomButton } from '../components/CustomButton';
 import { validateEmail, validatePassword, validateTextField } from '../utils/Validator';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
+import { StackActions } from '@react-navigation/native';
 
 function validateData(name, surname, username, email, password, confirmPassword) {
     let message = {};
@@ -61,54 +63,56 @@ const CreateAccountScreen = ({navigation}) => {
                 keyboardDismissMode={'on-drag'}
                 contentContainerStyle={styles.scrollView}
             >
-                <View style={[styles.marginPaddingDefault, {marginTop: 30}]}>
+                {/* <View>
                     <Text style={[Fonts.displaySmall, {color: Colors.onSecondaryKeyColor}]}>Criar Conta</Text>
-                </View>
-                <View style={[styles.marginPaddingDefault, {flexDirection: 'row'}]}>
+                </View> */}
+                <View style={{flexDirection: 'row', marginTop: '10%', marginBottom: '3%'}}>
                     <CustomTextInput
                         placeholder={'Nome'}
+                        state={name}
                         setState={setName}
                     />
                     <CustomTextInput
                         placeholder={'Apelido'}
+                        state={surname}
                         setState={setSurname}
                     />                    
                 </View>
-                <View style={styles.marginPaddingDefault}>
-                    <CustomTextInput
-                        placeholder={'Nome de utilizador'}
-                        size={'big'}
-                        setState={setUsername}
-                    />
-                </View>
-                <View style={styles.marginPaddingDefault}>
-                    <CustomTextInput
-                        placeholder={'E-mail'}
-                        size={'big'}
-                        setState={setEmail}
-                        keyboardType={'email-address'}
-                    />
-                </View>
-                <View style={styles.marginPaddingDefault}>
-                    <CustomTextInput
-                        placeholder={'Palavra-passe'}
-                        size={'big'}
-                        setState={setPassword}
-                        hide={true}
-                    />
-                </View>
-                <View style={styles.marginPaddingDefault}>
-                    <CustomTextInput
-                        placeholder={'Confirmar palavra-passe'}
-                        size={'big'}
-                        setState={setConfirmPassword}
-                        hide={true}
-                    />
-                </View>
+                <CustomTextInput
+                    placeholder={'Nome de utilizador'}
+                    widthPercentage={90}
+                    state={username}
+                    setState={setUsername}
+                    marginBottomPercentage={3}
+                />
+                <CustomTextInput
+                    placeholder={'E-mail'}
+                    widthPercentage={90}
+                    state={email}
+                    setState={setEmail}
+                    keyboardType={'email-address'}
+                    marginBottomPercentage={3}
+                />
+                <CustomTextInput
+                    placeholder={'Palavra-passe'}
+                    widthPercentage={90}
+                    state={password}
+                    setState={setPassword}
+                    hide={true}
+                    marginBottomPercentage={3}
+                />
+                <CustomTextInput
+                    placeholder={'Confirmar palavra-passe'}
+                    widthPercentage={90}
+                    state={confirmPassword}
+                    setState={setConfirmPassword}
+                    hide={true}
+                    marginBottomPercentage={5}
+                />
                 <TermsAndConditions
                     setState={setChecked}
                 />
-                <View style={{marginTop: 30}}>
+                <View style={{marginTop: '10%'}}>
                     <CustomButton
                         text={'Criar'}
                         onPress={() => {
@@ -117,6 +121,7 @@ const CreateAccountScreen = ({navigation}) => {
                             if (res.header == 'Conta criada com sucesso!') {
                                 // Save account data to database.
                                 // Log user in.
+                                navigation.dispatch(StackActions.replace('HomeNavigator'));
                             }
                         }}
                         backgroundColor={checked ? Colors.tertiaryKeyColor : Colors.tertiaryKeyColorDisabled}
@@ -132,20 +137,19 @@ const CreateAccountScreen = ({navigation}) => {
 
 const styles = StyleSheet.create({
     outerContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: Colors.primaryKeyColor,
     },
     scrollView: {
-        height: ResponsiveDimensions.screen.height,
-        width: ResponsiveDimensions.screen.width,
+        height: Dimensions.get('window').height,
+        width: Dimensions.get('window').width,
         alignItems: 'center',
-        marginTop: ResponsiveDimensions.screen.defaultMarginTop,
+        marginTop: '5%',
         borderTopLeftRadius: 60,
         borderTopRightRadius: 60,
         backgroundColor: Colors.secondaryKeyColor
-    },
-    marginPaddingDefault: {
-        margin: 10,
-        padding: 10,
     }
 });
 

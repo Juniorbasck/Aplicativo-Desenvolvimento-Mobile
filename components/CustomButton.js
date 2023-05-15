@@ -4,14 +4,13 @@ import {
     StyleSheet,
     Dimensions
 } from 'react-native';
-import { ResponsiveDimensions } from '../../utils/ResponsiveDimensions';
-import { Fonts } from '../../utils/Fonts';
-import { PermissionsAndroid } from 'react-native';
+import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
+import { Fonts } from '../utils/Fonts';
 
 const CustomButton = ({text, onPress, backgroundColor, textColor, widthPercentage, disabled=false}) => {
     return (
         <Pressable
-            style={[styles.button, {backgroundColor: backgroundColor, width: widthPercentage / 100 * Dimensions.get('screen').width}]}
+            style={[styles.button, {backgroundColor: backgroundColor, width: widthPercentage / 100 * Dimensions.get('window').width}]}
             onPress={onPress}
             disabled={disabled}
         >

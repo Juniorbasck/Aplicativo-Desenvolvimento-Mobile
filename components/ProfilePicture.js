@@ -3,7 +3,7 @@ import {
     Image,
     Pressable,
 } from 'react-native';
-import { ResponsiveDimensions } from '../../utils/ResponsiveDimensions';
+import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 
 const ProfilePicture = ({onPress, size='small'}) => {
     return (
@@ -11,7 +11,7 @@ const ProfilePicture = ({onPress, size='small'}) => {
             onPress={onPress}
         >   
             <Image
-                source={require('../../assets/face1.jpg')}
+                source={require('../assets/face1.jpg')}
                 resizeMode={'contain'}
                 style={ResponsiveDimensions.roundImageContainer[size]}
             />

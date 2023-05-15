@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, StyleSheet,Text, TextInput, Button} from 'react-native';
-import { CustomButton } from '../components/button/CustomButton';
+import { CustomButton } from '../components/CustomButton';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
-import { CustomTextInput } from '../components/input/CustomTextInput';
+import { CustomTextInput } from '../components/CustomTextInput';
 import { validateEmail, validatePassword } from '../utils/Validator';
 import { StackActions } from '@react-navigation/native';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
@@ -52,22 +52,18 @@ const LoginScreen = ({navigation}) => {
                 <Text style={styles.subtitle}>financeiro</Text>
             </View>
             <Text style={styles.cifrao}>$</Text>
-            <View>
-                <TextInput
-                style={[styles.input, styles.separandoConteudos]}
-                placeholder="E-mail ou usuário"
-                setEmail={setEmail}
-                placeholderTextColor="black"
-                />
-            </View>
-            <View>
-                <TextInput
-                style={styles.input}
-                placeholder="Palavra-passe"
-                setPassword={setPassword}
-                placeholderTextColor="black"
-                />
-            </View>
+            <CustomTextInput
+                state={email}
+                setState={setEmail}
+                placeholder='E-mail ou usuário'
+                widthPercentage={90}
+            />
+            <CustomTextInput
+                state={password}
+                setState={setPassword}
+                placeholder='Palavra-passe'
+                widthPercentage={90}
+            />
             <View style={styles.passaword}>
                 <Text 
                     style={styles.Textpassaword} 
@@ -80,11 +76,10 @@ const LoginScreen = ({navigation}) => {
                     backgroundColor={'#486D31'}
                     textColor={'white'}
                     widthPercentage={88}
-                    padding={1}
                     onPress={() => {
                             let res = validateData(email, password);
                             if (res.header == 'Sucesso') {
-                                navigation.dispatch(StackActions.replace('HomeNavigator'));
+                                navigation.dispatch(StackActions.replace('AppNavigator'));
                             } else {
                                 Alert.alert(res.header, res.body);
                             }
@@ -99,7 +94,6 @@ const LoginScreen = ({navigation}) => {
                     textColor={'black'}
                     widthPercentage={88}
                     // onPress={() => handleGoogleSignIn()}
-                    
                 />
             </View>
             <Text style={styles.createCount} onPress={() => navigation.navigate('CreateAccount')}>
@@ -114,7 +108,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: "#222222",
+        backgroundColor: '#222222',
     },
     containerTitulo: {
         flexDirection: 'row',
@@ -148,10 +142,10 @@ const styles = StyleSheet.create({
         margin: 10,
         width: 350,
         borderRadius: 2,  
-        backgroundColor: "#D3D3D3",
+        backgroundColor: '#D3D3D3',
     },
     passaword: {
-        alignSelf: "flex-end",
+        alignSelf: 'flex-end',
         marginRight: 20,
         marginTop: 10,
         marginBottom: 15,

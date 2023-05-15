@@ -4,13 +4,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { LoginScreen } from '../screens/LoginScreen';
 import { CreateAccountScreen } from '../screens/CreateAccountScreen';
 import { ForgottenPasswordScreen } from '../screens/ForgottenPasswordScreen';
-import { Colors } from '../utils/Colors';
-import { HomeNavigator } from './HomeNavigator';
-import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
+import { AppNavigator } from './AppNavigator';
 
 const Stack = createStackNavigator();
 
-const RootNavigator = () => {
+const LoginNavigator = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
@@ -31,7 +29,7 @@ const RootNavigator = () => {
                 <Stack.Screen 
                     name={'CreateAccount'} 
                     component={CreateAccountScreen} 
-                    options={{headerShown: true}}
+                    options={{headerShown: true, headerTitle: 'Criar Conta', headerTitleAlign: 'center'}}
                 />
                 <Stack.Screen 
                     name={'ForgottenPassword'} 
@@ -39,12 +37,12 @@ const RootNavigator = () => {
                     options={{headerShown: true}}
                 />
                 <Stack.Screen
-                    name={'HomeNavigator'}
-                    component={HomeNavigator}
+                    name={'AppNavigator'}
+                    component={AppNavigator}
                 />
             </Stack.Navigator>
         </NavigationContainer>
     );
 }
 
-export { RootNavigator };
+export { LoginNavigator };

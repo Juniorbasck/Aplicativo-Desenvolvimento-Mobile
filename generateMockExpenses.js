@@ -56,7 +56,7 @@ function generateExpenseData(qtd=10, priceLimit=10000) {
     return expenses.sort((ele) => ele.date);
 }
 
-const expenses = 10;
+const expenses = 5;
 const data = JSON.stringify(generateExpenseData(expenses));
 const file = 'expenses.json';
 var fs = require('fs');
