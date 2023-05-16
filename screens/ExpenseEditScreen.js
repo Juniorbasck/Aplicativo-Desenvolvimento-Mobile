@@ -11,6 +11,9 @@ import { Fonts } from '../utils/Fonts';
 import { CustomTextInput } from '../components/CustomTextInput';
 import { CustomButton } from '../components/CustomButton';
 import { CustomDatePicker } from '../components/CustomDatePicker';
+import { CustomDropdown } from '../components/CustomDropdown';
+import { CustomImagePicker } from '../components/CustomImagePicker';
+import { getPaymentMethods } from '../service';
 
 const ExpenseEditScreen = ({route, navigation}) => {
     const { item } = route.params;
@@ -20,6 +23,7 @@ const ExpenseEditScreen = ({route, navigation}) => {
     const [price, setPrice] = useState(item.price?.toString());
     const [paymentMethod, setPaymentMethod] = useState();
     const [paid, setPaid] = useState();
+    const [image, setImage] = useState();
 
     return (
         <View style={styles.outerContainer}>
@@ -54,6 +58,24 @@ const ExpenseEditScreen = ({route, navigation}) => {
                     widthPercentage={90}
                     marginBottomPercentage={3}
                 />
+                <View style={styles.rowContainer}>
+                    <View style={{flex: 1, alignItems: 'center'}}>
+                        <Text style={Fonts.bodyLarge}>Método de</Text>
+                        <Text style={Fonts.bodyLarge}>Pagamento</Text>
+                    </View>
+                    <CustomDropdown
+                        state={paymentMethod}
+                        setState={setPaymentMethod}
+                        options={getPaymentMethods()}
+                        widthPercentage={40}
+                        marginBottomPercentage={3}
+                    />
+                </View>
+                <CustomImagePicker
+                    state={image}
+                    setState={setImage}
+                    text={'Foto da Fatura (opcional)'}
+                />
                 <CustomButton
                     text={'Guardar'}
                     onPress={() => {
@@ -83,6 +105,12 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 60,
         borderTopRightRadius: 60,
         backgroundColor: Colors.secondaryKeyColor
+    },
+    rowContainer: {
+        flexDirection: 'row'
+    },
+    paymentMethod: {
+        textAlign: 'center',
     }
 });
 
