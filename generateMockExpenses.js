@@ -22,7 +22,8 @@ function randomPaymentMethod() {
         'Cheque',
         'Monetário'
     ];
-    return methods[parseInt(Math.random() * methods.length)];
+    // return methods[parseInt(Math.random() * methods.length)];
+    return parseInt(Math.random() * methods.length);
 }
 
 function generateExpenseData(qtd=10, priceLimit=10000) {

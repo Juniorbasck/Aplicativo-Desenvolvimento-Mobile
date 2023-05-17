@@ -4,7 +4,8 @@ import {
     StyleSheet,
     Text,
     ScrollView,
-    Dimensions
+    Dimensions,
+    Image
 } from 'react-native';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
@@ -13,6 +14,7 @@ import { CustomButton } from '../components/CustomButton';
 import { CustomDatePicker } from '../components/CustomDatePicker';
 import { CustomDropdown } from '../components/CustomDropdown';
 import { CustomImagePicker } from '../components/CustomImagePicker';
+import { CustomCheckbox } from '../components/CustomCheckbox';
 import { getPaymentMethods } from '../service';
 
 const ExpenseEditScreen = ({route, navigation}) => {
@@ -21,14 +23,23 @@ const ExpenseEditScreen = ({route, navigation}) => {
     const [entity, setEntity] = useState(item.entity);
     const [date, setDate] = useState(item.date);
     const [price, setPrice] = useState(item.price?.toString());
-    const [paymentMethod, setPaymentMethod] = useState();
-    const [paid, setPaid] = useState();
-    const [image, setImage] = useState();
+    const [paymentMethod, setPaymentMethod] = useState(item.paymentMethod?.toString());
+    const [image, setImage] = useState(null);
+    const [paid, setPaid] = useState(item.paid);
 
     return (
         <View style={styles.outerContainer}>
             <ScrollView 
-                contentContainerStyle={styles.scrollView}
+                contentContainerStyle={
+                    [
+                        styles.scrollView, 
+                        image ? {
+                            height: 1.3 * Dimensions.get('window').height
+                        } : {
+                            height: Dimensions.get('window').height
+                        }
+                    ]
+                }
                 keyboardDismissMode='on-drag'
             >   
                 <CustomTextInput
@@ -76,9 +87,28 @@ const ExpenseEditScreen = ({route, navigation}) => {
                     setState={setImage}
                     text={'Foto da Fatura (opcional)'}
                 />
+                {
+                    image && (
+                        <Image
+                            source={{uri: image}}
+                            resizeMode='contain'
+                            style={styles.image}
+                        />
+                    )
+                }
+                <CustomCheckbox
+                    state={paid}
+                    setState={setPaid}
+                    marginTopPercentage={0}
+                    marginBottomPercentage={2}
+                    text={'Pago'}
+                    size={28}
+                    round={true}
+                />
                 <CustomButton
                     text={'Guardar'}
                     onPress={() => {
+                            
                         }
                     }
                     backgroundColor={Colors.primaryKeyColor}
@@ -98,7 +128,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     scrollView: {
-        height: Dimensions.get('window').height,
         width: Dimensions.get('window').width,
         alignItems: 'center',
         marginTop: '5%',
@@ -111,6 +140,12 @@ const styles = StyleSheet.create({
     },
     paymentMethod: {
         textAlign: 'center',
+    },
+    image: {
+        alignSelf: 'center',
+        width: .9 * Dimensions.get('window').width,
+        height: .3 * Dimensions.get('window').height,
+        marginBottom: '8%'
     }
 });
 

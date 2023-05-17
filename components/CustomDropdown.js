@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import {
-    ScrollView,
     View,
     StyleSheet,
     Dimensions,

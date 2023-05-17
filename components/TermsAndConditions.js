@@ -10,8 +10,8 @@ import {
 import { Colors } from '../utils/Colors';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 import { Fonts } from '../utils/Fonts';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { CustomButton } from './CustomButton';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const TermsAndConditions = ({setState}) => {
     const [modalVisible, setModalVisible] = useState(false);
