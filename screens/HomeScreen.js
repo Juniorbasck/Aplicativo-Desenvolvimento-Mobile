@@ -20,6 +20,10 @@ const HomeScreen = ({route, navigation}) => {
         });
     }
 
+    const handleLongPress = id => {
+        setExpenses(expenses.filter(ele => ele.id != id));
+    }
+
     const [expenses, setExpenses] = useState([]);
 
     useEffect(() => {
@@ -70,7 +74,7 @@ const HomeScreen = ({route, navigation}) => {
                 </View>
                 <FlatList
                     data={toPay}
-                    renderItem={item => <ExpenseCard data={{...item, onPress: handleOnPress}}/>}
+                    renderItem={item => <ExpenseCard data={{...item, onPress: handleOnPress, onLongPress: handleLongPress}}/>}
                     keyExtractor={item => item.id}
                 />
             </View>

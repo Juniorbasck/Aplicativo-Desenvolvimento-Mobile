@@ -19,12 +19,12 @@ const ExpenseNavigator = () => {
             <Stack.Screen 
                 name={'EditExpense'} 
                 component={EditExpenseScreen} 
-                options={{headerShown: true, headerTitle: 'Editar Dispesa', headerTitleAlign: 'center'}}
+                options={{headerShown: true, headerTitle: 'Editar Despesa', headerTitleAlign: 'center'}}
             />
             <Stack.Screen 
                 name={'CreateExpense'}
                 component={CreateExpenseScreen}
-                options={{headerShown: true, headerTitle: 'Criar Dispesa', headerTitleAlign: 'center'}}
+                options={{headerShown: true, headerTitle: 'Criar Despesa', headerTitleAlign: 'center'}}
             />
         </Stack.Navigator>
     );

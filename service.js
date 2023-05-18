@@ -34,6 +34,10 @@ const createExpense = (title, entity, date, price, paymentMethod, image, paid) =
     // Create on API.
 }
 
+const deleteExpense = id => {
+    // Delete the corresponding expense on the API.
+}
+
 const getPaymentMethods = () => {
     // In the final version, this method will fetch this data from the API
     // where the available payment methods will be available.
@@ -47,4 +51,4 @@ const getPaymentMethods = () => {
     ];
 };
 
-export { getExpenses, getPaymentMethods, updateExpense, createExpense };
+export { getExpenses, getPaymentMethods, updateExpense, createExpense, deleteExpense };

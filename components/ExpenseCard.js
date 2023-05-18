@@ -3,13 +3,16 @@ import {
     Text,
     Pressable,
     StyleSheet,
+    Alert
 } from 'react-native';
 import { Fonts } from '../utils/Fonts';
 import { Colors } from '../utils/Colors';
+import { deleteExpense } from '../service';
 
 const ExpenseCard = props => {
     const { title, entity, price, paid, date } = props.data.item;
-    const { onPress } = props.data;
+    const { onPress, onLongPress } = props.data;
+
     let backgroundColor;
     if (paid) {
         backgroundColor = Colors.onSecondaryKeyColor;
@@ -27,6 +30,25 @@ const ExpenseCard = props => {
     return (
         <Pressable
             onPress={() => onPress(props.data.item)}
+            onLongPress={() => {
+                Alert.alert(
+                    'Deletar despesa?', 
+                    'Tem certeza que deseja deletar despesa?',
+                    [
+                        {
+                            text: 'Sim',
+                            onPress: () => {
+                                deleteExpense(props.data.item.id);
+                                onLongPress(props.data.item.id);
+                            }
+                        },
+                        {
+                            text: 'Não',
+                            style: 'cancel'
+                        }
+                    ]
+                );
+            }}
         >
             <View style={[styles.pressableContainer, {backgroundColor: backgroundColor}]}>
                 <View style={{alignItems: 'flex-start'}}>

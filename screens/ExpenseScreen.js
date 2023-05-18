@@ -27,6 +27,11 @@ const ExpenseScreen = ({route, navigation}) => {
         });
     };
 
+    const handleOnLongPress = id => {
+        setExpenses(expenses.filter(ele => ele.id != id));
+        setFilteredExpenses(filteredExpenses.filter(ele => ele.id != id));
+    }
+
     const getCurrentExpenseGroup = (useNext=true) => {
         let compare = useNext ? getNextIcon() : icon;
         switch (compare) {
@@ -131,7 +136,7 @@ const ExpenseScreen = ({route, navigation}) => {
                 </View>
                 <FlatList
                     data={filteredExpenses}
-                    renderItem={item => <ExpenseCard data={{...item, onPress: handleOnPress}}/>}
+                    renderItem={item => <ExpenseCard data={{...item, onPress: handleOnPress, onLongPress: handleOnLongPress}}/>}
                     keyExtractor={item => item.id}
                 />
                 {
