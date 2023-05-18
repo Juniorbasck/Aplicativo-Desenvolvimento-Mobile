@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
     FlatList,
     View,
-    ScrollView,
     Text,
     StyleSheet,
     Pressable,
@@ -18,20 +17,44 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 const ExpenseScreen = ({route, navigation}) => {
     const [expenses, setExpenses] = useState([]);
     const [filteredExpenses, setFilteredExpenses] = useState([]);
-    const [orderedExpenses, setOrderedExpenses] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [icon, setIcon] = useState('reorder-three');
+    const [closeFAB, setCloseFAB] = useState(false);
 
     const handleOnPress = item => {
-        navigation.navigate('ExpenseEdit', {
+        navigation.navigate('EditExpense', {
             item: item
         });
     };
 
+    const getCurrentExpenseGroup = (useNext=true) => {
+        let compare = useNext ? getNextIcon() : icon;
+        switch (compare) {
+            default:
+            case 'reorder-three': 
+                return expenses;
+            case 'cash':
+                return expenses.filter(ele => !ele.paid);
+            case 'checkmark-done':
+                return expenses.filter(ele => ele.paid);
+        }
+    }
+
+    const getNextIcon = () => {
+        switch (icon) {
+            case 'reorder-three':
+                return 'cash';
+            case 'cash':
+                return 'checkmark-done';
+            default:
+            case 'checkmark-done':
+                return 'reorder-three';
+        }
+    }
+
     useEffect(() => {
         getExpenses(setExpenses);
         getExpenses(setFilteredExpenses);
-        getExpenses(setOrderedExpenses);
     }, []);
     
     let expenseTitle = 'Todas as Despesas';
@@ -47,7 +70,7 @@ const ExpenseScreen = ({route, navigation}) => {
                 expenses.length == 0 && (
                     <Pressable
                         style={{marginVertical: '5%'}}
-                        onPress={() => {}}
+                        onPress={() => navigation.navigate('CreateExpense')}
                     >
                         <Text style={styles.addNewExpenseText}>Adicione uma nova despesa</Text>
                     </Pressable>
@@ -65,7 +88,11 @@ const ExpenseScreen = ({route, navigation}) => {
                     style={styles.searchBar}
                 >
                     <Pressable
-                        onPress={() => setSearchText('')}
+                        onPress={() => {
+                                setSearchText('');
+                                setFilteredExpenses(getCurrentExpenseGroup(false));
+                            }
+                        }
                     >
                         <Ionicons name='search' size={20} color={'grey'}/>
                     </Pressable>
@@ -76,25 +103,25 @@ const ExpenseScreen = ({route, navigation}) => {
                         onChangeText={text => {
                             setSearchText(text);
                             if (!text.length) {
-                                setFilteredExpenses(orderedExpenses);
+                                setFilteredExpenses(getCurrentExpenseGroup(false));
                             } else {
                                 setFilteredExpenses(
-                                    orderedExpenses.filter(ele => ele.title.toLowerCase().includes(text.toLowerCase()))
+                                    getCurrentExpenseGroup(false).filter(ele => ele.title.toLowerCase().includes(text.toLowerCase()))
                                 );
                             }
                         }}
+                        onFocus={() => setCloseFAB(true)}
+                        onBlur={() => setCloseFAB(false)}
                     />
                     <Pressable
                         onPress={() => {
-                                if (icon == 'reorder-three') {
-                                    setIcon('cash');
-                                    setOrderedExpenses(expenses.filter(ele => !ele.paid));
-                                } else if (icon == 'cash') {
-                                    setIcon('checkmark-done');
-                                    setOrderedExpenses(expenses.filter(ele => ele.paid));
+                                setIcon(getNextIcon());
+                                if (!searchText.length) {
+                                    setFilteredExpenses(getCurrentExpenseGroup());
                                 } else {
-                                    setIcon('reorder-three');
-                                    setOrderedExpenses(expenses);
+                                    setFilteredExpenses(
+                                        getCurrentExpenseGroup().filter(ele => ele.title.toLowerCase().includes(searchText.toLowerCase()))
+                                    );
                                 }
                             }
                         }
@@ -107,6 +134,16 @@ const ExpenseScreen = ({route, navigation}) => {
                     renderItem={item => <ExpenseCard data={{...item, onPress: handleOnPress}}/>}
                     keyExtractor={item => item.id}
                 />
+                {
+                    expenses.length > 0 && !closeFAB && (
+                        <Pressable 
+                            style={styles.floatingActionButton}
+                            onPress={() => navigation.navigate('CreateExpense')}
+                        >
+                            <Text style={styles.plus}>+</Text>
+                        </Pressable>
+                    )
+                }
             </View>
         </View>
     );
@@ -153,6 +190,22 @@ const styles = StyleSheet.create({
     textInput: {
         flex: 1,
         marginLeft: '2%',
+    },
+    floatingActionButton: {
+        position: 'absolute',
+        left: '75%',
+        top: '85%',
+        backgroundColor: Colors.onPrimaryKeyColor,
+        width: '15%',
+        height: '10%',
+        borderRadius: 50,
+        borderWidth: .5,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    plus: {
+        color: Colors.primaryKeyColor,
+        fontSize: 30,
     }
 });
 

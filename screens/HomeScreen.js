@@ -15,7 +15,7 @@ import { getExpenses } from '../service';
 
 const HomeScreen = ({route, navigation}) => {
     const handleOnPress = item => {
-        navigation.navigate('ExpenseEdit', {
+        navigation.navigate('EditExpense', {
             item: item,
         });
     }

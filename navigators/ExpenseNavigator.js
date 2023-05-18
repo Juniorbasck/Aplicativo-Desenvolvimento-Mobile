@@ -1,7 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ExpenseScreen } from '../screens/ExpenseScreen';
-import { ExpenseEditScreen } from '../screens/ExpenseEditScreen';
+import { EditExpenseScreen } from '../screens/EditExpenseScreen';
+import { CreateExpenseScreen } from '../screens/CreateExpenseScreen';
 
 const Stack = createStackNavigator();
 
@@ -16,9 +17,14 @@ const ExpenseNavigator = () => {
                 options={{headerShown: true, headerTitle: 'Despesas'}}
             />
             <Stack.Screen 
-                name={'ExpenseEdit'} 
-                component={ExpenseEditScreen} 
+                name={'EditExpense'} 
+                component={EditExpenseScreen} 
                 options={{headerShown: true, headerTitle: 'Editar Dispesa', headerTitleAlign: 'center'}}
+            />
+            <Stack.Screen 
+                name={'CreateExpense'}
+                component={CreateExpenseScreen}
+                options={{headerShown: true, headerTitle: 'Criar Dispesa', headerTitleAlign: 'center'}}
             />
         </Stack.Navigator>
     );

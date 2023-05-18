@@ -30,6 +30,10 @@ const updateExpense = expense => {
     // Update on API.
 }
 
+const createExpense = (title, entity, date, price, paymentMethod, image, paid) => {
+    // Create on API.
+}
+
 const getPaymentMethods = () => {
     // In the final version, this method will fetch this data from the API
     // where the available payment methods will be available.
@@ -43,4 +47,4 @@ const getPaymentMethods = () => {
     ];
 };
 
-export { getExpenses, getPaymentMethods, updateExpense };
+export { getExpenses, getPaymentMethods, updateExpense, createExpense };

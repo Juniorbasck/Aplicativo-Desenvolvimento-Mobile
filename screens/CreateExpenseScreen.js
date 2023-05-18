@@ -17,36 +17,32 @@ import { CustomDropdown } from '../components/CustomDropdown';
 import { CustomImagePicker } from '../components/CustomImagePicker';
 import { CustomCheckbox } from '../components/CustomCheckbox';
 import { getPaymentMethods } from '../service';
-import { updateExpense } from '../service';
+import { createExpense } from '../service';
+import { Snackbar } from 'react-native-paper';
 
 function validate(title, entity, price) {
     return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
 }
 
-function update(item, title, entity, date, price, paymentMethod, image, paid) {
-    item.title = title;
-    item.entity = entity;
-    item.date = date;
-    item.price = price;
-    item.paymentMethod = paymentMethod;
-    item.image = image;
-    item.paid = paid;
-    updateExpense(item);
+function getFormattedTodayDate() {
+    let date = new Date();
+    let month = (date.getMonth() + 1).toString();
+    if (month.length == 1) {
+        month = '0' + month;
+    }
+    return date.getFullYear() + '-' + month + '-' + date.getDate();
 }
 
-function dataChanged(item, title, entity, date, price, paymentMethod, image, paid) {
-    return item.title != title || item.entity != entity || item.date != date || item.price != price || item.paymentMethod != paymentMethod || item.paid != paid;
-}
-
-const ExpenseEditScreen = ({route, navigation}) => {
-    const { item } = route.params;
-    const [title, setTitle] = useState(item.title);
-    const [entity, setEntity] = useState(item.entity);
-    const [date, setDate] = useState(item.date);
-    const [price, setPrice] = useState(item.price.toString());
-    const [paymentMethod, setPaymentMethod] = useState(item.paymentMethod);
+const CreateExpenseScreen = ({route, navigation}) => {
+    const [title, setTitle] = useState('');
+    const [entity, setEntity] = useState('');
+    const [date, setDate] = useState(getFormattedTodayDate());
+    const [price, setPrice] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState(1);
     const [image, setImage] = useState(null);
-    const [paid, setPaid] = useState(item.paid);
+    const [paid, setPaid] = useState(false);
+
+    const [snackBarVisible, setSnackBarVisible] = useState(false);
 
     return (
         <View style={styles.outerContainer}>
@@ -128,13 +124,12 @@ const ExpenseEditScreen = ({route, navigation}) => {
                     round={true}
                 />
                 <CustomButton
-                    text={'Guardar'}
+                    text={'Criar'}
                     onPress={() => {
                             if (validate(title, entity, price)) {
-                                if (dataChanged(item, title, entity, date, price, paymentMethod, image, paid)) {
-                                    update(item, title, entity, date, price, paymentMethod, image, paid);
-                                }
-                                navigation.goBack();
+                                createExpense(title, entity, date, price, paymentMethod, image, paid);
+                                setSnackBarVisible(true);
+                                setTimeout(() => navigation.goBack(), 500);
                             } else {
                                 Alert.alert('Dados inválidos!', 'Preencha o título, entidade e preço e tente novamente!');
                             }
@@ -145,6 +140,13 @@ const ExpenseEditScreen = ({route, navigation}) => {
                     widthPercentage={84}
                 />
             </ScrollView>
+            <Snackbar
+                visible={snackBarVisible}
+                onDismiss={() => setSnackBarVisible(false)}
+                duration={500}
+            >
+                Nova despesa criada!
+            </Snackbar>
         </View>
     );
 }
@@ -178,4 +180,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { ExpenseEditScreen };
+export { CreateExpenseScreen };

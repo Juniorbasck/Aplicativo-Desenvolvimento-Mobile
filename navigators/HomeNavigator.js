@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from '../screens/HomeScreen';
-import { ExpenseEditScreen } from '../screens/ExpenseEditScreen';
+import { EditExpenseScreen } from '../screens/EditExpenseScreen';
 
 const Stack = createStackNavigator();
 
@@ -16,8 +16,8 @@ const HomeNavigator = () => {
                 options={{headerShown: true}}
             />
             <Stack.Screen 
-                name={'ExpenseEdit'} 
-                component={ExpenseEditScreen} 
+                name={'EditExpense'} 
+                component={EditExpenseScreen} 
                 options={{headerShown: true, headerTitle: 'Editar Dispesa', headerTitleAlign: 'center'}}
             />
         </Stack.Navigator>
