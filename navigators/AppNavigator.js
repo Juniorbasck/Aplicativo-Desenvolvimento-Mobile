@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ProfileScreen } from '../screens/ProfileScreen';
-import { ExpenseScreen } from '../screens/ExpenseScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Colors } from '../utils/Colors';
 import { HomeNavigator } from './HomeNavigator';
+import { ExpenseNavigator } from './ExpenseNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,8 +34,16 @@ const AppNavigator = () => {
                 component={HomeNavigator}
                 options={{headerShown: false, tabBarLabel: 'Home'}}
             />
-            <Tab.Screen name={'Profile'} component={ProfileScreen}/>
-            <Tab.Screen name={'Expense'} component={ExpenseScreen}/>
+            <Tab.Screen 
+                name={'Profile'} 
+                component={ProfileScreen}
+                options={{headerShown: false, tabBarLabel: 'Perfil'}}    
+            />
+            <Tab.Screen 
+                name={'ExpenseNavigator'} 
+                component={ExpenseNavigator}
+                options={{headerShown: false, tabBarLabel: 'Despesas'}}
+            />
         </Tab.Navigator>
     );
 };

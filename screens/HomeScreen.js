@@ -16,21 +16,19 @@ import { getExpenses } from '../service';
 const HomeScreen = ({route, navigation}) => {
     const handleOnPress = item => {
         navigation.navigate('ExpenseEdit', {
-            item: item
+            item: item,
         });
-        setSelectedItem(item);
     }
 
     const [expenses, setExpenses] = useState([]);
-    const [selectedItem, setSelectedItem] = useState({});
 
     useEffect(() => {
         getExpenses(setExpenses);
     }, []);
 
     let username = 'Marinna';
-    let toPay = expenses.filter((expense) => !expense.paid);
-    let total = toPay.reduce((accumulator, expense) => accumulator + expense.price, 0.0).toFixed(2);
+    let toPay = expenses.filter(expense => !expense.paid);
+    let total = toPay.reduce((accumulator, expense) => accumulator + expense.price, 0.0)?.toFixed(2);
     let expenseTitle = 'Despesas Atuais';
     if (!toPay.length) {
         expenseTitle = 'Sem ' + expenseTitle;
@@ -72,7 +70,7 @@ const HomeScreen = ({route, navigation}) => {
                 </View>
                 <FlatList
                     data={toPay}
-                    renderItem={(item) => <ExpenseCard data={{...item, onPress: handleOnPress}}/>}
+                    renderItem={item => <ExpenseCard data={{...item, onPress: handleOnPress}}/>}
                     keyExtractor={item => item.id}
                 />
             </View>
@@ -83,7 +81,6 @@ const HomeScreen = ({route, navigation}) => {
 const styles = StyleSheet.create({
     outerContainer: {
         flex: 1,
-        flexDirection: 'column',
         backgroundColor: Colors.primaryKeyColor,
         alignItems: 'center',
         justifyContent: 'center'

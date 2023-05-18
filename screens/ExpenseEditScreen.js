@@ -5,7 +5,8 @@ import {
     Text,
     ScrollView,
     Dimensions,
-    Image
+    Image,
+    Alert
 } from 'react-native';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
@@ -16,14 +17,34 @@ import { CustomDropdown } from '../components/CustomDropdown';
 import { CustomImagePicker } from '../components/CustomImagePicker';
 import { CustomCheckbox } from '../components/CustomCheckbox';
 import { getPaymentMethods } from '../service';
+import { updateExpense } from '../service';
+
+function validate(title, entity, price) {
+    return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
+}
+
+function update(item, title, entity, date, price, paymentMethod, image, paid) {
+    item.title = title;
+    item.entity = entity;
+    item.date = date;
+    item.price = price;
+    item.paymentMethod = paymentMethod;
+    item.image = image;
+    item.paid = paid;
+    updateExpense(item);
+}
+
+function dataChanged(item, title, entity, date, price, paymentMethod, image, paid) {
+    return item.title != title || item.entity != entity || item.date != date || item.price != price || item.paymentMethod != paymentMethod || item.paid != paid;
+}
 
 const ExpenseEditScreen = ({route, navigation}) => {
     const { item } = route.params;
     const [title, setTitle] = useState(item.title);
     const [entity, setEntity] = useState(item.entity);
     const [date, setDate] = useState(item.date);
-    const [price, setPrice] = useState(item.price?.toString());
-    const [paymentMethod, setPaymentMethod] = useState(item.paymentMethod?.toString());
+    const [price, setPrice] = useState(item.price.toString());
+    const [paymentMethod, setPaymentMethod] = useState(item.paymentMethod);
     const [image, setImage] = useState(null);
     const [paid, setPaid] = useState(item.paid);
 
@@ -48,6 +69,7 @@ const ExpenseEditScreen = ({route, navigation}) => {
                     placeholder='Título'
                     widthPercentage={90}
                     marginTopPercentage={5}
+                    autofocus={true}
                 />
                 <CustomTextInput
                     state={entity}
@@ -108,7 +130,14 @@ const ExpenseEditScreen = ({route, navigation}) => {
                 <CustomButton
                     text={'Guardar'}
                     onPress={() => {
-                            
+                            if (validate(title, entity, price)) {
+                                if (dataChanged(item, title, entity, date, price, paymentMethod, image, paid)) {
+                                    update(item, title, entity, date, price, paymentMethod, image, paid);
+                                }
+                                navigation.goBack();
+                            } else {
+                                Alert.alert('Dados inválidos!', 'Preencha o título, entidade e preço e tente novamente!');
+                            }
                         }
                     }
                     backgroundColor={Colors.primaryKeyColor}

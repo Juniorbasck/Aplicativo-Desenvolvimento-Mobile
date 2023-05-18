@@ -1,4 +1,4 @@
-function format(date, sep='-') {
+const format = (date, sep='-') => {
     if (typeof(date) != 'date') {
         try {
             date = new Date(date);
@@ -6,7 +6,11 @@ function format(date, sep='-') {
             console.log(`Error parsing date: ${date}`)
         }
     }
-    return date.getFullYear() + sep + date.getMonth() + sep + date.getDate();
+    let month = (date.getMonth() + 1).toString();
+    if (month.length == 1) {
+        month = '0' + month;
+    }
+    return date.getFullYear() + sep + month + sep + date.getDate();
 }
 
 function randomDate(start, end) {
@@ -54,7 +58,7 @@ function generateExpenseData(qtd=10, priceLimit=10000) {
             }
         );
     }
-    return expenses.sort((ele) => ele.date);
+    return expenses.sort(ele => ele.date);
 }
 
 const expenses = 5;

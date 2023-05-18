@@ -22,7 +22,7 @@ const CustomDatePicker = ({state, setState, widthPercentage=90, marginBottomPerc
                 style={[styles.pressableContainer, {width: widthPercentage / 100 * Dimensions.get('window').width, marginBottom: marginBottomPercentage / 100 * Dimensions.get('window').height}]}
             >   
                 <View style={[styles.sideView, {alignItems: 'flex-start'}]}>
-                    <Text style={Fonts.bodyMedium}>{format(state, '/')}</Text>
+                    <Text style={Fonts.bodyMedium}>{format(state, '/', '-')}</Text>
                 </View>
                 <View style={[styles.sideView, {alignItems: 'flex-end'}]}>
                     <Ionicons name={'calendar'} size={30} color={'black'}/>
@@ -32,21 +32,25 @@ const CustomDatePicker = ({state, setState, widthPercentage=90, marginBottomPerc
                 animationType={'slide'}
                 visible={open}
                 transparent={true}
-            >   
-                <View
-                    style={styles.modalView}
+            >
+                <Pressable
+                    onPress={() => setOpen(false)}
+                    style={styles.modalOuterPressable}
                 >
-                    <DatePicker
-                        mode={'calendar'}
-                        current={format(state, '-')}
-                        selected={format(state, '-')}
-                        onDateChange={(date) => {
-                            let dateArr = date.split('/');
-                            setState(new Date(dateArr[0], dateArr[1] - 1, dateArr[2]));
-                            setOpen(!open);
-                        }}
-                    />
-                </View>
+                    <View
+                        style={styles.modalView}
+                    >
+                        <DatePicker
+                            mode={'calendar'}
+                            current={state}
+                            selected={state}
+                            onDateChange={date => {
+                                setState(format(date, '-', '/'))
+                                setOpen(!open);
+                            }}
+                        />
+                    </View>
+                </Pressable>
             </Modal>
         </View>
     );
@@ -60,6 +64,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         padding: '1%',
+    },
+    modalOuterPressable: {
+        width: '100%', 
+        height: '100%'
     },
     modalView: {
         position: 'absolute',

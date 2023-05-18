@@ -26,21 +26,21 @@ const getExpenses = async (onFetchData, email='') => {
     onFetchData(sort(exps));
 }
 
-const updateExpense = (expenseData) => {
-
+const updateExpense = expense => {
+    // Update on API.
 }
 
 const getPaymentMethods = () => {
     // In the final version, this method will fetch this data from the API
     // where the available payment methods will be available.
     return [
-        {label: 'Cartão de crédito', value: '1'},
-        {label: 'Débito direto', value: '2'},
-        {label: 'Transferência', value: '3'},
-        {label: 'MBWay', value: '4'},
-        {label: 'Cheque', value: '5'},
-        {label: 'Monetário', value: '6'},
+        {label: 'Cartão de crédito', value: 1},
+        {label: 'Débito direto', value: 2},
+        {label: 'Transferência', value: 3},
+        {label: 'MBWay', value: 4},
+        {label: 'Cheque', value: 5},
+        {label: 'Monetário', value: 6},
     ];
 };
 
-export { getExpenses, getPaymentMethods };
+export { getExpenses, getPaymentMethods, updateExpense };

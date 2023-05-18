@@ -1,18 +1,15 @@
-import React, { useState } from 'react';
 import {
     View,
     Text,
     Pressable,
     StyleSheet,
-    Alert,
-    Modal
 } from 'react-native';
 import { Fonts } from '../utils/Fonts';
 import { Colors } from '../utils/Colors';
 
 const ExpenseCard = props => {
-    const {title, entity, price, paid, date} = props.data.item;
-    const {onPress} = props.data;
+    const { title, entity, price, paid, date } = props.data.item;
+    const { onPress } = props.data;
     let backgroundColor;
     if (paid) {
         backgroundColor = Colors.onSecondaryKeyColor;
