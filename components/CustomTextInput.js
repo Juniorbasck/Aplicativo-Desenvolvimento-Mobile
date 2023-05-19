@@ -6,15 +6,37 @@ import {
 } from 'react-native';
 import { Colors } from '../utils/Colors';
 
-const CustomTextInput = ({state, setState, placeholder='', widthPercentage=43, marginTopPercentage=2, marginBottomPercentage=2, keyboardType='ascii-capable', hide=false, autofocus=false}) => {
+const CustomTextInput = (
+    {
+        state, 
+        setState, 
+        placeholder='', 
+        widthPercentage=43, 
+        marginTopPercentage=2, 
+        marginBottomPercentage=2, 
+        keyboardType='ascii-capable', 
+        hide=false, 
+        autofocus=false,
+        editable=true
+}) => {
     return ( 
         <TextInput
             placeholder={placeholder}
+            placeholderTextColor={'grey'}
             keyboardType={keyboardType}
             secureTextEntry={hide}
-            placeholderTextColor={Colors.onSecondaryKeyColor}
             defaultValue={state}
-            style={[styles.textInput, {width: widthPercentage / 100 * Dimensions.get('window').width, marginTop: marginTopPercentage / 100 * Dimensions.get('window').height, marginBottom: marginBottomPercentage / 100 * Dimensions.get('window').height}]}
+            editable={editable}
+            style={
+                [
+                    styles.textInput, 
+                    {
+                        width: widthPercentage / 100 * Dimensions.get('window').width, 
+                        marginTop: marginTopPercentage / 100 * Dimensions.get('window').height, 
+                        marginBottom: marginBottomPercentage / 100 * Dimensions.get('window').height
+                    }
+                ]
+            }
             onChangeText={text => setState(text)}
             autoFocus={autofocus}
         />

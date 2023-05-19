@@ -12,13 +12,9 @@ import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { CustomTextInput } from '../components/CustomTextInput';
 import { CustomButton } from '../components/CustomButton';
-import { CustomDatePicker } from '../components/CustomDatePicker';
-import { CustomDropdown } from '../components/CustomDropdown';
-import { CustomImagePicker } from '../components/CustomImagePicker';
-import { CustomCheckbox } from '../components/CustomCheckbox';
-import { getPaymentMethods } from '../service';
+import { ProfilePicture } from '../components/ProfilePicture';
 import { Snackbar } from 'react-native-paper';
-import { updateExpense } from '../service';
+import { PickImageModal } from '../components/PickImageModal';
 
 function validate(name, surname, username) {
     return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
@@ -45,7 +41,8 @@ const ProfileDetailsScreen = ({route, navigation}) => {
     const [surname, setSurname] = useState(user.surname);
     const [username, setUsername] = useState(user.username);
     const [email, setEmail] = useState(user.email);
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState(user.image);
+    const [modalVisible, setModalVisible] = useState(false);
     const [snackBarVisible, setSnackBarVisible] = useState(false);
 
     return (
@@ -63,6 +60,12 @@ const ProfileDetailsScreen = ({route, navigation}) => {
                 }
                 keyboardDismissMode='on-drag'
             >   
+                <View style={{marginTop: '5%'}}>
+                    <ProfilePicture
+                        onPress={() => setModalVisible(true)}
+                        size='big'
+                    />
+                </View>
                 <CustomTextInput
                     state={name}
                     setState={setName}
@@ -80,9 +83,16 @@ const ProfileDetailsScreen = ({route, navigation}) => {
                 <CustomTextInput
                     state={username}
                     setState={setUsername}
-                    placeholder='Preço'
+                    placeholder='Nome de Utilizador'
+                    widthPercentage={90}
+                />
+                <CustomTextInput
+                    state={email}
+                    setState={setEmail}
+                    placeholder='E-mail'
                     widthPercentage={90}
                     marginBottomPercentage={4}
+                    editable={false}
                 />
                 <CustomButton
                     text={'Guardar'}
@@ -103,6 +113,12 @@ const ProfileDetailsScreen = ({route, navigation}) => {
             >
                 Dados guardados com sucesso!
             </Snackbar>
+            <PickImageModal
+                state={modalVisible}
+                setState={setModalVisible}
+                image={image}
+                setImage={setImage}
+            />
         </View>
     );
 }
