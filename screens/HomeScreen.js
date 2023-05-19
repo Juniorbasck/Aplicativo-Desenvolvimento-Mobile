@@ -4,6 +4,7 @@ import {
     View,
     Text,
     StyleSheet,
+    Dimensions,
 } from 'react-native';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
@@ -30,7 +31,7 @@ const HomeScreen = ({route, navigation}) => {
         getExpenses(setExpenses);
     }, []);
 
-    let username = 'Marinna';
+    let username = 'mari123';
     let toPay = expenses.filter(expense => !expense.paid);
     let total = toPay.reduce((accumulator, expense) => accumulator + expense.price, 0.0)?.toFixed(2);
     let expenseTitle = 'Despesas Atuais';
@@ -50,7 +51,7 @@ const HomeScreen = ({route, navigation}) => {
                 </View>
                 <View style={styles.flexEnd}>
                     <ProfilePicture
-                        onPress={() => navigation.navigate('Profile')}
+                        onPress={() => navigation.navigate('ProfileNavigator')}
                     />
                 </View>
             </View>
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 60,
         paddingHorizontal: 5,
         backgroundColor: Colors.secondaryKeyColor,
-        width: ResponsiveDimensions.screen.width
+        width: Dimensions.get('window').width
     },
     currentExpensesTitleContainer: {
         margin: 20

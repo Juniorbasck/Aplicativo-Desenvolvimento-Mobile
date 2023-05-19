@@ -15,7 +15,7 @@ const CustomTextInput = ({state, setState, placeholder='', widthPercentage=43, m
             placeholderTextColor={Colors.onSecondaryKeyColor}
             defaultValue={state}
             style={[styles.textInput, {width: widthPercentage / 100 * Dimensions.get('window').width, marginTop: marginTopPercentage / 100 * Dimensions.get('window').height, marginBottom: marginBottomPercentage / 100 * Dimensions.get('window').height}]}
-            onChangeText={(text) => setState(text)}
+            onChangeText={text => setState(text)}
             autoFocus={autofocus}
         />
     );

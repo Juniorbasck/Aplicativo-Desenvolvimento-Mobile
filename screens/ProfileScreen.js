@@ -1,75 +1,88 @@
-import React, { useState, useEffect } from 'react';
 import {
-    FlatList,
+    Alert,
     View,
-    ScrollView,
     Text,
     StyleSheet,
-    Alert,
     Dimensions,
-    Button
+    Pressable
 } from 'react-native';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
-import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 import { ProfilePicture } from '../components/ProfilePicture';
-import { ExpenseStatus } from '../components/ExpenseStatus';
-import { ExpenseCard } from '../components/ExpenseCard';
-import { getExpenses } from '../service';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { CustomButton } from '../components/CustomButton';
 import { StackActions } from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ProfileScreen = ({route, navigation}) => {
-    const [expenses, setExpenses] = useState([]);
+    let user = {
+        name: 'Marinna',
+        surname: 'Silva',
+        username: 'mari123',
+        email: 'mari123@gmail.com',
+        password: 'amari_financeiro@1A'
+    };
 
-    useEffect(() => {
-        getExpenses(setExpenses);
-    }, []);
-
-    let username = 'Marinna';
-    let Title = 'Perfil';
     return (
         <View style={styles.outerContainer}>
             <View style={styles.upperContainer}>
-                <View style={styles.flexEnd}>
+                <View style={styles.flexStart}>
                     <ProfilePicture
+                        size='big'
                     />
                 </View>
-                <View style={styles.flexStart}>
-                    <View>
-                        <Text style={[Fonts.displaySmall, styles.greetingText, {color: Colors.onPrimaryKeyColor}]}>{username}</Text>
-                    </View>
+                <View style={[styles.flexEnd, {alignItems: 'center'}]}>
+                    <Text style={[Fonts.displaySmall, {color: Colors.onPrimaryKeyColor}]}>{user.name + ' ' + user.surname}</Text>
+                    <Text style={[Fonts.bodyLarge, {color: Colors.onPrimaryKeyColor}]}>{user.email}</Text>
                 </View>
-                
             </View>
-            <View>
-                
-            </View>
-            
-            <View 
-                style={
-                    [
-                        styles.expenseBoard
-                    ]
-                }
-            >
-                <View style={styles.currentExpensesTitleContainer}>
-                    <Text style={[Fonts.headlineMedium, styles.currentExpensesTitle]}>{Title}</Text>
-
-                    <View style="flexDirection: row, alignItems: 'center',">
-                        <Ionicons name="settings-outline" size={24} color={Colors.onSecondaryKeyColor}/>
-                        <Text style={[Fonts.headlineSmall, styles.textOpcoes]}>Detalhes da Conta</Text> 
-
-                         <CustomButton style={styles.buttonLogout}
-                            text={'Terminar Sessão'}
-                            backgroundColor={'red'}
-                            textColor={'white'}
-                            widthPercentage={60}
-                            onPress={() => navigation.dispatch(StackActions.replace('Login'))}
-                            size={'big'}
-                        />
-                    </View>    
+            <View style={styles.profileBoard}>
+                <Pressable
+                    style={styles.pressable}
+                    onPress={() => navigation.navigate('ProfileDetails', {user: user})}
+                >
+                    <Ionicons name='settings-outline' size={24} color={Colors.onSecondaryKeyColor}/>
+                    <Text style={[Fonts.headlineSmall, {marginLeft: '5%'}]}>Detalhes da Conta</Text> 
+                </Pressable>
+                <Pressable
+                    style={styles.pressable}
+                    onPress={() => navigation.navigate('Historic')}
+                >
+                    <Ionicons name='timer' size={24} color={Colors.onSecondaryKeyColor}/>
+                    <Text style={[Fonts.headlineSmall, {marginLeft: '5%'}]}>Histórico</Text> 
+                </Pressable>
+                <Pressable
+                    style={styles.pressable}
+                    onPress={() => navigation.navigate('ChangePassword')}
+                >
+                    <Ionicons name='key' size={24} color={Colors.onSecondaryKeyColor}/>
+                    <Text style={[Fonts.headlineSmall, {marginLeft: '5%'}]}>Alterar Palavra-Passe</Text> 
+                </Pressable>
+                <View
+                    style={styles.buttonContainer}
+                >
+                    <CustomButton
+                        text={'Terminar Sessão'}
+                        backgroundColor={Colors.cardRed}
+                        textColor={'white'}
+                        widthPercentage={88}
+                        onPress={() => {
+                                Alert.alert(
+                                    'Fazer logout',
+                                    'Desejas sair da conta?',
+                                    [
+                                        {
+                                            text: 'Sim',
+                                            onPress: () => navigation.dispatch(StackActions.replace('Login'))
+                                        },
+                                        {
+                                            text: 'Não',
+                                        }
+                                    ]
+                                );
+                            }
+                        }
+                        size={'big'}
+                    />
                 </View>
             </View> 
         </View> 
@@ -81,57 +94,42 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         backgroundColor: Colors.primaryKeyColor,
-        marginTop: ResponsiveDimensions.screen.defaultMarginTop,
         alignItems: 'center',
         justifyContent: 'center'
     },
-
-    profilePic: {
+    profileBoard: {
         flex: 2,
+        width: Dimensions.get('window').width,
+        borderTopRightRadius: 60,
+        borderTopLeftRadius: 60,
+        backgroundColor: Colors.secondaryKeyColor,
+        paddingHorizontal: '15%',
+        paddingVertical: '2%',
+        alignItems: 'baseline'
+    },
+    pressable: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: '2%',
+        marginVertical: '5%'
     },
     upperContainer: {
         flex: 1,
-        flexDirection: 'column',
-        alignContent: 'center',
-        margin: ResponsiveDimensions.homeScreen.upperContainer.margin
+        marginVertical: '8%',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
     flexStart: {
-        flex: 1, 
         alignItems: 'flex-start'
     },
     flexEnd: {
-        flex: 1, 
         alignItems: 'flex-end'
     },
-    greetingText: {
-        marginTop: 10,
-        fontWeight: 'bold', 
-        color: Colors.onPrimaryKeyColor
-    },
-    expenseStatus: {
-        flex: 4,
-        marginBottom: 20
-    },
-    expenseBoard: {
-        flex: 2,
-        borderTopRightRadius: 60,
-        borderTopLeftRadius: 60,
-        paddingHorizontal: 5,
-        backgroundColor: Colors.secondaryKeyColor,
-        width: ResponsiveDimensions.screen.width
-    },
-    currentExpensesTitleContainer: {
-        margin: 20,
-        
-    },
-    currentExpensesTitle: {
-        fontWeight: 'bold', 
-        textAlign: 'center'
-    },
-    textOpcoes: {
-        marginTop: 30,
-        textAlign: 'center'
-    },
+    buttonContainer: {
+        flex: 1, 
+        justifyContent: 'flex-end', 
+        alignSelf: 'center'
+    }
 });
 
 export { ProfileScreen };

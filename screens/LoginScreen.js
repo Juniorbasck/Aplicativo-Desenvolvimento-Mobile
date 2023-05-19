@@ -64,9 +64,9 @@ const LoginScreen = ({navigation}) => {
                 placeholder='Palavra-passe'
                 widthPercentage={90}
             />
-            <View style={styles.passaword}>
+            <View style={styles.password}>
                 <Text 
-                    style={styles.Textpassaword} 
+                    style={styles.textpassword} 
                     onPress={() => navigation.navigate('ForgottenPassword')}
                 >Esqueceu palavra-passe?</Text>
             </View>
@@ -144,13 +144,13 @@ const styles = StyleSheet.create({
         borderRadius: 2,  
         backgroundColor: '#D3D3D3',
     },
-    passaword: {
+    password: {
         alignSelf: 'flex-end',
         marginRight: 20,
         marginTop: 10,
         marginBottom: 15,
     },
-    Textpassaword:{
+    textpassword:{
         textDecorationLine: 'underline',
         color: '#FFFFFF',
     },

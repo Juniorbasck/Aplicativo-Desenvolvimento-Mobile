@@ -40,13 +40,13 @@ const ResponsiveDimensions = {
     },
     roundImageContainer: {
         small: {
-            width: 0.2673611111111111 * Dimensions.get(SOURCE).width, // 110
-            height: 0.11942675159235669 * Dimensions.get(SOURCE).height, // 100
+            width: 0.25 * Dimensions.get(SOURCE).width, // 110
+            height: 0.12 * Dimensions.get(SOURCE).height, // 100
             borderRadius: 60,
         },
         big: {
-            width: 0.3888888888888889 * Dimensions.get(SOURCE).width,  // 160
-            height: 0.17914012738853502 * Dimensions.get(SOURCE).height,  // 150
+            width: 0.37 * Dimensions.get(SOURCE).width,  // 160
+            height: 0.18 * Dimensions.get(SOURCE).height,  // 150
             borderRadius: 80
         }
     },
