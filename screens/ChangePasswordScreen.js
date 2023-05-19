@@ -9,7 +9,7 @@ import { Fonts } from '../utils/Fonts';
 const ChangePasswordScreen = () => {
     return (
         <View style={styles.container}>
-            <Text style={[Fonts.displaySmall, Colors.onPrimaryKeyColor]}>Change Password Screen</Text>
+            <Text style={[Fonts.displaySmall, {color: Colors.onPrimaryKeyColor}]}>Change Password Screen</Text>
         </View>
     );
 }

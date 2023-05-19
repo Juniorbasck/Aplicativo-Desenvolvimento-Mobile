@@ -9,7 +9,7 @@ import { Fonts } from '../utils/Fonts';
 const HistoricScreen = () => {
     return (
         <View style={styles.container}>
-            <Text style={[Fonts.displaySmall, Colors.onPrimaryKeyColor]}>Historic Screen</Text>
+            <Text style={[Fonts.displaySmall, {color: Colors.onPrimaryKeyColor}]}>Historic Screen</Text>
         </View>
     );
 }
