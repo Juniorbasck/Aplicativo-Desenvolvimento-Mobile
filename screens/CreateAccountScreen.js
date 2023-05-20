@@ -31,7 +31,7 @@ function validateData(name, surname, username, email, password, confirmPassword)
                     // return 'A palavra passe e confirmar palavra-passe diferem!'
                 }
             } else {
-                message.header = 'Palavra-passe';
+                message.header = 'Palavra-Passe';
                 message.body = 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!';
                 // return 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!';
             }

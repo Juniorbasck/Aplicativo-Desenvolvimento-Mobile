@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     button: {
         height: ResponsiveDimensions.customButton.height,
         borderRadius: 20,
-        margin: 10,
+        margin: '2.5%',
     },
     text: {
         textAlign: 'center',

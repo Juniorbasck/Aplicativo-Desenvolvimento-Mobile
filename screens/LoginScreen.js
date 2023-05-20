@@ -1,104 +1,113 @@
 import React from 'react';
-import { View, StyleSheet,Text, TextInput, Button} from 'react-native';
+import { 
+    View,
+    ScrollView,
+    StyleSheet,
+    Text,
+    Alert,
+    Dimensions,
+    Pressable,
+    Image
+} from 'react-native';
 import { CustomButton } from '../components/CustomButton';
+import { CustomTextInput } from '../components/CustomTextInput';
+import { StackActions } from '@react-navigation/native';
+import { validateEmail, validatePassword } from '../utils/Validator';
+import { tryLogin, signInGoogle } from '../service';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
-import { CustomTextInput } from '../components/CustomTextInput';
-import { validateEmail, validatePassword } from '../utils/Validator';
-import { StackActions } from '@react-navigation/native';
-import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
-// import { GoogleSignin } from 'react-native-google-signin';
 
 function validateData(email, password){
     let message = {};
-    message.header = 'Sucesso';
-    // if(validateEmail(email)) {
-    //     if (validatePassword(password)) {
-    //         // Check database for the given credentials: email and password.
-    //         // If all good, log in!
-    //         message.header = 'Sucesso';
-    //     } else {
-    //         message.header = 'Credenciais Inválidas!';
-    //         message.body = 'Verifique suas credenciais e tente novamente';
-    //     }
-    // } else {
-    //     message.header = 'E-mail Inválido!';
-    //     message.body = 'Endereço de e-mail inválido!';
-    // }
+    if(validateEmail(email)) {
+        if (validatePassword(password)) {
+            message.header = 'Sucesso';
+        } else {
+            message.header = 'Padrão de Senha';
+            message.body = 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!';
+        }
+    } else {
+        message.header = 'E-mail Inválido!';
+        message.body = 'Endereço de e-mail inválido!';
+    }
     return message;
 }
 
-// async function handleGoogleSignIn(){
-
-//     try {
-//         await GoogleSignin.configure();
-//         const { idToken } = await GoogleSignin.signIn();
-//         // Faça alguma coisa com o token, como enviar para o servidor
-//       } catch (error) {
-//         console.error(error);
-//       }
-      
-// }
-
-
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({route, navigation}) => {
     const [email, setEmail] = React.useState('');   
     const [password, setPassword] = React.useState('');
 
     return (
         <View style={styles.outerContainer}>
-            <View>
-                <Text style={styles.title}>Meu Controlo</Text>
-                <Text style={styles.subtitle}>financeiro</Text>
-            </View>
-            <Text style={styles.cifrao}>$</Text>
-            <CustomTextInput
-                state={email}
-                setState={setEmail}
-                placeholder='E-mail ou usuário'
-                widthPercentage={90}
-            />
-            <CustomTextInput
-                state={password}
-                setState={setPassword}
-                placeholder='Palavra-passe'
-                widthPercentage={90}
-            />
-            <View style={styles.password}>
-                <Text 
-                    style={styles.textpassword} 
-                    onPress={() => navigation.navigate('ForgottenPassword')}
-                >Esqueceu palavra-passe?</Text>
-            </View>
-            <View>
-                <CustomButton style={styles.buttosignIn}
-                    text={'Entrar'}
-                    backgroundColor={'#486D31'}
-                    textColor={'white'}
-                    widthPercentage={88}
-                    onPress={() => {
-                            let res = validateData(email, password);
-                            if (res.header == 'Sucesso') {
-                                navigation.dispatch(StackActions.replace('AppNavigator'));
-                            } else {
-                                Alert.alert(res.header, res.body);
+            <ScrollView
+                contentContainerStyle={{width: Dimensions.get('window').width, height: Dimensions.get('window').height, alignItems: 'center', justifyContent: 'flex-start', marginTop: '20%'}}
+                keyboardDismissMode='on-drag'
+            >
+                <View>
+                    <Text style={styles.title}>Meu Controlo</Text>
+                    <Text style={styles.subtitle}>financeiro</Text>
+                </View>
+                <Text style={styles.cifrao}>$</Text>
+                <CustomTextInput
+                    state={email}
+                    setState={setEmail}
+                    placeholder='E-mail ou usuário'
+                    widthPercentage={90}
+                />
+                <CustomTextInput
+                    state={password}
+                    setState={setPassword}
+                    placeholder='Palavra-passe'
+                    widthPercentage={90}
+                    hide={true}
+                />
+                <View style={styles.password}>
+                    <Text 
+                        style={styles.textpassword} 
+                        onPress={() => navigation.navigate('ForgottenPassword')}
+                    >Esqueceu palavra-passe?</Text>
+                </View>
+                <View>
+                    <CustomButton style={styles.buttosignIn}
+                        text={'Entrar'}
+                        backgroundColor={'#486D31'}
+                        textColor={'white'}
+                        widthPercentage={88}
+                        onPress={() => {
+                                let res = validateData(email, password);
+                                if (res.header == 'Sucesso') {
+                                    loginTrialRes = tryLogin(email, password);
+                                    if (loginTrialRes) {
+                                        navigation.dispatch(StackActions.replace('AppNavigator', {userData: loginTrialRes}));
+                                    } else {
+                                        Alert.alert('Credenciais Invalidas!', 'Infelizmente, não encontramos uma conta com essas credenciais!');
+                                        setEmail('');
+                                        setPassword('');
+                                    }
+                                } else {
+                                    Alert.alert(res.header, res.body);
+                                    setEmail('');
+                                    setPassword('');
+                                }
                             }
                         }
-                    }
-                />
-            </View>
-            <View>
-                <CustomButton style={styles.buttosignIn}
-                    text={'Acessar com Google'}
-                    backgroundColor={'#fff'}
-                    textColor={'black'}
-                    widthPercentage={88}
-                    // onPress={() => handleGoogleSignIn()}
-                />
-            </View>
-            <Text style={styles.createCount} onPress={() => navigation.navigate('CreateAccount')}>
-                Ir para criar conta
-            </Text> 
+                    />
+                </View>
+                <Pressable
+                    style={styles.googleSignInContainer}
+                    onPress={signInGoogle}
+                >
+                    <Image
+                        source={require('../assets/google_logo.png')}
+                        style={styles.googleLogo}
+                        resizeMode='contain'
+                    />
+                    <Text style={[Fonts.headlineSmall, {flex: 3}]}>Acessar com Google</Text>
+                </Pressable>
+                <Text style={styles.createAccount} onPress={() => navigation.navigate('CreateAccount')}>
+                    Ir para criar conta
+                </Text> 
+            </ScrollView>
         </View>
     );
 };
@@ -109,6 +118,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#222222',
+    },
+    scrollViewContainer: {
+        width: Dimensions.get('window').width, 
+        height: Dimensions.get('window').height, 
+        alignItems: 'center', 
+        justifyContent: 'flex-start', 
+        marginTop: '20%'
     },
     containerTitulo: {
         flexDirection: 'row',
@@ -154,12 +170,26 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
         color: '#FFFFFF',
     },
-    createCount: {
+    createAccount: {
         textDecorationLine: 'underline',
         color: '#FFFFFF',
         textAlign: 'center',
-        marginTop: 35,
-    },  
+        marginTop: '30%',
+    },
+    googleSignInContainer: {
+        backgroundColor: 'white',
+        width: Dimensions.get('window').width * .88,
+        height: Dimensions.get('window').height * .047,
+        borderRadius: 20,
+        margin: '2.5%',
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    googleLogo: {
+        flex: 1, 
+        width: Dimensions.get('window').width * .085, 
+        height: Dimensions.get('window').height * .041, 
+    }
 });
         
 export { LoginScreen };

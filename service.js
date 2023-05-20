@@ -1,3 +1,4 @@
+import { Alert } from 'react-native';
 import expenses from './expenses.json';
 
 const USE_MOCK_DATA = true;
@@ -38,6 +39,31 @@ const deleteExpense = id => {
     // Delete the corresponding expense on the API.
 }
 
+const tryLogin = (email, password) => {
+    // Try to match the password with the corresponding email's saved encrypted password.
+    // if match: return user data.
+    // else: return null.
+    if (email === 'mari123@gmail.com' && password === '') {
+        return {
+            name: 'Marinna',
+            surname: 'Silva',
+            username: 'mari123',
+            email: email,
+        }
+    }
+    return null;
+    // return {
+    //     name: 'Marinna',
+    //     surname: 'Silva',
+    //     username: 'mari123',
+    //     email: email,
+    // }
+}
+
+const signInGoogle = () => {
+    Alert.alert('Entrar com API do Google');
+}
+
 const getPaymentMethods = () => {
     // In the final version, this method will fetch this data from the API
     // where the available payment methods will be available.
@@ -51,4 +77,4 @@ const getPaymentMethods = () => {
     ];
 };
 
-export { getExpenses, getPaymentMethods, updateExpense, createExpense, deleteExpense };
+export { getExpenses, getPaymentMethods, updateExpense, createExpense, deleteExpense, tryLogin, signInGoogle };
