@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { 
     View,
     ScrollView,
@@ -7,7 +7,8 @@ import {
     Alert,
     Dimensions,
     Pressable,
-    Image
+    Image,
+    TextInput
 } from 'react-native';
 import { CustomButton } from '../components/CustomButton';
 import { CustomTextInput } from '../components/CustomTextInput';
@@ -16,26 +17,29 @@ import { validateEmail, validatePassword } from '../utils/Validator';
 import { tryLogin, signInGoogle } from '../service';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
+import { Ionicons } from '@expo/vector-icons';
 
 function validateData(email, password){
     let message = {};
-    if(validateEmail(email)) {
-        if (validatePassword(password)) {
-            message.header = 'Sucesso';
-        } else {
-            message.header = 'Padrão de Senha';
-            message.body = 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!';
-        }
-    } else {
-        message.header = 'E-mail Inválido!';
-        message.body = 'Endereço de e-mail inválido!';
-    }
+    // if(validateEmail(email)) {
+    //     if (validatePassword(password)) {
+    //         message.header = 'Sucesso';
+    //     } else {
+    //         message.header = 'Padrão de Senha';
+    //         message.body = 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!';
+    //     }
+    // } else {
+    //     message.header = 'E-mail Inválido!';
+    //     message.body = 'Endereço de e-mail inválido!';
+    // }
+    message.header = 'Sucesso';
     return message;
 }
 
 const LoginScreen = ({route, navigation}) => {
-    const [email, setEmail] = React.useState('');   
-    const [password, setPassword] = React.useState('');
+    const [email, setEmail] = useState('');   
+    const [password, setPassword] = useState('');
+    const [passwordIcon, setPasswordIcon] = useState('eye');
 
     return (
         <View style={styles.outerContainer}>
@@ -54,13 +58,21 @@ const LoginScreen = ({route, navigation}) => {
                     placeholder='E-mail ou usuário'
                     widthPercentage={90}
                 />
-                <CustomTextInput
-                    state={password}
-                    setState={setPassword}
-                    placeholder='Palavra-passe'
-                    widthPercentage={90}
-                    hide={true}
-                />
+                <View style={styles.passwordInput}>
+                    <TextInput
+                        style={{flex: 1}}
+                        placeholder='Palavra-passe'
+                        placeholderTextColor='grey'
+                        defaultValue={password}
+                        onChangeText={text => setPassword(text)}
+                        secureTextEntry={ passwordIcon === 'eye' ? true : false}
+                    />
+                    <Pressable 
+                        onPress={() => setPasswordIcon( passwordIcon === 'eye' ? 'eye-off' : 'eye')}
+                    >
+                        <Ionicons name={passwordIcon} size={24} color='black'/>
+                    </Pressable>
+                </View>
                 <View style={styles.password}>
                     <Text 
                         style={styles.textpassword} 
@@ -98,7 +110,7 @@ const LoginScreen = ({route, navigation}) => {
                     onPress={signInGoogle}
                 >
                     <Image
-                        source={require('../assets/google_logo.png')}
+                        source={require('../assets/google.png')}
                         style={styles.googleLogo}
                         resizeMode='contain'
                     />
@@ -189,6 +201,16 @@ const styles = StyleSheet.create({
         flex: 1, 
         width: Dimensions.get('window').width * .085, 
         height: Dimensions.get('window').height * .041, 
+    },
+    passwordInput: {
+        flexDirection: 'row',
+        backgroundColor: Colors.secondaryKeyColor,
+        borderColor: Colors.onSecondaryKeyColor,
+        borderWidth: 1,
+        borderRadius: 5,
+        padding: '2%',
+        marginHorizontal: '2%',
+        width: Dimensions.get('window').width * .9
     }
 });
         

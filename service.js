@@ -43,21 +43,21 @@ const tryLogin = (email, password) => {
     // Try to match the password with the corresponding email's saved encrypted password.
     // if match: return user data.
     // else: return null.
-    if (email === 'mari123@gmail.com' && password === '') {
-        return {
-            name: 'Marinna',
-            surname: 'Silva',
-            username: 'mari123',
-            email: email,
-        }
-    }
-    return null;
-    // return {
-    //     name: 'Marinna',
-    //     surname: 'Silva',
-    //     username: 'mari123',
-    //     email: email,
+    // if (email === 'mari123@gmail.com' && password === '') {
+    //     return {
+    //         name: 'Marinna',
+    //         surname: 'Silva',
+    //         username: 'mari123',
+    //         email: email,
+    //     }
     // }
+    // return null;
+    return {
+        name: 'Marinna',
+        surname: 'Silva',
+        username: 'mari123',
+        email: email,
+    }
 }
 
 const signInGoogle = () => {
