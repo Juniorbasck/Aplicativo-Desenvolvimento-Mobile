@@ -51,11 +51,11 @@ const ExpenseCard = props => {
             }}
         >
             <View style={[styles.pressableContainer, {backgroundColor: backgroundColor}]}>
-                <View style={{alignItems: 'flex-start'}}>
-                    <Text style={[Fonts.bodyLarge, styles.title]}>{title}</Text>
+                <View style={{flex: 1, alignItems: 'flex-start'}}>
+                    <Text style={[Fonts.bodyLarge, styles.title]} numberOfLines={2}>{title}</Text>
                     <Text style={[Fonts.bodyMedium, styles.entity]}>{entity}</Text>
                 </View>
-                <View style={{alignItems: 'flex-end'}}>
+                <View style={{flex: 1, alignItems: 'flex-end'}}>
                     <Text style={[Fonts.headlineSmall, styles.price]}>{price}€</Text>
                 </View>
             </View>

@@ -26,7 +26,7 @@ const CustomImagePicker = ({state, setState, text, widthPercentage=90, marginBot
                 {
                     state && (
                         <View style={[styles.sideView, {alignItems: 'center'}]}>
-                            <Text style={Fonts.bodySmall}>{state.split('/')[state.split('/').length - 1]}</Text>
+                            <Text style={Fonts.bodySmall}>{state.uri.split('/')[state.uri.split('/').length - 1]}</Text>
                         </View>
                     )
                 }

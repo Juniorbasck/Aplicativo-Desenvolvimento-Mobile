@@ -16,7 +16,7 @@ import { CustomDatePicker } from '../components/CustomDatePicker';
 import { CustomDropdown } from '../components/CustomDropdown';
 import { CustomImagePicker } from '../components/CustomImagePicker';
 import { CustomCheckbox } from '../components/CustomCheckbox';
-import { getPaymentMethods } from '../service';
+import { getPaymentMethods, sort } from '../service';
 import { Snackbar } from 'react-native-paper';
 import { updateExpense } from '../service';
 
@@ -28,7 +28,7 @@ function update(item, title, entity, date, price, paymentMethod, image, paid) {
     item.title = title;
     item.entity = entity;
     item.date = date;
-    item.price = price;
+    item.price = parseFloat(price);
     item.paymentMethod = paymentMethod;
     item.image = image;
     item.paid = paid;
@@ -40,7 +40,7 @@ function dataChanged(item, title, entity, date, price, paymentMethod, image, pai
 }
 
 const EditExpenseScreen = ({route, navigation}) => {
-    const { item } = route.params;
+    const { item, parentRoute } = route.params;
     const [title, setTitle] = useState(item.title);
     const [entity, setEntity] = useState(item.entity);
     const [date, setDate] = useState(item.date);
@@ -115,7 +115,7 @@ const EditExpenseScreen = ({route, navigation}) => {
                 {
                     image && (
                         <Image
-                            source={{uri: image}}
+                            source={image}
                             resizeMode='contain'
                             style={styles.image}
                         />
@@ -133,12 +133,30 @@ const EditExpenseScreen = ({route, navigation}) => {
                 <CustomButton
                     text={'Guardar'}
                     onPress={() => {
-                            if (validate(title, entity, price)) {
-                                if (dataChanged(item, title, entity, date, price, paymentMethod, image, paid)) {
-                                    update(item, title, entity, date, price, paymentMethod, image, paid);
+                            let localTitle = title.trim(), localEntity = entity.trim(), localPrice = price.trim();
+                            if (validate(localTitle, localEntity, price)) {
+                                if (dataChanged(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid)) {
+                                    update(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid);
                                 }
                                 setSnackBarVisible(true);
-                                setTimeout(() => navigation.goBack(), 500);
+                                setTimeout(() => {
+                                    navigation.navigate(
+                                        {
+                                            name: parentRoute,
+                                            params: {
+                                                item: {
+                                                    title: localTitle,
+                                                    entity: localEntity,
+                                                    date: date,
+                                                    price: parseFloat(localPrice),
+                                                    paymentMethod: paymentMethod,
+                                                    image: image,
+                                                    paid: paid
+                                                }
+                                            }
+                                        }
+                                    );
+                                }, 500);
                             } else {
                                 Alert.alert('Dados inválidos!', 'Preencha o título, entidade e preço e tente novamente!');
                             }

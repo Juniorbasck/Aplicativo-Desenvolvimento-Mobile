@@ -5,7 +5,7 @@ import { EditExpenseScreen } from '../screens/EditExpenseScreen';
 
 const Stack = createStackNavigator();
 
-const HomeNavigator = () => {
+const HomeNavigator = ({route}) => {
     return (
         <Stack.Navigator
             initialRouteName={'Home'}
@@ -14,6 +14,7 @@ const HomeNavigator = () => {
                 name={'Home'} 
                 component={HomeScreen} 
                 options={{headerShown: true}}
+                initialParams={route.params}
             />
             <Stack.Screen 
                 name={'EditExpense'} 

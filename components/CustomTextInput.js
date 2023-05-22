@@ -17,7 +17,8 @@ const CustomTextInput = (
         keyboardType='ascii-capable', 
         hide=false, 
         autofocus=false,
-        editable=true
+        editable=true,
+        maxLength=30
 }) => {
     return ( 
         <TextInput
@@ -39,6 +40,7 @@ const CustomTextInput = (
             }
             onChangeText={text => setState(text)}
             autoFocus={autofocus}
+            maxLength={maxLength}
         />
     );
 }

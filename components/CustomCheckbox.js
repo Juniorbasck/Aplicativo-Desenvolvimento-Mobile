@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     View,
     Dimensions,
@@ -10,8 +10,6 @@ import { Fonts } from '../utils/Fonts';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const CustomCheckbox = ({state, setState, text, size=10, round=false, marginBottomPercentage=5, marginTopPercentage=5}) => {
-    const [icon, setIcon] = useState(state ? 'checkmark' : '');
-
     return (
         <Pressable style={
                 [
@@ -23,7 +21,6 @@ const CustomCheckbox = ({state, setState, text, size=10, round=false, marginBott
             }
             onPress={() => {
                     setState(!state);
-                    setIcon(state ? 'checkmark' : '');
                 }
             }
         > 
@@ -39,7 +36,7 @@ const CustomCheckbox = ({state, setState, text, size=10, round=false, marginBott
                     ]
                 }
             >   
-                <Ionicons name={icon} size={size} color={'black'}/>
+                <Ionicons name={ state ? 'checkmark' : '' } size={size} color={'black'}/>
             </View>
             <Text style={[styles.text, Fonts.bodyLarge]}>
                 {text}

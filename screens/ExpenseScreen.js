@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     FlatList,
     View,
@@ -11,19 +11,26 @@ import {
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { ExpenseCard } from '../components/ExpenseCard';
-import { getExpenses } from '../service';
+import { sort } from '../service';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+
 const ExpenseScreen = ({route, navigation}) => {
-    const [expenses, setExpenses] = useState([]);
-    const [filteredExpenses, setFilteredExpenses] = useState([]);
+    const [expenses, setExpenses] = useState(route.params.expenseList);
+    const [filteredExpenses, setFilteredExpenses] = useState(route.params.expenseList);
     const [searchText, setSearchText] = useState('');
     const [icon, setIcon] = useState('reorder-three');
     const [closeFAB, setCloseFAB] = useState(false);
 
+    const onChangedOrder = () => {
+        setExpenses(sort(expenses));
+        setFilteredExpenses(sort(filteredExpenses));
+    }
+
     const handleOnPress = item => {
         navigation.navigate('EditExpense', {
-            item: item
+            item: item,
+            parentRoute: 'Expense'
         });
     };
 
@@ -56,16 +63,12 @@ const ExpenseScreen = ({route, navigation}) => {
                 return 'reorder-three';
         }
     }
-
-    useEffect(() => {
-        getExpenses(setExpenses);
-        getExpenses(setFilteredExpenses);
-    }, []);
     
     let expenseTitle = 'Todas as Despesas';
     if (!expenses.length) {
         expenseTitle = 'Sem Despesas';
     }
+
     return (
         <View style={styles.outerContainer}>
             <View style={styles.titleContainer}>
@@ -135,7 +138,7 @@ const ExpenseScreen = ({route, navigation}) => {
                     </Pressable>
                 </View>
                 <FlatList
-                    data={filteredExpenses}
+                    data={sort(filteredExpenses)}
                     renderItem={item => <ExpenseCard data={{...item, onPress: handleOnPress, onLongPress: handleOnLongPress}}/>}
                     keyExtractor={item => item.id}
                 />

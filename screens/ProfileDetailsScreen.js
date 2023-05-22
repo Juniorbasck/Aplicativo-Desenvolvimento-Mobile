@@ -15,33 +15,30 @@ import { CustomButton } from '../components/CustomButton';
 import { ProfilePicture } from '../components/ProfilePicture';
 import { Snackbar } from 'react-native-paper';
 import { PickImageModal } from '../components/PickImageModal';
+import { updateUser } from '../service';
 
 function validate(name, surname, username) {
-    return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
+    return name.length > 0 && surname.length > 0 && username.length > 0;
 }
 
-function update(item, title, entity, date, price, paymentMethod, image, paid) {
-    item.title = title;
-    item.entity = entity;
-    item.date = date;
-    item.price = price;
-    item.paymentMethod = paymentMethod;
-    item.image = image;
-    item.paid = paid;
-    updateExpense(item);
+function update(userData, name, surname, username) {
+    userData.name = name;
+    userData.surname = surname;
+    userData.username = username;
+    updateUser(userData);
 }
 
-function dataChanged(item, title, entity, date, price, paymentMethod, image, paid) {
-    return item.title != title || item.entity != entity || item.date != date || item.price != price || item.paymentMethod != paymentMethod || item.paid != paid;
+function dataChanged(userData, name, surname, username) {
+    return userData.name != name || userData.surname != surname || userData.username != username;
 }
 
 const ProfileDetailsScreen = ({route, navigation}) => {
-    const { user } = route.params;
-    const [name, setName] = useState(user.name);
-    const [surname, setSurname] = useState(user.surname);
-    const [username, setUsername] = useState(user.username);
-    const [email, setEmail] = useState(user.email);
-    const [image, setImage] = useState(user.image);
+    const { userData } = route.params;
+    const [name, setName] = useState(userData.name);
+    const [surname, setSurname] = useState(userData.surname);
+    const [username, setUsername] = useState(userData.username);
+    const [email, setEmail] = useState(userData.email);
+    const [image, setImage] = useState(userData.image);
     const [modalVisible, setModalVisible] = useState(false);
     const [snackBarVisible, setSnackBarVisible] = useState(false);
 
@@ -64,6 +61,7 @@ const ProfileDetailsScreen = ({route, navigation}) => {
                     <ProfilePicture
                         onPress={() => setModalVisible(true)}
                         size='big'
+                        src={image}
                     />
                 </View>
                 <CustomTextInput
@@ -97,8 +95,16 @@ const ProfileDetailsScreen = ({route, navigation}) => {
                 <CustomButton
                     text={'Guardar'}
                     onPress={() => {
-                            setSnackBarVisible(true);
-                            setTimeout(() => navigation.goBack(), 500);
+                            let localName = name.trim(), localUsername = username.trim(), localSurname = surname.trim();
+                            if (validate(localName, localSurname, localUsername)) {
+                                if (dataChanged(userData, localName, localSurname, localUsername)) {
+                                    update(userData, localName, localSurname, localUsername);
+                                }
+                                setSnackBarVisible(true);
+                                setTimeout(() => navigation.navigate('Profile', {userData: userData}), 500);
+                            } else {
+                                Alert.alert('Dados Inválidos', 'Os campos de nome, apelido e nome de utilizador devem ser preenchidos');
+                            }
                         }
                     }
                     backgroundColor={Colors.primaryKeyColor}

@@ -6,7 +6,7 @@ import { CreateExpenseScreen } from '../screens/CreateExpenseScreen';
 
 const Stack = createStackNavigator();
 
-const ExpenseNavigator = () => {
+const ExpenseNavigator = ({route}) => {
     return (
         <Stack.Navigator
             initialRouteName={'Expense'}
@@ -15,6 +15,7 @@ const ExpenseNavigator = () => {
                 name={'Expense'} 
                 component={ExpenseScreen} 
                 options={{headerShown: true, headerTitle: 'Despesas'}}
+                initialParams={route.params}
             />
             <Stack.Screen 
                 name={'EditExpense'} 

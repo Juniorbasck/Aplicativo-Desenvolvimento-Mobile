@@ -16,7 +16,7 @@ const sort = exps => {
     return notPaid.concat(paid);
 }
 
-const getExpenses = async (onFetchData, email='') => {
+const fetchExpenses = async (onFetchData, email='') => {
     let exps;
     if (USE_MOCK_DATA) {
         exps = expenses;
@@ -25,6 +25,17 @@ const getExpenses = async (onFetchData, email='') => {
         // exps = databaseExps(email);
     }
     onFetchData(sort(exps));
+}
+
+const getExpenses = async (email='') => {
+    let exps;
+    if (USE_MOCK_DATA) {
+        exps = expenses;
+    } else {
+        // Fetch data from database using `email` as primary key.
+        // exps = databaseExps(email);
+    }
+    return sort(exps);
 }
 
 const updateExpense = expense => {
@@ -56,7 +67,8 @@ const tryLogin = (email, password) => {
         name: 'Marinna',
         surname: 'Silva',
         username: 'mari123',
-        email: email,
+        email: 'mari123@gmail.com',
+        image: require('./assets/face1.jpg'),
     }
 }
 
@@ -77,4 +89,18 @@ const getPaymentMethods = () => {
     ];
 };
 
-export { getExpenses, getPaymentMethods, updateExpense, createExpense, deleteExpense, tryLogin, signInGoogle };
+const updateUser = userData => {
+    // Update user data on API.
+}
+
+export { 
+    getExpenses, 
+    getPaymentMethods, 
+    updateExpense, 
+    createExpense, 
+    deleteExpense, 
+    tryLogin, 
+    signInGoogle,
+    updateUser,
+    sort
+};

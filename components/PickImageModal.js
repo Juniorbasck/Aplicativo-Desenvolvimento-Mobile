@@ -18,7 +18,7 @@ const PickImageModal = ({state, setState, image, setImage}) => {
             quality: 1
         });
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
+            setImage({uri: result.assets[0].uri});
         }
     };
 
@@ -31,7 +31,7 @@ const PickImageModal = ({state, setState, image, setImage}) => {
             quality: 1
         });
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
+            setImage({uri: result.assets[0].uri});
         }
     };
 

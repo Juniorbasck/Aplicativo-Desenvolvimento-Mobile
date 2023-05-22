@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     FlatList,
     View,
@@ -12,12 +12,15 @@ import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 import { ProfilePicture } from '../components/ProfilePicture';
 import { ExpenseStatus } from '../components/ExpenseStatus';
 import { ExpenseCard } from '../components/ExpenseCard';
-import { getExpenses } from '../service';
 
 const HomeScreen = ({route, navigation}) => {
+    const [expenses, setExpenses] = useState(route.params?.expenseList);
+    const [userData, setUserData] = useState(route.params?.userData);
+
     const handleOnPress = item => {
         navigation.navigate('EditExpense', {
             item: item,
+            parentRoute: route.name
         });
     }
 
@@ -25,19 +28,13 @@ const HomeScreen = ({route, navigation}) => {
         setExpenses(expenses.filter(ele => ele.id != id));
     }
 
-    const [expenses, setExpenses] = useState([]);
-
-    useEffect(() => {
-        getExpenses(setExpenses);
-    }, []);
-
-    let username = 'mari123';
     let toPay = expenses.filter(expense => !expense.paid);
     let total = toPay.reduce((accumulator, expense) => accumulator + expense.price, 0.0)?.toFixed(2);
     let expenseTitle = 'Despesas Atuais';
     if (!toPay.length) {
         expenseTitle = 'Sem ' + expenseTitle;
     }
+
     return (
         <View style={styles.outerContainer}>
             <View style={styles.upperContainer}>
@@ -46,12 +43,13 @@ const HomeScreen = ({route, navigation}) => {
                         <Text style={[Fonts.displaySmall, styles.greetingText]}>Olá,</Text>
                     </View>
                     <View>
-                        <Text style={[Fonts.headlineMedium, {color: Colors.onPrimaryKeyColor}]}>{username}</Text>
+                        <Text style={[Fonts.headlineMedium, {color: Colors.onPrimaryKeyColor}]}>{userData.name}</Text>
                     </View>
                 </View>
                 <View style={styles.flexEnd}>
                     <ProfilePicture
                         onPress={() => navigation.navigate('ProfileNavigator')}
+                        src={userData.image}
                     />
                 </View>
             </View>

@@ -14,7 +14,11 @@ import { CustomButton } from '../components/CustomButton';
 import { CustomTextInput } from '../components/CustomTextInput';
 import { StackActions } from '@react-navigation/native';
 import { validateEmail, validatePassword } from '../utils/Validator';
-import { tryLogin, signInGoogle } from '../service';
+import { 
+    tryLogin, 
+    signInGoogle,
+    getExpenses
+} from '../service';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { Ionicons } from '@expo/vector-icons';
@@ -65,10 +69,10 @@ const LoginScreen = ({route, navigation}) => {
                         placeholderTextColor='grey'
                         defaultValue={password}
                         onChangeText={text => setPassword(text)}
-                        secureTextEntry={ passwordIcon === 'eye' ? true : false}
+                        secureTextEntry={ passwordIcon === 'eye' ? true : false }
                     />
                     <Pressable 
-                        onPress={() => setPasswordIcon( passwordIcon === 'eye' ? 'eye-off' : 'eye')}
+                        onPress={() => setPasswordIcon( passwordIcon === 'eye' ? 'eye-off' : 'eye' )}
                     >
                         <Ionicons name={passwordIcon} size={24} color='black'/>
                     </Pressable>
@@ -85,14 +89,37 @@ const LoginScreen = ({route, navigation}) => {
                         backgroundColor={'#486D31'}
                         textColor={'white'}
                         widthPercentage={88}
-                        onPress={() => {
+                        onPress={async () =>  {
                                 let res = validateData(email, password);
                                 if (res.header == 'Sucesso') {
                                     loginTrialRes = tryLogin(email, password);
+                                    let expenses = await getExpenses(email);
                                     if (loginTrialRes) {
-                                        navigation.dispatch(StackActions.replace('AppNavigator', {userData: loginTrialRes}));
+                                        // navigation.dispatch(
+                                        //     StackActions.replace('AppNavigator', 
+                                        //         {
+                                        //             screen: 'HomeNavigator',
+                                        //             params: {
+                                        //                 screen: 'Home',
+                                        //                 params: {
+                                        //                     userData: loginTrialRes,
+                                        //                     expenseList: expenses
+                                        //                 }
+                                        //             }
+                                        //         }
+                                        //     )
+                                        // );
+                                        navigation.dispatch(
+                                            StackActions.replace(
+                                                'AppNavigator', 
+                                                {
+                                                    userData: loginTrialRes,
+                                                    expenseList: expenses
+                                                }
+                                            )
+                                        );
                                     } else {
-                                        Alert.alert('Credenciais Invalidas!', 'Infelizmente, não encontramos uma conta com essas credenciais!');
+                                        Alert.alert('Credenciais Inválidas!', 'Infelizmente, não encontramos uma conta com essas credenciais!');
                                         setEmail('');
                                         setPassword('');
                                     }

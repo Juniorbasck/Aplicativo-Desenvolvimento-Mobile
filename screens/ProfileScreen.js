@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
     Alert,
     View,
@@ -14,13 +15,10 @@ import { StackActions } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ProfileScreen = ({route, navigation}) => {
-    let user = {
-        name: 'Marinna',
-        surname: 'Silva',
-        username: 'mari123',
-        email: 'mari123@gmail.com',
-        password: 'amari_financeiro@1A'
-    };
+    const [userData, setUserData] = useState(route.params);
+
+    const splitSurname = userData.surname.split(' ');
+    const surname =splitSurname[splitSurname.length - 1];
 
     return (
         <View style={styles.outerContainer}>
@@ -28,17 +26,18 @@ const ProfileScreen = ({route, navigation}) => {
                 <View style={styles.flexStart}>
                     <ProfilePicture
                         size='big'
+                        src={userData.image}
                     />
                 </View>
                 <View style={[styles.flexEnd, {alignItems: 'center'}]}>
-                    <Text style={[Fonts.displaySmall, {color: Colors.onPrimaryKeyColor}]}>{user.name + ' ' + user.surname}</Text>
-                    <Text style={[Fonts.bodyLarge, {color: Colors.onPrimaryKeyColor}]}>{user.email}</Text>
+                    <Text style={[Fonts.displaySmall, {color: Colors.onPrimaryKeyColor}]}>{userData.name + ' ' + surname}</Text>
+                    <Text style={[Fonts.bodyLarge, {color: Colors.onPrimaryKeyColor}]}>{userData.email}</Text>
                 </View>
             </View>
             <View style={styles.profileBoard}>
                 <Pressable
                     style={styles.pressable}
-                    onPress={() => navigation.navigate('ProfileDetails', {user: user})}
+                    onPress={() => navigation.navigate('ProfileDetails', {userData: userData})}
                 >
                     <Ionicons name='settings-outline' size={24} color={Colors.onSecondaryKeyColor}/>
                     <Text style={[Fonts.headlineSmall, {marginLeft: '5%'}]}>Detalhes da Conta</Text> 
