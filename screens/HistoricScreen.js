@@ -1,15 +1,29 @@
+import { useEffect, useState } from 'react';
 import {
     View,
-    Text,
-    StyleSheet
+    StyleSheet,
+    FlatList
 } from 'react-native';
 import { Colors } from '../utils/Colors';
-import { Fonts } from '../utils/Fonts';
+import { fetchHistoric } from '../service';
+import { HistoricItem } from '../components/HistoricItem';
 
 const HistoricScreen = () => {
+    const [historic, setHistoric] = useState([]);
+
+    useEffect(() => {
+        fetchHistoric('', setHistoric);
+    }, []);
+
+    const renderItem = ({item}) => <HistoricItem data={item}/>
+
     return (
         <View style={styles.container}>
-            <Text style={[Fonts.displaySmall, {color: Colors.onPrimaryKeyColor}]}>Historic Screen</Text>
+            <FlatList
+                data={historic}
+                renderItem={renderItem}
+                keyExtractor={item => item.timestamp}
+            />
         </View>
     );
 }

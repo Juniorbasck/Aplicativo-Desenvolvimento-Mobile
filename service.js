@@ -91,16 +91,96 @@ const getPaymentMethods = () => {
 
 const updateUser = userData => {
     // Update user data on API.
-}
+};
+
+const fetchHistoric = (email, onFetch) => {
+    let historic = [
+        {
+            timestamp: '2022-10-20T16:30:00',
+            date: '2023-01-02',
+            expenseTitle: 'Compras de aniversario no Lidl',
+            entity: 'Lidl',
+            paymentMethod: 5,
+            price: 500,
+            paid: false,
+            operation: 1
+        },
+        {
+            timestamp: '2023-01-03T07:44:30',
+            date: '2023-01-02',
+            expenseTitle: 'Compras de aniversario no Lidl',
+            entity: 'Lidl',
+            paymentMethod: 3,
+            price: 340,
+            paid: true,
+            operation: 3
+        },
+        {
+            timestamp: '2023-01-04T07:44:30',
+            date: '2023-01-02',
+            expenseTitle: 'Compras de aniversario no Lidl',
+            entity: 'Lidl',
+            paymentMethod: 4,
+            price: 340,
+            paid: true,
+            operation: 2
+        },
+        {
+            timestamp: '2023-01-05T07:44:30',
+            date: '2023-01-02',
+            expenseTitle: 'Compras de aniversario no Lidl',
+            entity: 'Lidl',
+            paymentMethod: 2,
+            price: 340,
+            paid: true,
+            operation: 2
+        },
+        {
+            timestamp: '2023-01-06T07:44:30',
+            date: '2023-01-02',
+            expenseTitle: 'Compras de aniversario no Lidl',
+            entity: 'Lidl',
+            paymentMethod: 3,
+            price: 340,
+            paid: true,
+            operation: 3
+        },
+    ];
+    onFetch(historic);
+};
+
+const stringifyOperation = operation => {
+    switch (operation) {
+        default:
+        case 1: return 'Criação';
+        case 2: return 'Alteração';
+        case 3: return 'Deleção';
+    }
+};
+
+const stringifyPaymentMethod = paymentMethod => {
+    switch (paymentMethod) {
+        default:
+        case 1: return 'Cartão de crédito';
+        case 2: return 'Débito direto';
+        case 3: return 'Transferência';
+        case 4: return 'MBWay';
+        case 5: return 'Cheque';
+        case 6: return 'Monetário';
+    }
+};
 
 export { 
     getExpenses, 
-    getPaymentMethods, 
+    getPaymentMethods,
+    fetchHistoric,
     updateExpense, 
     createExpense, 
     deleteExpense, 
     tryLogin, 
     signInGoogle,
     updateUser,
-    sort
+    sort,
+    stringifyOperation,
+    stringifyPaymentMethod
 };

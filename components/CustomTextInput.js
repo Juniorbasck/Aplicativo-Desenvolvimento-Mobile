@@ -18,7 +18,10 @@ const CustomTextInput = (
         hide=false, 
         autofocus=false,
         editable=true,
-        maxLength=30
+        maxLength=30,
+        onSubmitEditing=null,
+        blurOnSubmit=true,
+        ref=null
 }) => {
     return ( 
         <TextInput
@@ -39,6 +42,9 @@ const CustomTextInput = (
                 ]
             }
             onChangeText={text => setState(text)}
+            onSubmitEditing={onSubmitEditing}
+            blurOnSubmit={blurOnSubmit}
+            ref={ref}
             autoFocus={autofocus}
             maxLength={maxLength}
         />

@@ -2,18 +2,15 @@ import React, { useState } from 'react';
 import {
     ScrollView,
     View,
-    Text,
     StyleSheet,
     Alert,
     Dimensions
 } from 'react-native';
 import { Colors } from '../utils/Colors';
-import { Fonts } from '../utils/Fonts';
 import { CustomTextInput } from '../components/CustomTextInput';
 import { TermsAndConditions } from '../components/TermsAndConditions'; 
 import { CustomButton } from '../components/CustomButton';
 import { validateEmail, validatePassword, validateTextField } from '../utils/Validator';
-import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 import { StackActions } from '@react-navigation/native';
 
 function validateData(name, surname, username, email, password, confirmPassword) {
@@ -63,17 +60,15 @@ const CreateAccountScreen = ({navigation}) => {
                 keyboardDismissMode={'on-drag'}
                 contentContainerStyle={styles.scrollView}
             >
-                {/* <View>
-                    <Text style={[Fonts.displaySmall, {color: Colors.onSecondaryKeyColor}]}>Criar Conta</Text>
-                </View> */}
-                <View style={{flexDirection: 'row', marginTop: '10%', marginBottom: '3%'}}>
+                <View style={styles.nameSurnameContainer}>
                     <CustomTextInput
                         placeholder={'Nome'}
                         state={name}
                         setState={setName}
+                        autofocus={true}
                     />
                     <CustomTextInput
-                        placeholder={'Apelido'}
+                        placeholder='Apelido'
                         state={surname}
                         setState={setSurname}
                     />                    
@@ -150,6 +145,11 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 60,
         borderTopRightRadius: 60,
         backgroundColor: Colors.secondaryKeyColor
+    },
+    nameSurnameContainer: {
+        flexDirection: 'row', 
+        marginTop: '10%',
+        marginBottom: '3%'
     }
 });
 
