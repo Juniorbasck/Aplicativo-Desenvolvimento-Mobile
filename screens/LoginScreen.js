@@ -21,7 +21,7 @@ import {
 } from '../service';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
-import { Ionicons } from '@expo/vector-icons';
+import { PasswordInput } from '../components/PasswordInput';
 
 function validateData(email, password){
     let message = {};
@@ -62,24 +62,13 @@ const LoginScreen = ({route, navigation}) => {
                     placeholder='E-mail ou usuário'
                     widthPercentage={90}
                 />
-                <View style={styles.passwordInput}>
-                    <TextInput
-                        style={{flex: 1}}
-                        placeholder='Palavra-passe'
-                        placeholderTextColor='grey'
-                        defaultValue={password}
-                        onChangeText={text => setPassword(text)}
-                        secureTextEntry={ passwordIcon === 'eye' ? true : false }
-                    />
-                    <Pressable 
-                        onPress={() => setPasswordIcon( passwordIcon === 'eye' ? 'eye-off' : 'eye' )}
-                    >
-                        <Ionicons name={passwordIcon} size={24} color='black'/>
-                    </Pressable>
-                </View>
-                <View style={styles.password}>
+                <PasswordInput
+                    state={password}
+                    setState={setPassword}
+                />
+                <View style={styles.forgottenPasswordContainer}>
                     <Text 
-                        style={styles.textpassword} 
+                        style={styles.forgottenPasswordText} 
                         onPress={() => navigation.navigate('ForgottenPassword')}
                     >Esqueceu palavra-passe?</Text>
                 </View>
@@ -95,20 +84,6 @@ const LoginScreen = ({route, navigation}) => {
                                     loginTrialRes = tryLogin(email, password);
                                     let expenses = await getExpenses(email);
                                     if (loginTrialRes) {
-                                        // navigation.dispatch(
-                                        //     StackActions.replace('AppNavigator', 
-                                        //         {
-                                        //             screen: 'HomeNavigator',
-                                        //             params: {
-                                        //                 screen: 'Home',
-                                        //                 params: {
-                                        //                     userData: loginTrialRes,
-                                        //                     expenseList: expenses
-                                        //                 }
-                                        //             }
-                                        //         }
-                                        //     )
-                                        // );
                                         navigation.dispatch(
                                             StackActions.replace(
                                                 'AppNavigator', 
@@ -199,13 +174,13 @@ const styles = StyleSheet.create({
         borderRadius: 2,  
         backgroundColor: '#D3D3D3',
     },
-    password: {
+    forgottenPasswordContainer: {
         alignSelf: 'flex-end',
         marginRight: 20,
         marginTop: 10,
         marginBottom: 15,
     },
-    textpassword:{
+    forgottenPasswordText:{
         textDecorationLine: 'underline',
         color: '#FFFFFF',
     },

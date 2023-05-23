@@ -8,6 +8,7 @@ import {
     stringifyOperation, 
     stringifyPaymentMethod 
 } from '../service';
+import { Fonts } from '../utils/Fonts';
 
 const HistoricItem = props => {
     const { timestamp, date, expenseTitle, entity, paymentMethod, price, paid, operation }  = props.data;
@@ -19,32 +20,32 @@ const HistoricItem = props => {
     return (
         <View style={styles.container}>
             <View style={[styles.box, {borderBottomWidth: 1}]}>
-                <Text style={styles.left}>{strOperation}</Text>
-                <Text style={styles.right}>{preparedTimestamp}</Text>
+                <Text style={[styles.left, Fonts.bodyMedium, {fontWeight: 'bold'}]}>{strOperation}</Text>
+                <Text style={[styles.right, Fonts.bodyMedium, {fontWeight: 'bold'}]}>{preparedTimestamp}</Text>
             </View>
             <View style={styles.box}>
-                <Text style={styles.left}>Vencimento:</Text>
-                <Text style={styles.right}>{date}</Text>
+                <Text style={[styles.left, Fonts.bodySmall]}>Vencimento:</Text>
+                <Text style={[styles.right, Fonts.bodySmall]}>{date}</Text>
             </View>
             <View style={styles.box}>
-                <Text style={styles.left}>Título:</Text>
-                <Text style={styles.right}>{expenseTitle}</Text>
+                <Text style={[styles.left, Fonts.bodySmall]}>Título:</Text>
+                <Text style={[styles.right, Fonts.bodySmall]}>{expenseTitle}</Text>
             </View>
              <View style={styles.box}>
-                <Text style={styles.left}>Entidade:</Text>
-                <Text style={styles.right}>{entity}</Text>
+                <Text style={[styles.left, Fonts.bodySmall]}>Entidade:</Text>
+                <Text style={[styles.right, Fonts.bodySmall]}>{entity}</Text>
             </View>
             <View style={styles.box}>
-                <Text style={styles.left}>Preço:</Text>
-                <Text style={styles.right}>{price?.toString()}€</Text>
+                <Text style={[styles.left, Fonts.bodySmall]}>Preço:</Text>
+                <Text style={[styles.right, Fonts.bodySmall]}>{price?.toString()}€</Text>
             </View>
             <View style={styles.box}>
-                <Text style={styles.left}>Método de pagamento:</Text>
-                <Text style={styles.right}>{strPayMeth}</Text>
+                <Text style={[styles.left, Fonts.bodySmall]}>Método de pagamento:</Text>
+                <Text style={[styles.right, Fonts.bodySmall]}>{strPayMeth}</Text>
             </View> 
             <View style={styles.box}>
-                <Text style={styles.left}>Pago:</Text>
-                <Text style={[styles.right, paid ? {color: 'green'} : {color: 'red'}]}>{paid ? 'sim' : 'não'}</Text>
+                <Text style={[styles.left, Fonts.bodySmall]}>Pago:</Text>
+                <Text style={[styles.right, Fonts.bodySmall, paid ? {color: 'green'} : {color: 'red'}]}>{paid ? 'sim' : 'não'}</Text>
             </View> 
         </View>
     );

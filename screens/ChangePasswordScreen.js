@@ -1,15 +1,102 @@
+import { useState } from 'react';
 import {
+    Alert,
     View,
+    ScrollView,
     StyleSheet,
-    Text
+    Text,
+    Dimensions
 } from 'react-native';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
+import { PasswordInput } from '../components/PasswordInput';
+import { CustomButton } from '../components/CustomButton';
+
+const checkPassword = password => {
+    // Check password on API.
+    if (password.length > 0) {
+        return true;
+    }
+    return false;
+}
 
 const ChangePasswordScreen = () => {
+    const [password, setPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [repeatPassword, setRepeatPassword] = useState('');
+
+    const [showChangePassword, setShowChangePassword] = useState(false);
+    const [chances, setChances] = useState(3);
+    const [editable, setEditable] = useState(true);
+
     return (
         <View style={styles.container}>
-            <Text style={[Fonts.displaySmall, {color: Colors.onPrimaryKeyColor}]}>Change Password Screen</Text>
+            <ScrollView
+                keyboardDismissMode='on-drag'
+                contentContainerStyle={styles.scrollView}
+            >
+                <View style={{alignSelf: 'flex-start', marginLeft: '3.5%'}}>
+                    <Text style={[styles.typePassword, Fonts.bodyLarge, { marginTop: '15%'}]}>Digite a palavra-passe atual</Text>
+                    <PasswordInput
+                        state={password}
+                        setState={setPassword}
+                        marginTopPercentage={2}
+                        marginBottomPercentage={2}
+                        editable={editable}
+                    />
+                    <CustomButton
+                        text={'Guardar'}
+                        backgroundColor={editable ? Colors.tertiaryKeyColor : Colors.tertiaryKeyColorDisabled}
+                        textColor={'white'}
+                        onPress={() => {
+                            if (checkPassword(password)) {
+                                setShowChangePassword(true);
+                                setEditable(false);
+                            } else {
+                                if (!(chances - 1)) {
+                                    Alert.alert('Palavra-passe Inválida', 'Muitas tentativas foram feitas. Tente novamente mais tarde!');
+                                    setEditable(false);
+                                } else {
+                                    setChances(chances - 1);
+                                    Alert.alert('Palavra-passe Inválida', `Você tem ${chances - 1} chance(s) restante(s)!`);
+                                }
+                            }
+                        }}
+                        widthPercentage={50}
+                        disabled={!editable}
+                    />
+                    {
+                        showChangePassword && (
+                            <>
+                                <Text style={[styles.typePassword, Fonts.bodyLarge, {marginTop: '15%'}]}>Digite a nova palavra-passe</Text>
+                                <PasswordInput
+                                    state={newPassword}
+                                    setState={setNewPassword}
+                                    marginTopPercentage={2}
+                                    marginBottomPercentage={2}
+                                    placeholder='Nova palavra-passe'
+                                />
+                                <Text style={[styles.typePassword, Fonts.bodyLarge]}>Repita a nova palavra-passe</Text>
+                                <PasswordInput
+                                    state={repeatPassword}
+                                    setState={setRepeatPassword}
+                                    marginTopPercentage={2}
+                                    marginBottomPercentage={2}
+                                    placeholder='Repita nova palavra-passe'
+                                />
+                                <CustomButton
+                                    text={'Guardar'}
+                                    backgroundColor={editable ? Colors.tertiaryKeyColor : Colors.tertiaryKeyColorDisabled}
+                                    textColor={'white'}
+                                    onPress={() => {}}
+                                    widthPercentage={50}
+                                    disabled={!editable}
+                                />
+                            </>
+                        )
+                    }
+                </View>
+            </ScrollView>
         </View>
     );
 }
@@ -21,6 +108,19 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.primaryKeyColor,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    scrollView: {
+        height: Dimensions.get('window').height,
+        width: Dimensions.get('window').width,
+        alignItems: 'center',
+        marginTop: '5%',
+        borderTopLeftRadius: 60,
+        borderTopRightRadius: 60,
+        backgroundColor: Colors.secondaryKeyColor
+    },
+    typePassword: {
+        alignSelf: 'flex-start',
+        marginHorizontal: '5%',
     }
 });
 

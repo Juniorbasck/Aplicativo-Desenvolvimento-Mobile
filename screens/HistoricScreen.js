@@ -28,7 +28,6 @@ const HistoricScreen = () => {
     );
 }
 
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
