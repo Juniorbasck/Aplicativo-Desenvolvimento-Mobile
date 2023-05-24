@@ -11,6 +11,7 @@ import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { PasswordInput } from '../components/PasswordInput';
 import { CustomButton } from '../components/CustomButton';
+import { validatePassword } from '../utils/Validator';
 
 const checkPassword = password => {
     // Check password on API.
@@ -20,7 +21,7 @@ const checkPassword = password => {
     return false;
 }
 
-const ChangePasswordScreen = () => {
+const ChangePasswordScreen = ({navigation}) => {
     const [password, setPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
@@ -45,7 +46,7 @@ const ChangePasswordScreen = () => {
                         editable={editable}
                     />
                     <CustomButton
-                        text={'Guardar'}
+                        text={'Verificar'}
                         backgroundColor={editable ? Colors.tertiaryKeyColor : Colors.tertiaryKeyColorDisabled}
                         textColor={'white'}
                         onPress={() => {
@@ -86,11 +87,21 @@ const ChangePasswordScreen = () => {
                                 />
                                 <CustomButton
                                     text={'Guardar'}
-                                    backgroundColor={editable ? Colors.tertiaryKeyColor : Colors.tertiaryKeyColorDisabled}
+                                    backgroundColor={Colors.tertiaryKeyColor}
                                     textColor={'white'}
-                                    onPress={() => {}}
+                                    onPress={() => {
+                                        if (validatePassword(newPassword)) {
+                                            if (newPassword == repeatPassword) {
+                                                Alert.alert('Mudança de Palavra-Passe', 'Sua palavra-passe foi atualizada com sucesso!');
+                                                navigation.goBack();
+                                            } else {
+                                                Alert.alert('Mudança de Palavra-Passe', 'Ambas as senhas devem ser iguais!');
+                                            }
+                                        } else {
+                                            Alert.alert('Mudança de Palavra-Passe', 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!');
+                                        }
+                                    }}
                                     widthPercentage={50}
-                                    disabled={!editable}
                                 />
                             </>
                         )
