@@ -13,6 +13,7 @@ import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 import { validateEmail } from '../utils/Validator';
+import { generateValidationCode, sendCodeEmail } from '../service';
 
 const ForgottenPasswordScreen = ({navigation}) => {
     const [email, setEmail] = useState('');
@@ -49,9 +50,18 @@ const ForgottenPasswordScreen = ({navigation}) => {
                         textColor={Colors.onPrimaryKeyColor}
                         onPress={() => {
                             if (validateEmail(email)) {
+                                generateValidationCode(email);
+                                sendCodeEmail(email);
+                                setEmail('');
                                 Alert.alert(
                                     'Recuperação de Palavra-Passe', 
-                                    `Um e-mail contendo instruções para a recuperação da palavra-passe foi enviado com sucesso para ${email}`
+                                    `Um e-mail contendo instruções para a recuperação da palavra-passe foi enviado com sucesso para ${email}`,
+                                    [
+                                        {
+                                            text: 'Ok',
+                                            onPress: () => navigation.navigate('ValidationCode')
+                                        }
+                                    ]
                                 );
                             } else {
                                 Alert.alert('E-mail', 'E-mail inválido!');
@@ -78,8 +88,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     marginPaddingDefault: {
-        margin: 10,
-        padding: 10
+        margin: '2%',
+        padding: '2%'
     },
     title: {
         color: Colors.onPrimaryKeyColor,

@@ -7,7 +7,7 @@ import {
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 import { Fonts } from '../utils/Fonts';
 
-const CustomButton = ({text, onPress, backgroundColor, textColor, widthPercentage, disabled=false}) => {
+const CustomButton = ({text, onPress, backgroundColor, textColor='white', widthPercentage=88, disabled=false}) => {
     return (
         <Pressable
             style={[styles.button, {backgroundColor: backgroundColor, width: widthPercentage / 100 * Dimensions.get('window').width}]}

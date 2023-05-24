@@ -36,7 +36,7 @@ const ChangePasswordScreen = ({navigation}) => {
                 keyboardDismissMode='on-drag'
                 contentContainerStyle={styles.scrollView}
             >
-                <View style={{alignSelf: 'flex-start', marginLeft: '3.5%'}}>
+                <View style={styles.innerContainer}>
                     <Text style={[styles.typePassword, Fonts.bodyLarge, { marginTop: '15%'}]}>Digite a palavra-passe atual</Text>
                     <PasswordInput
                         state={password}
@@ -92,8 +92,16 @@ const ChangePasswordScreen = ({navigation}) => {
                                     onPress={() => {
                                         if (validatePassword(newPassword)) {
                                             if (newPassword == repeatPassword) {
-                                                Alert.alert('Mudança de Palavra-Passe', 'Sua palavra-passe foi atualizada com sucesso!');
-                                                navigation.goBack();
+                                                Alert.alert(
+                                                    'Mudança de Palavra-Passe', 
+                                                    'Sua palavra-passe foi atualizada com sucesso!'
+                                                    [
+                                                        {
+                                                            text: 'Ok',
+                                                            onPress: () => navigation.goBack()
+                                                        }
+                                                    ]
+                                                );
                                             } else {
                                                 Alert.alert('Mudança de Palavra-Passe', 'Ambas as senhas devem ser iguais!');
                                             }
@@ -119,6 +127,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.primaryKeyColor,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    innerContainer: {
+        alignSelf: 'flex-start', 
+        marginLeft: '3.5%'
     },
     scrollView: {
         height: Dimensions.get('window').height,

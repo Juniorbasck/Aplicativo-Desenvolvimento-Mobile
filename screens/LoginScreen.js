@@ -8,7 +8,6 @@ import {
     Dimensions,
     Pressable,
     Image,
-    TextInput
 } from 'react-native';
 import { CustomButton } from '../components/CustomButton';
 import { CustomTextInput } from '../components/CustomTextInput';
@@ -43,7 +42,6 @@ function validateData(email, password){
 const LoginScreen = ({route, navigation}) => {
     const [email, setEmail] = useState('');   
     const [password, setPassword] = useState('');
-    const [passwordIcon, setPasswordIcon] = useState('eye');
 
     return (
         <View style={styles.outerContainer}>
@@ -69,7 +67,7 @@ const LoginScreen = ({route, navigation}) => {
                 <View style={styles.forgottenPasswordContainer}>
                     <Text 
                         style={styles.forgottenPasswordText} 
-                        onPress={() => navigation.navigate('ForgottenPassword')}
+                        onPress={() => navigation.navigate('ForgottenPasswordNavigator')}
                     >Esqueceu palavra-passe?</Text>
                 </View>
                 <View>
@@ -118,7 +116,7 @@ const LoginScreen = ({route, navigation}) => {
                     />
                     <Text style={[Fonts.headlineSmall, {flex: 3}]}>Acessar com Google</Text>
                 </Pressable>
-                <Text style={styles.createAccount} onPress={() => navigation.navigate('CreateAccount')}>
+                <Text style={styles.createAccount} onPress={() => navigation.navigate('CreateAccountNavigator')}>
                     Ir para criar conta
                 </Text> 
             </ScrollView>

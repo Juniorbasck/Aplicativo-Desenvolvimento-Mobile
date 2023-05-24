@@ -2,9 +2,10 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { LoginScreen } from '../screens/LoginScreen';
-import { CreateAccountScreen } from '../screens/CreateAccountScreen';
 import { ForgottenPasswordScreen } from '../screens/ForgottenPasswordScreen';
 import { AppNavigator } from './AppNavigator';
+import { CreateAccountNavigator } from './CreateAccountNavigator';
+import { ForgottenPasswordNavigator } from './ForgottenPasswordNavigator';
 
 const Stack = createStackNavigator();
 
@@ -13,32 +14,36 @@ const LoginNavigator = () => {
         <NavigationContainer>
             <Stack.Navigator
                 initialRouteName={'Login'}
-                screenOptions={
-                    {
-                        headerShown: false,
-                        headerTitle: '',
-                        headerStatusBarHeight: 20
-                    }
-                }
             >
                 <Stack.Screen 
                     name={'Login'} 
                     component={LoginScreen} 
-                    options={{headerShown: true}}
+                    options={
+                        {
+                            headerShown: true,
+                            headerTitle: 'Seja Bem-Vindo', 
+                            headerTitleAlign: 'center', 
+                            headerTitleStyle: {
+                                fontFamily: 'serif', 
+                                fontWeight: 'bold'
+                            }
+                        }
+                    }
                 />
                 <Stack.Screen 
-                    name={'CreateAccount'} 
-                    component={CreateAccountScreen} 
-                    options={{headerShown: true, headerTitle: 'Criar Conta', headerTitleAlign: 'center'}}
+                    name={'CreateAccountNavigator'} 
+                    component={CreateAccountNavigator} 
+                    options={{headerShown: false}}
                 />
                 <Stack.Screen 
-                    name={'ForgottenPassword'} 
-                    component={ForgottenPasswordScreen}
-                    options={{headerShown: true}}
+                    name={'ForgottenPasswordNavigator'} 
+                    component={ForgottenPasswordNavigator}
+                    options={{headerShown: false}}
                 />
                 <Stack.Screen
                     name={'AppNavigator'}
                     component={AppNavigator}
+                    options={{headerShown: false}}
                 />
             </Stack.Navigator>
         </NavigationContainer>

@@ -170,6 +170,20 @@ const stringifyPaymentMethod = paymentMethod => {
     }
 };
 
+const checkValidationCode = (email, code) => {
+    // Validate on API.
+    return code == '1234';
+};  
+
+const generateValidationCode = email => {
+    // Generate validation code on API and bind it to `email`.
+    // It should be valid only for an amount of time.
+};
+
+const sendCodeEmail = (email) => {
+
+};
+
 export { 
     getExpenses, 
     getPaymentMethods,
@@ -182,5 +196,8 @@ export {
     updateUser,
     sort,
     stringifyOperation,
-    stringifyPaymentMethod
+    stringifyPaymentMethod,
+    checkValidationCode,
+    generateValidationCode,
+    sendCodeEmail
 };
