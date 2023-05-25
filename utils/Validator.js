@@ -21,13 +21,13 @@ function validatePassword(password) {
     }
     let hasOneLowerCaseLetter = false, hasOneUpperCaseLetter = false, hasOneSpecial = false;
     for (let i of cleanPassword) {
-        if (alphaLower.substring(i)) {
+        if (alphaLower.indexOf(i) != -1) {
             hasOneLowerCaseLetter = true;
         }
-        if (alphaUpper.substring(i)) {
+        if (alphaUpper.indexOf(i) != -1) {
             hasOneUpperCaseLetter = true;
         }
-        if (special.substring(i)) {
+        if (special.indexOf(i) != -1) {
             hasOneSpecial = true;
         }
         if (hasOneLowerCaseLetter && hasOneUpperCaseLetter && hasOneSpecial) {

@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { ForgottenPasswordScreen } from '../screens/ForgottenPasswordScreen';
 import { ValidationCodeScreen } from '../screens/ValidationCodeScreen';
-import { ChangePasswordScreen } from '../screens/ChangePasswordScreen';
+import { RedefinePasswordScreen } from '../screens/RedefinePasswordScreen';
 
 const Stack = createStackNavigator();
 
@@ -23,9 +23,9 @@ const ForgottenPasswordNavigator = () => {
                 options={{headerTitle: 'Validação de Código', headerTitleAlign: 'center'}}
             />
             <Stack.Screen 
-                name='ChangePassword'
-                component={ChangePasswordScreen}
-                options={{headerTitle: 'Alterar Palavra-Passe', headerTitleAlign: 'center'}}
+                name='RedefinePassword'
+                component={RedefinePasswordScreen}
+                options={{headerTitle: 'Redefinir Palavra-Passe', headerTitleAlign: 'center'}}
             />
         </Stack.Navigator>
     );

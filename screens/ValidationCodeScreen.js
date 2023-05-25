@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Alert,
     View,
@@ -31,6 +31,8 @@ const ValidationCodeScreen = ({route, navigation}) => {
     const [thirdInput, setThirdInput] = useState();
     const [forthInput, setForthInput] = useState();
 
+    const [avoidUseEffect, setAvoidUseEffect] = useState(false);
+
     const getCode = () => {
         return code1 + code2 + code3 + code4;
     };
@@ -41,6 +43,29 @@ const ValidationCodeScreen = ({route, navigation}) => {
         setCode3('');
         setCode4('');
     };
+
+    useEffect(() => navigation.addListener('beforeRemove', e => {
+        let action = e.data.action;
+        if (!avoidUseEffect) {
+            e.preventDefault();
+            Alert.alert(
+                'Validação de Código',
+                'Ainda não validaste o código. Desejas realmente voltar?',
+                [
+                    {
+                        text: 'Sim',
+                        style: 'destructive',
+                        onPress: () => navigation.dispatch(action)
+                    }, 
+                    {
+                        text: 'Não',
+                        style: 'cancel',
+                        onPress: () => {}
+                    }
+                ]
+            );
+        }
+    }), [navigation, avoidUseEffect]);
 
     return (
         <View style={styles.container}>
@@ -116,7 +141,11 @@ const ValidationCodeScreen = ({route, navigation}) => {
                                     [
                                         {
                                             text: 'Ok',
-                                            onPress: () => navigation.dispatch(StackActions.replace('ChangePassword'))
+                                            onPress: () => {
+                                                setAvoidUseEffect(true);
+                                                navigation.pop(2);
+                                                navigation.dispatch(StackActions.replace('RedefinePassword'));
+                                            }
                                         }
                                     ]
                                 );

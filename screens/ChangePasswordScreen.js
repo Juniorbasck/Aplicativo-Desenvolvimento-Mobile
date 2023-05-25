@@ -14,8 +14,8 @@ import { CustomButton } from '../components/CustomButton';
 import { validatePassword } from '../utils/Validator';
 
 const checkPassword = password => {
-    // Check password on API.
-    if (password.length > 0) {
+    if (validatePassword(password)) {
+        // Check password on API.
         return true;
     }
     return false;
@@ -37,7 +37,7 @@ const ChangePasswordScreen = ({navigation}) => {
                 contentContainerStyle={styles.scrollView}
             >
                 <View style={styles.innerContainer}>
-                    <Text style={[styles.typePassword, Fonts.bodyLarge, { marginTop: '15%'}]}>Digite a palavra-passe atual</Text>
+                    <Text style={[styles.typePassword, Fonts.bodyLarge, { marginTop: '15%' }]}>Digite a palavra-passe atual</Text>
                     <PasswordInput
                         state={password}
                         setState={setPassword}
@@ -69,7 +69,7 @@ const ChangePasswordScreen = ({navigation}) => {
                     {
                         showChangePassword && (
                             <>
-                                <Text style={[styles.typePassword, Fonts.bodyLarge, {marginTop: '15%'}]}>Digite a nova palavra-passe</Text>
+                                <Text style={[styles.typePassword, Fonts.bodyLarge, { marginTop: '15%' }]}>Digite a nova palavra-passe</Text>
                                 <PasswordInput
                                     state={newPassword}
                                     setState={setNewPassword}
@@ -94,7 +94,7 @@ const ChangePasswordScreen = ({navigation}) => {
                                             if (newPassword == repeatPassword) {
                                                 Alert.alert(
                                                     'Mudança de Palavra-Passe', 
-                                                    'Sua palavra-passe foi atualizada com sucesso!'
+                                                    'Sua palavra-passe foi atualizada com sucesso. Lembre-se de anotá-la em algum lugar para não esquecer!',
                                                     [
                                                         {
                                                             text: 'Ok',
