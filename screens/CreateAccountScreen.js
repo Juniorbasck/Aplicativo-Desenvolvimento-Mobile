@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     ScrollView,
     View,
@@ -10,7 +10,12 @@ import { Colors } from '../utils/Colors';
 import { CustomTextInput } from '../components/CustomTextInput';
 import { TermsAndConditions } from '../components/TermsAndConditions'; 
 import { CustomButton } from '../components/CustomButton';
-import { validateEmail, validatePassword, validateTextField } from '../utils/Validator';
+import { 
+    validateEmail, 
+    validatePassword, 
+    validateTextField 
+} from '../utils/Validator';
+import { PasswordInput } from '../components/PasswordInput';
 import { StackActions } from '@react-navigation/native';
 
 function validateData(name, surname, username, email, password, confirmPassword) {
@@ -19,8 +24,8 @@ function validateData(name, surname, username, email, password, confirmPassword)
         if (validateEmail(email)) {
             if (validatePassword(password)) {
                 if (password === confirmPassword) {
-                    message.header = 'Sucesso!';
-                    message.body = 'Sua conta foi criada com sucesso!';
+                    message.header = 'Validação de E-mail';
+                    message.body = `Um e-mail contendo um código de validação foi enviado com sucesso para ${email}!`;
                     // return 'Conta criada com sucesso!'
                 } else {
                     message.header = 'Palavra-passe e Confirmação';
@@ -45,7 +50,7 @@ function validateData(name, surname, username, email, password, confirmPassword)
     return message;
 }
 
-const CreateAccountScreen = ({navigation}) => {
+const CreateAccountScreen = ({route, navigation}) => {
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [username, setUsername] = useState('');
@@ -53,6 +58,31 @@ const CreateAccountScreen = ({navigation}) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [checked, setChecked] = useState(false);
+
+    const [avoidUseEffect, setAvoidUseEffect] = useState(false);
+
+    useEffect(() => navigation.addListener('beforeRemove', e => {
+        let action = e.data.action;
+        if (!avoidUseEffect) {
+            e.preventDefault();
+            Alert.alert(
+                'Criação de Conta',
+                'Se voltares os dados serão perdidos. Desejas realmente fazer isso?',
+                [
+                    {
+                        text: 'Sim',
+                        style: 'destructive',
+                        onPress: () => navigation.dispatch(action)
+                    }, 
+                    {
+                        text: 'Não',
+                        style: 'cancel',
+                        onPress: () => {}
+                    }
+                ]
+            );
+        }
+    }), [navigation, avoidUseEffect]);
 
     return (
         <View style={styles.outerContainer}>
@@ -86,23 +116,20 @@ const CreateAccountScreen = ({navigation}) => {
                     state={email}
                     setState={setEmail}
                     keyboardType={'email-address'}
-                    marginBottomPercentage={3}
+                    marginBottomPercentage={5}
                 />
-                <CustomTextInput
-                    placeholder={'Palavra-passe'}
-                    widthPercentage={90}
+                <PasswordInput
                     state={password}
                     setState={setPassword}
-                    hide={true}
-                    marginBottomPercentage={3}
-                />
-                <CustomTextInput
-                    placeholder={'Confirmar palavra-passe'}
                     widthPercentage={90}
+                    marginBottomPercentage={5}
+                />
+                <PasswordInput
                     state={confirmPassword}
                     setState={setConfirmPassword}
-                    hide={true}
+                    widthPercentage={90}
                     marginBottomPercentage={5}
+                    placeholder='Confirmar palavra-passe'
                 />
                 <TermsAndConditions
                     setState={setChecked}
@@ -112,11 +139,20 @@ const CreateAccountScreen = ({navigation}) => {
                         text={'Criar'}
                         onPress={() => {
                             let res = validateData(name, surname, username, email, password, confirmPassword);
-                            Alert.alert(res.header, res.body);
-                            if (res.header == 'Conta criada com sucesso!') {
-                                // Save account data to database.
-                                // Log user in.
-                                navigation.dispatch(StackActions.replace('HomeNavigator'));
+                            if (res.header == 'Validação de E-mail') {
+                                setAvoidUseEffect(true);
+                                Alert.alert(
+                                    res.header, 
+                                    res.body,
+                                    [
+                                        {
+                                            text: 'Ok',
+                                            onPress: () => navigation.dispatch(StackActions.replace('ValidationCode', { email: email }))
+                                        }
+                                    ]
+                                );
+                            } else {
+                                Alert.alert(res.header, res.body);
                             }
                         }}
                         backgroundColor={checked ? Colors.tertiaryKeyColor : Colors.tertiaryKeyColorDisabled}
@@ -149,7 +185,7 @@ const styles = StyleSheet.create({
     nameSurnameContainer: {
         flexDirection: 'row', 
         marginTop: '10%',
-        marginBottom: '3%'
+        marginBottom: '2%'
     }
 });
 

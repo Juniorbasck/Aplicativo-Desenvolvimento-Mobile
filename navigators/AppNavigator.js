@@ -33,19 +33,16 @@ const AppNavigator = ({route}) => {
                 name={'HomeNavigator'} 
                 component={HomeNavigator}
                 options={{headerShown: false, tabBarLabel: 'Home'}}
-                initialParams={route.params}
             />
             <Tab.Screen 
                 name={'ProfileNavigator'} 
                 component={ProfileNavigator}
                 options={{headerShown: false, tabBarLabel: 'Perfil'}}    
-                initialParams={route.params.userData}
             />
             <Tab.Screen 
                 name={'ExpenseNavigator'} 
                 component={ExpenseNavigator}
                 options={{headerShown: false, tabBarLabel: 'Despesas'}}
-                initialParams={{'expenseList': route.params.expenseList}}
             />
         </Tab.Navigator>
     );

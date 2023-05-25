@@ -14,7 +14,6 @@ const HomeNavigator = ({route}) => {
                 name={'Home'} 
                 component={HomeScreen} 
                 options={{headerShown: true}}
-                initialParams={route.params}
             />
             <Stack.Screen 
                 name={'EditExpense'} 

@@ -20,7 +20,6 @@ const RedefinePasswordScreen = ({navigation}) => {
 
     useEffect(() => navigation.addListener('beforeRemove', e => {
         let action = e.data.action;
-        console.log(avoidUseEffect);
         if (!avoidUseEffect) {
             e.preventDefault();
             Alert.alert(
@@ -85,11 +84,10 @@ const RedefinePasswordScreen = ({navigation}) => {
                                                     [
                                                         {
                                                             text: 'Sim',
-                                                            onPress: () => navigation.goBack()
-                                                            // onPress: () => navigation.reset({
-                                                            //     index: 0,
-                                                            //     routes: [{ name: 'AppNavigator' }]
-                                                            // })
+                                                            onPress: () => navigation.reset({
+                                                                index: 0,
+                                                                routes: [{ name: 'AppNavigator' }]
+                                                            })
                                                         },
                                                         {
                                                             text: 'Não',

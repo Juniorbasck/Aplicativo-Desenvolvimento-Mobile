@@ -14,6 +14,7 @@ import { Fonts } from '../utils/Fonts';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 import { validateEmail } from '../utils/Validator';
 import { generateValidationCode, sendCodeEmail } from '../service';
+import { StackActions } from '@react-navigation/native';
 
 const ForgottenPasswordScreen = ({navigation}) => {
     const [email, setEmail] = useState('');
@@ -55,11 +56,16 @@ const ForgottenPasswordScreen = ({navigation}) => {
                                 setEmail('');
                                 Alert.alert(
                                     'Recuperação de Palavra-Passe', 
-                                    `Um e-mail contendo instruções para a recuperação da palavra-passe foi enviado com sucesso para ${email}`,
+                                    `Um e-mail contendo um código de validação foi enviado com sucesso para ${email}`,
                                     [
                                         {
                                             text: 'Ok',
-                                            onPress: () => navigation.navigate('ValidationCode')
+                                            onPress: () => navigation.dispatch(
+                                                StackActions.replace('ValidationCode', { 
+                                                        email: email 
+                                                    }
+                                                )
+                                            )
                                         }
                                     ]
                                 );

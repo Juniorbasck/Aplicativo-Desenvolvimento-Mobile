@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { CreateAccountScreen } from "../screens/CreateAccountScreen";
-import { ValidationCodeScreen } from "../screens/ValidationCodeScreen";
+import { CreateAccountValidationCodeScreen } from "../screens/CreateAccountValidationCodeScreen";
 
 const Stack = createStackNavigator();
 
@@ -17,8 +17,7 @@ const CreateAccountNavigator = () => {
             />
             <Stack.Screen 
                 name='ValidationCode' 
-                component={ValidationCodeScreen} 
-                initialParams={{doLogin: true}}
+                component={CreateAccountValidationCodeScreen} 
                 options={{headerShown: true, headerTitle: 'Validação de Código', headerTitleAlign: 'center'}}
             />
         </Stack.Navigator>

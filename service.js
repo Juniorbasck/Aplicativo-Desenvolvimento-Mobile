@@ -1,4 +1,5 @@
 import { Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import expenses from './expenses.json';
 
 const USE_MOCK_DATA = true;
@@ -25,7 +26,11 @@ const fetchExpenses = async (onFetchData, email='') => {
         // exps = databaseExps(email);
     }
     onFetchData(sort(exps));
-}
+};
+
+const fetchUserData = async (email) => {
+
+};
 
 const getExpenses = async (email='') => {
     let exps;
@@ -68,7 +73,7 @@ const tryLogin = (email, password) => {
         surname: 'Silva',
         username: 'mari123',
         email: 'mari123@gmail.com',
-        image: require('./assets/face1.jpg'),
+        // image: require('./assets/face1.jpg'),
     }
 }
 
@@ -184,9 +189,22 @@ const sendCodeEmail = (email) => {
 
 };
 
+const storeDataAsync = async (key, data) => {
+    try {
+        await AsyncStorage.setItem(key, JSON.stringify(data));
+    } catch (e) {}
+};
+
+const getDataAsync = async key => {
+    try {
+        return JSON.parse(await AsyncStorage.getItem(key));
+    } catch (e) {} 
+};
+
 export { 
     getExpenses, 
     getPaymentMethods,
+    fetchExpenses,
     fetchHistoric,
     updateExpense, 
     createExpense, 
@@ -199,5 +217,7 @@ export {
     stringifyPaymentMethod,
     checkValidationCode,
     generateValidationCode,
-    sendCodeEmail
+    sendCodeEmail,
+    storeDataAsync,
+    getDataAsync
 };

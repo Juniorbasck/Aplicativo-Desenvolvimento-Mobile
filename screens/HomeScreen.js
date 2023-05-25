@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     FlatList,
     View,
@@ -12,10 +12,17 @@ import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 import { ProfilePicture } from '../components/ProfilePicture';
 import { ExpenseStatus } from '../components/ExpenseStatus';
 import { ExpenseCard } from '../components/ExpenseCard';
+import {
+    fetchExpenses,
+    getDataAsync
+} from '../service';
 
-const HomeScreen = ({route, navigation}) => {
-    const [expenses, setExpenses] = useState(route.params?.expenseList);
-    const [userData, setUserData] = useState(route.params?.userData);
+const HomeScreen = ({navigation}) => {
+    const [expenses, setExpenses] = useState([]);
+
+    useEffect(async () => {
+        fetchExpenses(exps => setExpenses(exps), await getDataAsync('userData').email);
+    }, [expenses]);
 
     const handleOnPress = item => {
         navigation.navigate('EditExpense', {

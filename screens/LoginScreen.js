@@ -16,7 +16,7 @@ import { validateEmail, validatePassword } from '../utils/Validator';
 import { 
     tryLogin, 
     signInGoogle,
-    getExpenses
+    storeDataAsync,
 } from '../service';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
@@ -80,15 +80,11 @@ const LoginScreen = ({route, navigation}) => {
                                 let res = validateData(email, password);
                                 if (res.header == 'Sucesso') {
                                     loginTrialRes = tryLogin(email, password);
-                                    let expenses = await getExpenses(email);
                                     if (loginTrialRes) {
+                                        await storeDataAsync('userData', loginTrialRes);
                                         navigation.dispatch(
                                             StackActions.replace(
-                                                'AppNavigator', 
-                                                {
-                                                    userData: loginTrialRes,
-                                                    expenseList: expenses
-                                                }
+                                                'AppNavigator'
                                             )
                                         );
                                     } else {
