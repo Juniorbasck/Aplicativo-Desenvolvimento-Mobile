@@ -13,10 +13,10 @@ import { Fonts } from '../utils/Fonts';
 import { CustomButton } from './CustomButton';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-const TermsAndConditions = ({setState}) => {
+const TermsAndConditions = ({state, setState}) => {
     const [modalVisible, setModalVisible] = useState(false);
-    const [checked, setChecked] = useState(false);
-    const [icon, setIcon] = useState('');
+    const [checked, setChecked] = useState(state);
+    const [icon, setIcon] = useState(checked ? 'checkmark' : '');
 
     return (
         <View style={styles.container}>

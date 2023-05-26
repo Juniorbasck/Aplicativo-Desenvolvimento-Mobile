@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Alert,
     View,
@@ -26,9 +26,33 @@ const ChangePasswordScreen = ({navigation}) => {
     const [newPassword, setNewPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
 
+    const [newPasswordInput, setNewPasswordInput] = useState();
+    const [repeatPasswordInput, setRepeatPasswordInput] = useState();
+
     const [showChangePassword, setShowChangePassword] = useState(false);
     const [chances, setChances] = useState(3);
     const [editable, setEditable] = useState(true);
+
+    useEffect(() => navigation.addListener('beforeRemove', e => {
+        let action = e.data.action;
+        if (action.type === 'POP' && showChangePassword) {
+            e.preventDefault();
+            Alert.alert(
+                'Alterar Palavra-Passe',
+                'Não desejas finalizar a alteração?',
+                [
+                    {
+                        text: 'Sim',
+                        onPress: () =>  {}
+                    }, 
+                    {
+                        text: 'Não',
+                        onPress: () => navigation.dispatch(action)
+                    }
+                ]
+            );
+        } 
+    }), [navigation, showChangePassword]);
 
     return (
         <View style={styles.container}>
@@ -44,6 +68,7 @@ const ChangePasswordScreen = ({navigation}) => {
                         marginTopPercentage={2}
                         marginBottomPercentage={2}
                         editable={editable}
+                        autofocus={true}
                     />
                     <CustomButton
                         text={'Verificar'}
@@ -76,6 +101,10 @@ const ChangePasswordScreen = ({navigation}) => {
                                     marginTopPercentage={2}
                                     marginBottomPercentage={2}
                                     placeholder='Nova palavra-passe'
+                                    setRef={setNewPasswordInput}
+                                    blurOnSubmit={false}
+                                    autofocus={true}
+                                    onSubmitEditing={() => repeatPasswordInput.focus()}
                                 />
                                 <Text style={[styles.typePassword, Fonts.bodyLarge]}>Repita a nova palavra-passe</Text>
                                 <PasswordInput
@@ -84,6 +113,7 @@ const ChangePasswordScreen = ({navigation}) => {
                                     marginTopPercentage={2}
                                     marginBottomPercentage={2}
                                     placeholder='Repita nova palavra-passe'
+                                    setRef={setRepeatPasswordInput}
                                 />
                                 <CustomButton
                                     text={'Guardar'}

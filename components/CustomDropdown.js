@@ -8,7 +8,16 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { Fonts } from '../utils/Fonts';
 import { Colors } from '../utils/Colors';
 
-const CustomDropdown = ({state, setState, options, widthPercentage=90, marginBottomPercentage=5}) => {
+const CustomDropdown = (
+    {
+        state, 
+        setState, 
+        options, 
+        setRef=null,
+        widthPercentage=90, 
+        marginBottomPercentage=5
+    }
+) => {
 
     const renderItem = item => {
         return (
@@ -41,6 +50,7 @@ const CustomDropdown = ({state, setState, options, widthPercentage=90, marginBot
                 onChange={item => setState(item.value)}
                 maxHeight={'90%'}
                 renderItem={renderItem}
+                ref={setRef == null ? null : input => setRef(input)}
             />
         </View>
     );

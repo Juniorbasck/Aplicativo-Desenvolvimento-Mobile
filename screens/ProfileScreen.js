@@ -20,10 +20,11 @@ const ProfileScreen = ({route, navigation}) => {
         surname: 'Silva',
         username: 'mari123',
         email: 'mari123@gmail.com',
+        image: require('../assets/face1.jpg')
     });
 
     const splitSurname = userData.surname.split(' ');
-    const surname =splitSurname[splitSurname.length - 1];
+    const surname = splitSurname[splitSurname.length - 1];
 
     return (
         <View style={styles.outerContainer}>
@@ -42,7 +43,7 @@ const ProfileScreen = ({route, navigation}) => {
             <View style={styles.profileBoard}>
                 <Pressable
                     style={styles.pressable}
-                    onPress={() => navigation.navigate('ProfileDetails', {userData: userData})}
+                    onPress={() => navigation.navigate('ProfileDetails')}
                 >
                     <Ionicons name='settings-outline' size={24} color={Colors.onSecondaryKeyColor}/>
                     <Text style={[Fonts.headlineSmall, {marginLeft: '5%'}]}>Detalhes da Conta</Text> 

@@ -13,12 +13,21 @@ import { Colors } from '../utils/Colors';
 import { format } from '../utils/DateFormatter';
 import DatePicker from 'react-native-modern-datepicker';
 
-const CustomDatePicker = ({state, setState, widthPercentage=90, marginBottomPercentage=5}) => {
-    const [open, setOpen] = useState(false);
+const CustomDatePicker = (
+    {
+        state, 
+        setState, 
+        modalOpenState, 
+        setModalOpenState, 
+        onPicked=null,
+        widthPercentage=90, 
+        marginBottomPercentage=5
+    }
+) => {
     return (
         <View>
             <Pressable
-                onPress={() => setOpen(!open)}
+                onPress={() => setModalOpenState(!modalOpenState)}
                 style={[styles.pressableContainer, {width: widthPercentage / 100 * Dimensions.get('window').width, marginBottom: marginBottomPercentage / 100 * Dimensions.get('window').height}]}
             >   
                 <View style={[styles.sideView, {alignItems: 'flex-start'}]}>
@@ -30,11 +39,11 @@ const CustomDatePicker = ({state, setState, widthPercentage=90, marginBottomPerc
             </Pressable>
             <Modal
                 animationType={'slide'}
-                visible={open}
+                visible={modalOpenState}
                 transparent={true}
             >
                 <Pressable
-                    onPress={() => setOpen(false)}
+                    onPress={() => setModalOpenState(false)}
                     style={styles.modalOuterPressable}
                 >
                     <View
@@ -46,7 +55,10 @@ const CustomDatePicker = ({state, setState, widthPercentage=90, marginBottomPerc
                             selected={state}
                             onDateChange={date => {
                                 setState(format(date, '-', '/'))
-                                setOpen(!open);
+                                setModalOpenState(!modalOpenState);
+                                if (onPicked) {
+                                    onPicked();
+                                }
                             }}
                         />
                     </View>

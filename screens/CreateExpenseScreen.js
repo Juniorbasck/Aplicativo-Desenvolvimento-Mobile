@@ -42,6 +42,12 @@ const CreateExpenseScreen = ({route, navigation}) => {
     const [image, setImage] = useState(null);
     const [paid, setPaid] = useState(false);
 
+    const [titleInput, setTitleInput] = useState();
+    const [entityInput, setEntityInput] = useState();
+    const [priceInput, setPriceInput] = useState();
+    const [modalOpenState, setModalOpenState] = useState(false);
+    const [customDropdownInput, setCustomDropdownInput] = useState();
+
     const [snackBarVisible, setSnackBarVisible] = useState(false);
 
     return (
@@ -66,12 +72,18 @@ const CreateExpenseScreen = ({route, navigation}) => {
                     widthPercentage={90}
                     marginTopPercentage={5}
                     autofocus={true}
+                    setRef={setTitleInput}
+                    onSubmitEditing={() => entityInput.focus()}
+                    blurOnSubmit={false}
                 />
                 <CustomTextInput
                     state={entity}
                     setState={setEntity}
                     placeholder='Entidade'
                     widthPercentage={90}
+                    setRef={setEntityInput}
+                    onSubmitEditing={() => priceInput.focus()}
+                    blurOnSubmit={false}
                 />
                 <CustomTextInput
                     state={price}
@@ -80,15 +92,20 @@ const CreateExpenseScreen = ({route, navigation}) => {
                     placeholder='Preço'
                     widthPercentage={90}
                     marginBottomPercentage={4}
+                    setRef={setPriceInput}
+                    onSubmitEditing={() => setModalOpenState(true)}
                 />
                 <CustomDatePicker
                     state={date}
                     setState={setDate}
                     widthPercentage={90}
                     marginBottomPercentage={3}
+                    modalOpenState={modalOpenState}
+                    setModalOpenState={setModalOpenState}
+                    // onPicked={() => customDropdownInput.focus()}
                 />
                 <View style={styles.rowContainer}>
-                    <View style={{flex: 1, alignItems: 'center'}}>
+                    <View style={styles.paymentMethodContainer}>
                         <Text style={Fonts.bodyLarge}>Método de</Text>
                         <Text style={Fonts.bodyLarge}>Pagamento</Text>
                     </View>
@@ -98,6 +115,7 @@ const CreateExpenseScreen = ({route, navigation}) => {
                         options={getPaymentMethods()}
                         widthPercentage={40}
                         marginBottomPercentage={3}
+                        // setRef={setCustomDropdownInput}
                     />
                 </View>
                 <CustomImagePicker
@@ -177,6 +195,10 @@ const styles = StyleSheet.create({
         width: .9 * Dimensions.get('window').width,
         height: .3 * Dimensions.get('window').height,
         marginBottom: '8%'
+    },
+    paymentMethodContainer: {
+        flex: 1, 
+        alignItems: 'center'
     }
 });
 

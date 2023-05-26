@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 
-const ProfilePicture = ({onPress, size='small', src=require('../assets/face1.jpg')}) => {
+const ProfilePicture = ({onPress, size='small', src=null}) => {
     if (!src) {
         src = require('../assets/unknown.png');
     }

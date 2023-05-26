@@ -22,7 +22,8 @@ const HomeScreen = ({navigation}) => {
         name: 'Marinna',
         surname: 'Silva',
         username: 'mari123',
-        email: 'mari123@gmail.com'
+        email: 'mari123@gmail.com',
+        image: require('../assets/face1.jpg')
     });
 
     useEffect(() => {

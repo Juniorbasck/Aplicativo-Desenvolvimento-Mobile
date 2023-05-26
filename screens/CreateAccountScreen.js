@@ -59,6 +59,13 @@ const CreateAccountScreen = ({route, navigation}) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [checked, setChecked] = useState(false);
 
+    const [nameInput, setNameInput] = useState();
+    const [surnameInput, setSurnameInput] = useState();
+    const [usernameInput, setUsernameInput] = useState();
+    const [emailInput, setEmailInput] = useState();
+    const [passwordInput, setPasswordInput] = useState();
+    const [confirmPasswordInput, setConfirmPasswordInput] = useState();
+
     const [avoidUseEffect, setAvoidUseEffect] = useState(false);
 
     useEffect(() => navigation.addListener('beforeRemove', e => {
@@ -96,11 +103,17 @@ const CreateAccountScreen = ({route, navigation}) => {
                         state={name}
                         setState={setName}
                         autofocus={true}
+                        setRef={setNameInput}
+                        onSubmitEditing={() => surnameInput.focus()}
+                        blurOnSubmit={false}
                     />
                     <CustomTextInput
                         placeholder='Apelido'
                         state={surname}
                         setState={setSurname}
+                        setRef={setSurnameInput}
+                        onSubmitEditing={() => usernameInput.focus()}
+                        blurOnSubmit={false}
                     />                    
                 </View>
                 <CustomTextInput
@@ -109,6 +122,9 @@ const CreateAccountScreen = ({route, navigation}) => {
                     state={username}
                     setState={setUsername}
                     marginBottomPercentage={3}
+                    setRef={setUsernameInput}
+                    onSubmitEditing={() => emailInput.focus()}
+                    blurOnSubmit={false}
                 />
                 <CustomTextInput
                     placeholder={'E-mail'}
@@ -117,12 +133,18 @@ const CreateAccountScreen = ({route, navigation}) => {
                     setState={setEmail}
                     keyboardType={'email-address'}
                     marginBottomPercentage={5}
+                    setRef={setEmailInput}
+                    onSubmitEditing={() => passwordInput.focus()}
+                    blurOnSubmit={false}
                 />
                 <PasswordInput
                     state={password}
                     setState={setPassword}
                     widthPercentage={90}
                     marginBottomPercentage={5}
+                    setRef={setPasswordInput}
+                    onSubmitEditing={() => confirmPasswordInput.focus()}
+                    blurOnSubmit={false}
                 />
                 <PasswordInput
                     state={confirmPassword}
@@ -130,8 +152,10 @@ const CreateAccountScreen = ({route, navigation}) => {
                     widthPercentage={90}
                     marginBottomPercentage={5}
                     placeholder='Confirmar palavra-passe'
+                    setRef={setConfirmPasswordInput}
                 />
                 <TermsAndConditions
+                    state={checked}
                     setState={setChecked}
                 />
                 <View style={{marginTop: '10%'}}>

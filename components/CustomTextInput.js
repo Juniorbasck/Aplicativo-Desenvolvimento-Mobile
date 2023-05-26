@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
     TextInput, 
     StyleSheet, 
@@ -21,7 +21,7 @@ const CustomTextInput = (
         maxLength=30,
         onSubmitEditing=null,
         blurOnSubmit=true,
-        ref=null
+        setRef=null
 }) => {
     return ( 
         <TextInput
@@ -44,7 +44,7 @@ const CustomTextInput = (
             onChangeText={text => setState(text)}
             onSubmitEditing={onSubmitEditing}
             blurOnSubmit={blurOnSubmit}
-            ref={ref}
+            ref={setRef == null ? null : input => setRef(input)}
             autoFocus={autofocus}
             maxLength={maxLength}
         />

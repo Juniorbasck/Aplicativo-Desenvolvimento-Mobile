@@ -18,6 +18,9 @@ const RedefinePasswordScreen = ({navigation}) => {
     const [repeatPassword, setRepeatPassword] = useState('');
     const [avoidUseEffect, setAvoidUseEffect] = useState(false);
 
+    const [newPasswordInput, setNewPasswordInput] = useState();
+    const [repeatPasswordInput, setRepeatPasswordInput] = useState();
+
     useEffect(() => navigation.addListener('beforeRemove', e => {
         let action = e.data.action;
         if (!avoidUseEffect) {
@@ -54,6 +57,10 @@ const RedefinePasswordScreen = ({navigation}) => {
                     marginTopPercentage={2}
                     marginBottomPercentage={2}
                     placeholder='Nova palavra-passe'
+                    autofocus={true}
+                    setRef={setNewPasswordInput}
+                    onSubmitEditing={() => repeatPasswordInput.focus()}
+                    blurOnSubmit={false}
                 />
                 <Text style={[styles.typePassword, Fonts.bodyLarge]}>Repita a nova palavra-passe</Text>
                 <PasswordInput
@@ -62,6 +69,7 @@ const RedefinePasswordScreen = ({navigation}) => {
                     marginTopPercentage={2}
                     marginBottomPercentage={2}
                     placeholder='Repita nova palavra-passe'
+                    setRef={setRepeatPasswordInput}
                 />
                 <CustomButton
                     text={'Guardar'}

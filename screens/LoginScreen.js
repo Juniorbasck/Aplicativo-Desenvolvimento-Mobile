@@ -43,6 +43,9 @@ const LoginScreen = ({route, navigation}) => {
     const [email, setEmail] = useState('');   
     const [password, setPassword] = useState('');
 
+    const [emailInput, setEmailInput] = useState();
+    const [passwordInput, setPasswordInput] = useState();
+
     return (
         <View style={styles.outerContainer}>
             <ScrollView
@@ -59,10 +62,15 @@ const LoginScreen = ({route, navigation}) => {
                     setState={setEmail}
                     placeholder='E-mail ou usuário'
                     widthPercentage={90}
+                    setRef={setEmailInput}
+                    keyboardType='email-address'
+                    blurOnSubmit={false}
+                    onSubmitEditing={() => passwordInput.focus()}
                 />
                 <PasswordInput
                     state={password}
                     setState={setPassword}
+                    setRef={setPasswordInput}
                 />
                 <View style={styles.forgottenPasswordContainer}>
                     <Text 

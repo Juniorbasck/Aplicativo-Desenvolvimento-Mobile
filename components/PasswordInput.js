@@ -16,7 +16,11 @@ const PasswordInput = ({
         marginTopPercentage=0, 
         marginBottomPercentage=0,
         editable=true,
-        placeholder='Palavra-passe'
+        placeholder='Palavra-passe',
+        autofocus=false,
+        setRef=null,
+        onSubmitEditing=null,
+        blurOnSubmit=true
 }) => {
     const [passwordIcon, setPasswordIcon] = useState('eye');
 
@@ -37,6 +41,10 @@ const PasswordInput = ({
                 onChangeText={text => setState(text)}
                 secureTextEntry={ passwordIcon === 'eye' ? true : false }
                 editable={editable}
+                autoFocus={autofocus}
+                ref={setRef == null ? null : input => setRef(input)}
+                onSubmitEditing={onSubmitEditing}
+                blurOnSubmit={blurOnSubmit}
             />
             <Pressable 
                 onPress={() => setPasswordIcon( passwordIcon === 'eye' ? 'eye-off' : 'eye' )}
