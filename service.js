@@ -195,9 +195,9 @@ const storeDataAsync = async (key, data) => {
     } catch (e) {}
 };
 
-const getDataAsync = async key => {
+const getDataAsync = async (key, onGetData) => {
     try {
-        return JSON.parse(await AsyncStorage.getItem(key));
+        AsyncStorage.getItem(key).then(value => onGetData(JSON.parse(value)));
     } catch (e) {} 
 };
 

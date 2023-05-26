@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     View,
@@ -15,7 +15,12 @@ import { StackActions } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ProfileScreen = ({route, navigation}) => {
-    const [userData, setUserData] = useState(route.params);
+    const [userData, setUserData] = useState({
+        name: 'Marinna',
+        surname: 'Silva',
+        username: 'mari123',
+        email: 'mari123@gmail.com',
+    });
 
     const splitSurname = userData.surname.split(' ');
     const surname =splitSurname[splitSurname.length - 1];

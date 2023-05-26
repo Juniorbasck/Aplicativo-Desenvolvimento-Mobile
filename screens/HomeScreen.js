@@ -14,15 +14,20 @@ import { ExpenseStatus } from '../components/ExpenseStatus';
 import { ExpenseCard } from '../components/ExpenseCard';
 import {
     fetchExpenses,
-    getDataAsync
 } from '../service';
 
 const HomeScreen = ({navigation}) => {
     const [expenses, setExpenses] = useState([]);
+    const [userData, setUserData] = useState({
+        name: 'Marinna',
+        surname: 'Silva',
+        username: 'mari123',
+        email: 'mari123@gmail.com'
+    });
 
-    useEffect(async () => {
-        fetchExpenses(exps => setExpenses(exps), await getDataAsync('userData').email);
-    }, [expenses]);
+    useEffect(() => {
+        fetchExpenses(setExpenses, userData.email);
+    }, []);
 
     const handleOnPress = item => {
         navigation.navigate('EditExpense', {

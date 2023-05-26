@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     FlatList,
     View,
@@ -11,16 +11,21 @@ import {
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { ExpenseCard } from '../components/ExpenseCard';
-import { sort } from '../service';
+import { fetchExpenses, sort } from '../service';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 
 const ExpenseScreen = ({route, navigation}) => {
-    const [expenses, setExpenses] = useState(route.params.expenseList);
-    const [filteredExpenses, setFilteredExpenses] = useState(route.params.expenseList);
+    const [expenses, setExpenses] = useState([]);
+    const [filteredExpenses, setFilteredExpenses] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [icon, setIcon] = useState('reorder-three');
     const [closeFAB, setCloseFAB] = useState(false);
+
+    useEffect(() => {
+        fetchExpenses(setExpenses, 'mari123@gmail.com');
+        fetchExpenses(setFilteredExpenses, 'mari123@gmail.com');
+    }, []);
 
     const onChangedOrder = () => {
         setExpenses(sort(expenses));
