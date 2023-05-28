@@ -102,7 +102,6 @@ const CreateExpenseScreen = ({route, navigation}) => {
                     marginBottomPercentage={3}
                     modalOpenState={modalOpenState}
                     setModalOpenState={setModalOpenState}
-                    // onPicked={() => customDropdownInput.focus()}
                 />
                 <View style={styles.rowContainer}>
                     <View style={styles.paymentMethodContainer}>
@@ -115,7 +114,6 @@ const CreateExpenseScreen = ({route, navigation}) => {
                         options={getPaymentMethods()}
                         widthPercentage={40}
                         marginBottomPercentage={3}
-                        // setRef={setCustomDropdownInput}
                     />
                 </View>
                 <CustomImagePicker

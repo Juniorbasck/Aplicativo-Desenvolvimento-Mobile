@@ -19,7 +19,6 @@ const CustomDatePicker = (
         setState, 
         modalOpenState, 
         setModalOpenState, 
-        onPicked=null,
         widthPercentage=90, 
         marginBottomPercentage=5
     }
@@ -56,9 +55,6 @@ const CustomDatePicker = (
                             onDateChange={date => {
                                 setState(format(date, '-', '/'))
                                 setModalOpenState(!modalOpenState);
-                                if (onPicked) {
-                                    onPicked();
-                                }
                             }}
                         />
                     </View>

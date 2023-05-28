@@ -13,7 +13,6 @@ const CustomDropdown = (
         state, 
         setState, 
         options, 
-        setRef=null,
         widthPercentage=90, 
         marginBottomPercentage=5
     }
@@ -50,7 +49,6 @@ const CustomDropdown = (
                 onChange={item => setState(item.value)}
                 maxHeight={'90%'}
                 renderItem={renderItem}
-                ref={setRef == null ? null : input => setRef(input)}
             />
         </View>
     );
