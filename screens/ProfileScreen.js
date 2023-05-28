@@ -12,19 +12,25 @@ import { Fonts } from '../utils/Fonts';
 import { ProfilePicture } from '../components/ProfilePicture';
 import { CustomButton } from '../components/CustomButton';
 import { StackActions } from '@react-navigation/native';
+import {
+    getAuth,
+    signOut
+} from 'firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { fetchUserData } from '../service';
 
 const ProfileScreen = ({route, navigation}) => {
-    const [userData, setUserData] = useState({
-        name: 'Marinna',
-        surname: 'Silva',
-        username: 'mari123',
-        email: 'mari123@gmail.com',
-        image: require('../assets/face1.jpg')
-    });
+    const [userData, setUserData] = useState({});
 
-    const splitSurname = userData.surname.split(' ');
-    const surname = splitSurname[splitSurname.length - 1];
+    useEffect(() => {
+        fetchUserData(setUserData);
+    }, []);
+
+    function getFormattedName() {
+        const splitSurname = userData?.surname?.split(' ');
+        const surname = splitSurname[splitSurname?.length - 1];
+        return userData.name + ' ' + surname;
+    }
 
     return (
         <View style={styles.outerContainer}>
@@ -36,7 +42,7 @@ const ProfileScreen = ({route, navigation}) => {
                     />
                 </View>
                 <View style={[styles.flexEnd, {alignItems: 'center'}]}>
-                    <Text style={[Fonts.displaySmall, {color: Colors.onPrimaryKeyColor}]}>{userData.name + ' ' + surname}</Text>
+                    <Text style={[Fonts.displaySmall, {color: Colors.onPrimaryKeyColor}]}>{getFormattedName()}</Text>
                     <Text style={[Fonts.bodyLarge, {color: Colors.onPrimaryKeyColor}]}>{userData.email}</Text>
                 </View>
             </View>
@@ -77,7 +83,15 @@ const ProfileScreen = ({route, navigation}) => {
                                     [
                                         {
                                             text: 'Sim',
-                                            onPress: () => navigation.dispatch(StackActions.replace('Login'))
+                                            onPress: async () => {
+                                                try {
+                                                    const auth = getAuth();
+                                                    await signOut(auth);
+                                                    navigation.dispatch(StackActions.replace('Login'));
+                                                } catch (error) {
+                                                    Alert.alert('Erro ao fazer log out', error.code + '\n' + error.message);
+                                                }
+                                            }
                                         },
                                         {
                                             text: 'Não',

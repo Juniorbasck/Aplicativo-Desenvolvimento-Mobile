@@ -14,20 +14,16 @@ import { ExpenseStatus } from '../components/ExpenseStatus';
 import { ExpenseCard } from '../components/ExpenseCard';
 import {
     fetchExpenses,
+    fetchUserData
 } from '../service';
 
 const HomeScreen = ({navigation}) => {
     const [expenses, setExpenses] = useState([]);
-    const [userData, setUserData] = useState({
-        name: 'Marinna',
-        surname: 'Silva',
-        username: 'mari123',
-        email: 'mari123@gmail.com',
-        image: require('../assets/face1.jpg')
-    });
+    const [userData, setUserData] = useState({});
 
     useEffect(() => {
-        fetchExpenses(setExpenses, userData.email);
+        fetchExpenses(setExpenses);
+        fetchUserData(setUserData);
     }, []);
 
     const handleOnPress = item => {

@@ -1,6 +1,12 @@
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import expenses from './expenses.json';
+import { getAuth } from 'firebase/auth';
+import { 
+    doc,
+    getDoc 
+} from 'firebase/firestore';
+import { db } from './firebase.config';
 
 const USE_MOCK_DATA = true;
 
@@ -17,7 +23,7 @@ const sort = exps => {
     return notPaid.concat(paid);
 }
 
-const fetchExpenses = async (onFetchData, email='') => {
+const fetchExpenses = async onFetchData => {
     let exps;
     if (USE_MOCK_DATA) {
         exps = expenses;
@@ -28,8 +34,23 @@ const fetchExpenses = async (onFetchData, email='') => {
     onFetchData(sort(exps));
 };
 
-const fetchUserData = async (email) => {
-
+const fetchUserData = async onFetchData => {
+    let userData;
+    if (false) {
+        userData = {
+            name: 'Marinna',
+            surname: 'Silva',
+            username: 'mari123',
+            email: 'mari123@gmail.com'
+        };
+    } else {
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
+        const currentUserRef = doc(db, 'users', currentUser.email);
+        const currentUserDoc = await getDoc(currentUserRef);
+        userData = currentUserDoc.data();
+    }
+    onFetchData(userData);
 };
 
 const getExpenses = async (email='') => {
@@ -53,28 +74,6 @@ const createExpense = (title, entity, date, price, paymentMethod, image, paid) =
 
 const deleteExpense = id => {
     // Delete the corresponding expense on the API.
-}
-
-const tryLogin = (email, password) => {
-    // Try to match the password with the corresponding email's saved encrypted password.
-    // if match: return user data.
-    // else: return null.
-    // if (email === 'mari123@gmail.com' && password === '') {
-    //     return {
-    //         name: 'Marinna',
-    //         surname: 'Silva',
-    //         username: 'mari123',
-    //         email: email,
-    //     }
-    // }
-    // return null;
-    return {
-        name: 'Marinna',
-        surname: 'Silva',
-        username: 'mari123',
-        email: 'mari123@gmail.com',
-        // image: require('./assets/face1.jpg'),
-    }
 }
 
 const signInGoogle = () => {
@@ -205,11 +204,11 @@ export {
     getExpenses, 
     getPaymentMethods,
     fetchExpenses,
+    fetchUserData,
     fetchHistoric,
     updateExpense, 
     createExpense, 
     deleteExpense, 
-    tryLogin, 
     signInGoogle,
     updateUser,
     sort,

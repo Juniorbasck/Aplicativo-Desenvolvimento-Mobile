@@ -14,30 +14,61 @@ import { CustomTextInput } from '../components/CustomTextInput';
 import { StackActions } from '@react-navigation/native';
 import { validateEmail, validatePassword } from '../utils/Validator';
 import { 
-    tryLogin, 
     signInGoogle,
-    storeDataAsync,
 } from '../service';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { PasswordInput } from '../components/PasswordInput';
+import { 
+    getAuth,
+    signInWithEmailAndPassword
+} from 'firebase/auth';
 
 function validateData(email, password){
     let message = {};
-    // if(validateEmail(email)) {
-    //     if (validatePassword(password)) {
-    //         message.header = 'Sucesso';
-    //     } else {
-    //         message.header = 'Padrão de Senha';
-    //         message.body = 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!';
-    //     }
-    // } else {
-    //     message.header = 'E-mail Inválido!';
-    //     message.body = 'Endereço de e-mail inválido!';
-    // }
-    message.header = 'Sucesso';
+    if(validateEmail(email)) {
+        if (validatePassword(password)) {
+            message.header = 'Sucesso';
+        } else {
+            message.header = 'Padrão de Senha';
+            message.body = 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!';
+        }
+    } else {
+        message.header = 'E-mail Inválido!';
+        message.body = 'Endereço de e-mail inválido!';
+    }
     return message;
 }
+
+const login = async (email, password) => {
+    try {
+        const auth = getAuth();
+        const userCred = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+        await auth.currentUser.reload();
+        const user = userCred.user;
+        return user;
+    } catch (error) {
+        let header, body;
+        switch (error.code) {
+            case 'auth/user-not-found':
+                header = 'Usuário Não Encontrado';
+                body = 'Nenhum utilizador foi encontrado com essas credenciais!';
+                break;
+            case 'auth/wrong-password':
+                header = 'Credenciais Inválidas';
+                body = 'Suas credenciais não puderam ser validadas!';
+                break;
+            default:
+                header = error.code;
+                body = error.body;
+        }
+        Alert.alert(header, body);
+    }
+};
 
 const LoginScreen = ({route, navigation}) => {
     const [email, setEmail] = useState('');   
@@ -45,6 +76,11 @@ const LoginScreen = ({route, navigation}) => {
 
     const [emailInput, setEmailInput] = useState();
     const [passwordInput, setPasswordInput] = useState();
+
+    function cleanInputs() {
+        setEmail('');
+        setPassword('');
+    }
 
     return (
         <View style={styles.outerContainer}>
@@ -87,23 +123,17 @@ const LoginScreen = ({route, navigation}) => {
                         onPress={async () =>  {
                                 let res = validateData(email, password);
                                 if (res.header == 'Sucesso') {
-                                    loginTrialRes = tryLogin(email, password);
-                                    if (loginTrialRes) {
-                                        await storeDataAsync('userData', loginTrialRes);
-                                        navigation.dispatch(
-                                            StackActions.replace(
-                                                'AppNavigator'
-                                            )
-                                        );
+                                    let user = await login(email, password);
+                                    if (user) {
+                                        navigation.dispatch(StackActions.replace('AppNavigator'));
                                     } else {
-                                        Alert.alert('Credenciais Inválidas!', 'Infelizmente, não encontramos uma conta com essas credenciais!');
-                                        setEmail('');
-                                        setPassword('');
+                                        cleanInputs();
+                                        emailInput.focus();
                                     }
                                 } else {
                                     Alert.alert(res.header, res.body);
-                                    setEmail('');
-                                    setPassword('');
+                                    cleanInputs();
+                                    emailInput.focus();
                                 }
                             }
                         }
