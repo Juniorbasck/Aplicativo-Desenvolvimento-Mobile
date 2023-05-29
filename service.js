@@ -4,11 +4,15 @@ import expenses from './expenses.json';
 import { getAuth } from 'firebase/auth';
 import { 
     doc,
-    getDoc 
+    getDoc, 
+    setDoc,
+    updateDoc,
+    arrayUnion,
+    arrayRemove
 } from 'firebase/firestore';
 import { db } from './firebase.config';
 
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 const sort = exps => {
     let sorted = exps.sort((exp1, exp2) => new Date(exp1.date).getTime() - new Date(exp2.date).getTime());
@@ -28,15 +32,19 @@ const fetchExpenses = async onFetchData => {
     if (USE_MOCK_DATA) {
         exps = expenses;
     } else {
-        // Fetch data from database using `email` as primary key.
-        // exps = databaseExps(email);
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
+        const docRef = doc(db, 'expenses', currentUser.email);
+        const theDoc = await getDoc(docRef);
+        let temp = theDoc.data();
+        exps = temp.expenses;
     }
     onFetchData(sort(exps));
 };
 
 const fetchUserData = async onFetchData => {
     let userData;
-    if (false) {
+    if (USE_MOCK_DATA) {
         userData = {
             name: 'Marinna',
             surname: 'Silva',
@@ -46,26 +54,25 @@ const fetchUserData = async onFetchData => {
     } else {
         const auth = getAuth();
         const currentUser = auth.currentUser;
-        const currentUserRef = doc(db, 'users', currentUser.email);
-        const currentUserDoc = await getDoc(currentUserRef);
-        userData = currentUserDoc.data();
+        const docRef = doc(db, 'users', currentUser.email);
+        const theDoc = await getDoc(docRef);
+        userData = theDoc.data();
     }
     onFetchData(userData);
 };
 
-const getExpenses = async (email='') => {
-    let exps;
-    if (USE_MOCK_DATA) {
-        exps = expenses;
-    } else {
-        // Fetch data from database using `email` as primary key.
-        // exps = databaseExps(email);
-    }
-    return sort(exps);
-}
-
-const updateExpense = expense => {
-    // Update on API.
+const updateExpense = async (oldExpense, updatedExpense) => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    const docRef = doc(db, 'expenses', currentUser.email);
+    // Remove former expense from database.
+    await updateDoc(docRef, {
+        expenses: arrayRemove(oldExpense)
+    });
+    // Add the new one.
+    await updateDoc(docRef, {
+        expenses: arrayUnion(updatedExpense)
+     });
 }
 
 const createExpense = (title, entity, date, price, paymentMethod, image, paid) => {
@@ -201,7 +208,6 @@ const getDataAsync = async (key, onGetData) => {
 };
 
 export { 
-    getExpenses, 
     getPaymentMethods,
     fetchExpenses,
     fetchUserData,

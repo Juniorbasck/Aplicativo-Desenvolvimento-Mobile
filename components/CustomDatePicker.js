@@ -17,12 +17,12 @@ const CustomDatePicker = (
     {
         state, 
         setState, 
-        modalOpenState, 
-        setModalOpenState, 
         widthPercentage=90, 
         marginBottomPercentage=5
     }
 ) => {
+    const [modalOpenState, setModalOpenState] = useState(false);
+
     return (
         <View>
             <Pressable

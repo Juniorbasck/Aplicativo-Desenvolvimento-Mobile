@@ -12,18 +12,23 @@ import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 import { ProfilePicture } from '../components/ProfilePicture';
 import { ExpenseStatus } from '../components/ExpenseStatus';
 import { ExpenseCard } from '../components/ExpenseCard';
+import { LoadingIndicator } from '../components/LoadingIndicator';
 import {
     fetchExpenses,
     fetchUserData
 } from '../service';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({route, navigation}) => {
     const [expenses, setExpenses] = useState([]);
     const [userData, setUserData] = useState({});
+    const [isLoadingData, setLoadingData] = useState(true);
 
     useEffect(() => {
         fetchExpenses(setExpenses);
         fetchUserData(setUserData);
+        setTimeout(() => {
+            setLoadingData(false);
+        }, 1000);
     }, []);
 
     const handleOnPress = item => {
@@ -37,14 +42,15 @@ const HomeScreen = ({navigation}) => {
         setExpenses(expenses.filter(ele => ele.id != id));
     }
 
-    let toPay = expenses.filter(expense => !expense.paid);
-    let total = toPay.reduce((accumulator, expense) => accumulator + expense.price, 0.0)?.toFixed(2);
-    let expenseTitle = 'Despesas Atuais';
-    if (!toPay.length) {
-        expenseTitle = 'Sem ' + expenseTitle;
-    }
+    const getToPay = () => expenses.filter(expense => !expense.paid);
 
-    return (
+    const getTotal = () => getToPay().reduce((accumulator, expense) => accumulator + expense.price, 0.0).toFixed(2);
+    
+    const getExpenseTitle = () => getToPay().length > 0 ? 'Despesas Atuais' : 'Sem Despesas Atuais'; 
+
+    return isLoadingData ? (
+            <LoadingIndicator/>
+        ) : (
         <View style={styles.outerContainer}>
             <View style={styles.upperContainer}>
                 <View style={styles.flexStart}>
@@ -64,24 +70,24 @@ const HomeScreen = ({navigation}) => {
             </View>
             <View style={styles.expenseStatus}>
                 <ExpenseStatus
-                    total={total}
-                    toPay={toPay.length}
-                    paid={expenses.length - toPay.length}
+                    total={getTotal()}
+                    toPay={getToPay().length}
+                    paid={expenses.length - getToPay().length}
                 />
             </View>
             <View 
                 style={
                     [
                         styles.expenseBoard,
-                        toPay.length > 1 ? {flex: 4} : toPay.length > 0 ? {flex: 2} : {flex: 1}
+                        getToPay().length > 1 ? {flex: 4} : getToPay().length > 0 ? {flex: 2} : {flex: 1}
                     ]
                 }
             >
                 <View style={styles.currentExpensesTitleContainer}>
-                    <Text style={[Fonts.headlineMedium, styles.currentExpensesTitle]}>{expenseTitle}</Text>        
+                    <Text style={[Fonts.headlineMedium, styles.currentExpensesTitle]}>{getExpenseTitle()}</Text>        
                 </View>
                 <FlatList
-                    data={toPay}
+                    data={getToPay()}
                     renderItem={item => <ExpenseCard data={{...item, onPress: handleOnPress, onLongPress: handleLongPress}}/>}
                     keyExtractor={item => item.id}
                 />

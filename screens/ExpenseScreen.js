@@ -13,6 +13,7 @@ import { Fonts } from '../utils/Fonts';
 import { ExpenseCard } from '../components/ExpenseCard';
 import { fetchExpenses, sort } from '../service';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { LoadingIndicator } from '../components/LoadingIndicator';
 
 
 const ExpenseScreen = ({route, navigation}) => {
@@ -21,10 +22,14 @@ const ExpenseScreen = ({route, navigation}) => {
     const [searchText, setSearchText] = useState('');
     const [icon, setIcon] = useState('reorder-three');
     const [closeFAB, setCloseFAB] = useState(false);
+    const [isLoadingData, setLoadingData] = useState(true);
 
     useEffect(() => {
-        fetchExpenses(setExpenses, 'mari123@gmail.com');
-        fetchExpenses(setFilteredExpenses, 'mari123@gmail.com');
+        fetchExpenses(setExpenses);
+        fetchExpenses(setFilteredExpenses);
+        setTimeout(() => {
+            setLoadingData(false);
+        }, 1000);
     }, []);
 
     const onChangedOrder = () => {
@@ -74,7 +79,9 @@ const ExpenseScreen = ({route, navigation}) => {
         expenseTitle = 'Sem Despesas';
     }
 
-    return (
+    return isLoadingData ? (
+        <LoadingIndicator/>
+    ) : (
         <View style={styles.outerContainer}>
             <View style={styles.titleContainer}>
                 <Text style={[Fonts.displaySmall, styles.greetingText]}>{expenseTitle}</Text> 

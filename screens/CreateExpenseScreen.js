@@ -46,7 +46,6 @@ const CreateExpenseScreen = ({route, navigation}) => {
     const [entityInput, setEntityInput] = useState();
     const [priceInput, setPriceInput] = useState();
     const [modalOpenState, setModalOpenState] = useState(false);
-    const [customDropdownInput, setCustomDropdownInput] = useState();
 
     const [snackBarVisible, setSnackBarVisible] = useState(false);
 

@@ -24,15 +24,26 @@ function validate(title, entity, price) {
     return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
 }
 
-function update(item, title, entity, date, price, paymentMethod, image, paid) {
-    item.title = title;
-    item.entity = entity;
-    item.date = date;
-    item.price = parseFloat(price);
-    item.paymentMethod = paymentMethod;
-    item.image = image;
-    item.paid = paid;
-    updateExpense(item);
+async function update(item, title, entity, date, price, paymentMethod, image, paid) {
+    let updatedItem = {
+        id: item.id,
+        title: title,
+        entity: entity,
+        date: date,
+        price: parseFloat(price),
+        paymentMethod: paymentMethod,
+        image: image,
+        paid: paid
+    };
+    let oldItem = {...item};
+    // item.title = title;
+    // item.entity = entity;
+    // item.date = date;
+    // item.price = parseFloat(price);
+    // item.paymentMethod = paymentMethod;
+    // item.image = image;
+    // item.paid = paid;
+    await updateExpense(oldItem, updatedItem);
 }
 
 function dataChanged(item, title, entity, date, price, paymentMethod, image, paid) {
@@ -132,11 +143,11 @@ const EditExpenseScreen = ({route, navigation}) => {
                 />
                 <CustomButton
                     text={'Guardar'}
-                    onPress={() => {
+                    onPress={async () => {
                             let localTitle = title.trim(), localEntity = entity.trim(), localPrice = price.trim();
                             if (validate(localTitle, localEntity, price)) {
                                 if (dataChanged(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid)) {
-                                    update(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid);
+                                    await update(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid);
                                 }
                                 setSnackBarVisible(true);
                                 setTimeout(() => {

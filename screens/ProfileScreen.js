@@ -18,21 +18,28 @@ import {
 } from 'firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fetchUserData } from '../service';
+import { LoadingIndicator } from '../components/LoadingIndicator';
 
 const ProfileScreen = ({route, navigation}) => {
     const [userData, setUserData] = useState({});
+    const [isLoadingData, setLoadingData] = useState(true);
 
     useEffect(() => {
         fetchUserData(setUserData);
+        setTimeout(() => {
+            setLoadingData(false);
+        }, 1000);
     }, []);
 
     function getFormattedName() {
-        const splitSurname = userData?.surname?.split(' ');
-        const surname = splitSurname[splitSurname?.length - 1];
+        const splitSurname = userData.surname.split(' ');
+        const surname = splitSurname[splitSurname.length - 1];
         return userData.name + ' ' + surname;
     }
 
-    return (
+    return isLoadingData ? (
+        <LoadingIndicator/>
+    ) : (
         <View style={styles.outerContainer}>
             <View style={styles.upperContainer}>
                 <View style={styles.flexStart}>
