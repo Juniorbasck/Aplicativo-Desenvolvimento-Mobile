@@ -18,6 +18,9 @@ import { CustomImagePicker } from '../components/CustomImagePicker';
 import { CustomCheckbox } from '../components/CustomCheckbox';
 import { getPaymentMethods } from '../../service';
 import { Snackbar } from 'react-native-paper';
+import { updateExpense } from '../../service';
+import { useAppDispatch } from '../app/hooks';
+import { setExpensesAsync } from '../features/expenses/expensesSlice';
 
 function validate(title, entity, price) {
     return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
@@ -35,14 +38,7 @@ async function update(item, title, entity, date, price, paymentMethod, image, pa
         paid: paid
     };
     let oldItem = {...item};
-    // item.title = title;
-    // item.entity = entity;
-    // item.date = date;
-    // item.price = parseFloat(price);
-    // item.paymentMethod = paymentMethod;
-    // item.image = image;
-    // item.paid = paid;
-    // await updateExpense(oldItem, updatedItem);
+    await updateExpense(oldItem, updatedItem);
 }
 
 function dataChanged(item, title, entity, date, price, paymentMethod, image, paid) {
@@ -58,9 +54,10 @@ const EditExpenseScreen = ({route, navigation}) => {
     const [paymentMethod, setPaymentMethod] = useState(item.paymentMethod);
     const [image, setImage] = useState(null);
     const [paid, setPaid] = useState(item.paid);
-
+    
     const [snackBarVisible, setSnackBarVisible] = useState(false);
-
+    const dispatch = useAppDispatch();
+    
     return (
         <View style={styles.outerContainer}>
             <ScrollView 
@@ -147,6 +144,7 @@ const EditExpenseScreen = ({route, navigation}) => {
                             if (validate(localTitle, localEntity, price)) {
                                 if (dataChanged(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid)) {
                                     await update(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid);
+                                    dispatch(setExpensesAsync());
                                 }
                                 setSnackBarVisible(true);
                                 setTimeout(() => {

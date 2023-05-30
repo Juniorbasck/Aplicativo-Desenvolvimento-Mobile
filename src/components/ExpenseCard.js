@@ -37,10 +37,7 @@ const ExpenseCard = props => {
                     [
                         {
                             text: 'Sim',
-                            onPress: () => {
-                                deleteExpense(props.data.item.id);
-                                onLongPress(props.data.item.id);
-                            }
+                            onPress: () => onLongPress(props.data.item)
                         },
                         {
                             text: 'Não',

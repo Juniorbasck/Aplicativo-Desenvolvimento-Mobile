@@ -11,31 +11,40 @@ import {
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { ExpenseCard } from '../components/ExpenseCard';
-import { fetchExpenses, sort } from '../../service';
+import { sortState } from '../../service';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LoadingIndicator } from '../components/LoadingIndicator';
-
+import {
+    useAppSelector,
+    useAppDispatch
+} from '../app/hooks';
+import {
+    selectExpenses,
+    setExpensesAsync,
+} from '../features/expenses/expensesSlice';
+import { deleteExpense } from '../../service';
 
 const ExpenseScreen = ({route, navigation}) => {
-    const [expenses, setExpenses] = useState([]);
-    const [filteredExpenses, setFilteredExpenses] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [icon, setIcon] = useState('reorder-three');
     const [closeFAB, setCloseFAB] = useState(false);
-    const [isLoadingData, setLoadingData] = useState(true);
+
+    const expenses = useAppSelector(selectExpenses);
+    const expensesStatus = useAppSelector(state => state.expenses.status);
+
+    const filteredExpenses = useAppSelector(selectExpenses);
+    const filteredExpensesStatus = useAppSelector(state => state.expenses.status);
+
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
-        fetchExpenses(setExpenses);
-        fetchExpenses(setFilteredExpenses);
-        setTimeout(() => {
-            setLoadingData(false);
-        }, 1000);
+        dispatch(setExpensesAsync());
     }, []);
 
-    const onChangedOrder = () => {
-        setExpenses(sort(expenses));
-        setFilteredExpenses(sort(filteredExpenses));
-    }
+    // const onChangedOrder = () => {
+    //     setExpenses(sort(expenses));
+    //     setFilteredExpenses(sort(filteredExpenses));
+    // }
 
     const handleOnPress = item => {
         navigation.navigate('EditExpense', {
@@ -44,9 +53,9 @@ const ExpenseScreen = ({route, navigation}) => {
         });
     };
 
-    const handleOnLongPress = id => {
-        setExpenses(expenses.filter(ele => ele.id != id));
-        setFilteredExpenses(filteredExpenses.filter(ele => ele.id != id));
+    const handleLongPress = async expense => {
+        await deleteExpense(expense);
+        dispatch(setExpensesAsync());
     }
 
     const getCurrentExpenseGroup = (useNext=true) => {
@@ -79,7 +88,7 @@ const ExpenseScreen = ({route, navigation}) => {
         expenseTitle = 'Sem Despesas';
     }
 
-    return isLoadingData ? (
+    return expensesStatus === 'loading' || filteredExpensesStatus === 'loading' ? (
         <LoadingIndicator/>
     ) : (
         <View style={styles.outerContainer}>
@@ -110,7 +119,7 @@ const ExpenseScreen = ({route, navigation}) => {
                     <Pressable
                         onPress={() => {
                                 setSearchText('');
-                                setFilteredExpenses(getCurrentExpenseGroup(false));
+                                // setFilteredExpenses(getCurrentExpenseGroup(false));
                             }
                         }
                     >
@@ -122,13 +131,13 @@ const ExpenseScreen = ({route, navigation}) => {
                         defaultValue={searchText}
                         onChangeText={text => {
                             setSearchText(text);
-                            if (!text.length) {
-                                setFilteredExpenses(getCurrentExpenseGroup(false));
-                            } else {
-                                setFilteredExpenses(
-                                    getCurrentExpenseGroup(false).filter(ele => ele.title.toLowerCase().includes(text.toLowerCase()))
-                                );
-                            }
+                            // if (!text.length) {
+                            //     setFilteredExpenses(getCurrentExpenseGroup(false));
+                            // } else {
+                            //     setFilteredExpenses(
+                            //         getCurrentExpenseGroup(false).filter(ele => ele.title.toLowerCase().includes(text.toLowerCase()))
+                            //     );
+                            // }
                         }}
                         onFocus={() => setCloseFAB(true)}
                         onBlur={() => setCloseFAB(false)}
@@ -136,13 +145,13 @@ const ExpenseScreen = ({route, navigation}) => {
                     <Pressable
                         onPress={() => {
                                 setIcon(getNextIcon());
-                                if (!searchText.length) {
-                                    setFilteredExpenses(getCurrentExpenseGroup());
-                                } else {
-                                    setFilteredExpenses(
-                                        getCurrentExpenseGroup().filter(ele => ele.title.toLowerCase().includes(searchText.toLowerCase()))
-                                    );
-                                }
+                                // if (!searchText.length) {
+                                //     setFilteredExpenses(getCurrentExpenseGroup());
+                                // } else {
+                                //     setFilteredExpenses(
+                                //         getCurrentExpenseGroup().filter(ele => ele.title.toLowerCase().includes(searchText.toLowerCase()))
+                                //     );
+                                // }
                             }
                         }
                     >
@@ -150,8 +159,8 @@ const ExpenseScreen = ({route, navigation}) => {
                     </Pressable>
                 </View>
                 <FlatList
-                    data={sort(filteredExpenses)}
-                    renderItem={item => <ExpenseCard data={{...item, onPress: handleOnPress, onLongPress: handleOnLongPress}}/>}
+                    data={sortState(filteredExpenses)}
+                    renderItem={item => <ExpenseCard data={{...item, onPress: handleOnPress, onLongPress: handleLongPress}}/>}
                     keyExtractor={item => item.id}
                 />
                 {

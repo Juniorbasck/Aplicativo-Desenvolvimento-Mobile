@@ -25,7 +25,20 @@ const sort = exps => {
         }
     }
     return notPaid.concat(paid);
-}
+};
+
+const sortState = exps => {
+    let sorted = exps.value.sort((exp1, exp2) => new Date(exp1.date).getTime() - new Date(exp2.date).getTime());
+    let paid = [], notPaid = [];
+    for (let exp of sorted) {
+        if (exp.paid) {
+            paid.push(exp);
+        } else {
+            notPaid.push(exp);
+        }
+    }
+    return notPaid.concat(paid);
+};
 
 const fetchExpensesAsync = async () => {
     const auth = getAuth();
@@ -33,7 +46,7 @@ const fetchExpensesAsync = async () => {
     const docRef = doc(db, 'expenses', currentUser.email);
     const theDoc = await getDoc(docRef);
     let temp = theDoc.data();
-    return sort(temp);
+    return sort(temp.expenses);
 };
 
 const fetchExpensesMock = () => {
@@ -120,9 +133,14 @@ const createExpense = (title, entity, date, price, paymentMethod, image, paid) =
     // Create on API.
 }
 
-const deleteExpense = id => {
-    // Delete the corresponding expense on the API.
-}
+const deleteExpense = async expense => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    const docRef = doc(db, 'expenses', currentUser.email);
+    await updateDoc(docRef, {
+        expenses: arrayRemove(expense)
+    });
+};
 
 const signInGoogle = () => {
     Alert.alert('Entrar com API do Google');
@@ -261,6 +279,7 @@ export {
     signInGoogle,
     updateUser,
     sort,
+    sortState,
     stringifyOperation,
     stringifyPaymentMethod,
     checkValidationCode,

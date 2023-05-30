@@ -24,12 +24,10 @@ import {
 import {
     selectExpenses,
     setExpensesAsync,
-    setExpensesMock
 } from '../features/expenses/expensesSlice';
+import { deleteExpense } from '../../service';
 
 const HomeScreen = ({route, navigation}) => {
-    const [isLoadingData, setLoadingData] = useState(true);
-
     const userData = useAppSelector(selectUserData);
     const userDataStatus = useAppSelector(state => state.userData.status);
 
@@ -38,14 +36,9 @@ const HomeScreen = ({route, navigation}) => {
 
     const dispatch = useAppDispatch();
     
-    console.log(expenses.value, expensesStatus);
-
     useEffect(() => {
         dispatch(setExpensesAsync());
         dispatch(setUserDataAsync());
-        setTimeout(() => {
-            setLoadingData(false);
-        }, 1000);
     }, []);
 
     const handleOnPress = item => {
@@ -55,8 +48,9 @@ const HomeScreen = ({route, navigation}) => {
         });
     }
 
-    const handleLongPress = id => {
-        setExpenses(expenses.filter(ele => ele.id != id));
+    const handleLongPress = async expense => {
+        await deleteExpense(expense);
+        dispatch(setExpensesAsync());
     }
 
     const getToPay = () => expenses.value.filter(expense => !expense.paid);
@@ -65,7 +59,7 @@ const HomeScreen = ({route, navigation}) => {
     
     const getExpenseTitle = () => getToPay().length > 0 ? 'Despesas Atuais' : 'Sem Despesas Atuais'; 
 
-    return isLoadingData || userDataStatus === 'loading' || expensesStatus === 'loading' ? (
+    return userDataStatus === 'loading' || expensesStatus === 'loading' ? (
             <LoadingIndicator/>
         ) : (
         <View style={styles.outerContainer}>
@@ -89,7 +83,7 @@ const HomeScreen = ({route, navigation}) => {
                 <ExpenseStatus
                     total={getTotal()}
                     toPay={getToPay().length}
-                    paid={expenses.length - getToPay().length}
+                    paid={expenses.value.length - getToPay().length}
                 />
             </View>
             <View 
