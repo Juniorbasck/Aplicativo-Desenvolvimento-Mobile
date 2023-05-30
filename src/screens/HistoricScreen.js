@@ -5,7 +5,7 @@ import {
     FlatList
 } from 'react-native';
 import { Colors } from '../utils/Colors';
-import { fetchHistoric } from '../service';
+import { fetchHistoric } from '../../service';
 import { HistoricItem } from '../components/HistoricItem';
 
 const HistoricScreen = () => {

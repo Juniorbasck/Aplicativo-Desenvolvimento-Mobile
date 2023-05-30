@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { Fonts } from '../utils/Fonts';
 import { Colors } from '../utils/Colors';
-import { deleteExpense } from '../service';
+import { deleteExpense } from '../../service';
 
 const ExpenseCard = props => {
     const { title, entity, price, paid, date } = props.data.item;

@@ -11,7 +11,7 @@ import {
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { ExpenseCard } from '../components/ExpenseCard';
-import { fetchExpenses, sort } from '../service';
+import { fetchExpenses, sort } from '../../service';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LoadingIndicator } from '../components/LoadingIndicator';
 

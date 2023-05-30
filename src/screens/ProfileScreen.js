@@ -17,27 +17,37 @@ import {
     signOut
 } from 'firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { fetchUserData } from '../service';
 import { LoadingIndicator } from '../components/LoadingIndicator';
+import {
+    useAppSelector,
+    useAppDispatch
+} from '../app/hooks';
+import {
+    selectUserData,
+    setUserDataAsync
+} from '../features/userData/userDataSlice';
 
 const ProfileScreen = ({route, navigation}) => {
-    const [userData, setUserData] = useState({});
     const [isLoadingData, setLoadingData] = useState(true);
 
+    const userData = useAppSelector(selectUserData);
+    const status = useAppSelector(state => state.userData.status);
+    const dispatch = useAppDispatch();
+
     useEffect(() => {
-        fetchUserData(setUserData);
+        dispatch(setUserDataAsync());
         setTimeout(() => {
             setLoadingData(false);
         }, 1000);
     }, []);
 
     function getFormattedName() {
-        const splitSurname = userData.surname.split(' ');
+        const splitSurname = userData.value.surname.split(' ');
         const surname = splitSurname[splitSurname.length - 1];
-        return userData.name + ' ' + surname;
+        return userData.value.name + ' ' + surname;
     }
 
-    return isLoadingData ? (
+    return isLoadingData || status === 'loading' ? (
         <LoadingIndicator/>
     ) : (
         <View style={styles.outerContainer}>
@@ -45,12 +55,12 @@ const ProfileScreen = ({route, navigation}) => {
                 <View style={styles.flexStart}>
                     <ProfilePicture
                         size='big'
-                        src={userData.image}
+                        src={userData.value.image}
                     />
                 </View>
                 <View style={[styles.flexEnd, {alignItems: 'center'}]}>
                     <Text style={[Fonts.displaySmall, {color: Colors.onPrimaryKeyColor}]}>{getFormattedName()}</Text>
-                    <Text style={[Fonts.bodyLarge, {color: Colors.onPrimaryKeyColor}]}>{userData.email}</Text>
+                    <Text style={[Fonts.bodyLarge, {color: Colors.onPrimaryKeyColor}]}>{userData.value.email}</Text>
                 </View>
             </View>
             <View style={styles.profileBoard}>

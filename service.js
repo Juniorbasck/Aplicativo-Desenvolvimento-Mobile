@@ -27,6 +27,19 @@ const sort = exps => {
     return notPaid.concat(paid);
 }
 
+const fetchExpensesAsync = async () => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    const docRef = doc(db, 'expenses', currentUser.email);
+    const theDoc = await getDoc(docRef);
+    let temp = theDoc.data();
+    return sort(temp);
+};
+
+const fetchExpensesMock = () => {
+    return sort(expenses);
+}
+
 const fetchExpenses = async onFetchData => {
     let exps;
     if (USE_MOCK_DATA) {
@@ -59,6 +72,34 @@ const fetchUserData = async onFetchData => {
         userData = theDoc.data();
     }
     onFetchData(userData);
+};
+
+const fetchUserDataAsync = async () => {
+    let userData;
+    if (USE_MOCK_DATA) {
+        userData = {
+            name: 'Marinna',
+            surname: 'Silva',
+            username: 'mari123',
+            email: 'mari123@gmail.com'
+        };
+    } else {
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
+        const docRef = doc(db, 'users', currentUser.email);
+        const theDoc = await getDoc(docRef);
+        userData = theDoc.data();
+    }
+    return userData;
+};
+
+const fetchUserDataMock = () => {
+    return {
+        name: 'Marinna',
+        surname: 'Silva',
+        username: 'mari123',
+        email: 'mari123@gmail.com'
+    };
 };
 
 const updateExpense = async (oldExpense, updatedExpense) => {
@@ -211,6 +252,8 @@ export {
     getPaymentMethods,
     fetchExpenses,
     fetchUserData,
+    fetchUserDataAsync,
+    fetchUserDataMock,
     fetchHistoric,
     updateExpense, 
     createExpense, 
@@ -224,5 +267,7 @@ export {
     generateValidationCode,
     sendCodeEmail,
     storeDataAsync,
-    getDataAsync
+    getDataAsync,
+    fetchExpensesAsync,
+    fetchExpensesMock
 };

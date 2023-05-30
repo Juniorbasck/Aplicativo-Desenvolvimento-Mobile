@@ -15,7 +15,7 @@ import { StackActions } from '@react-navigation/native';
 import { validateEmail, validatePassword } from '../utils/Validator';
 import { 
     signInGoogle,
-} from '../service';
+} from '../../service';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { PasswordInput } from '../components/PasswordInput';
@@ -144,7 +144,7 @@ const LoginScreen = ({route, navigation}) => {
                     onPress={signInGoogle}
                 >
                     <Image
-                        source={require('../assets/google.png')}
+                        source={require('../../assets/google.png')}
                         style={styles.googleLogo}
                         resizeMode='contain'
                     />

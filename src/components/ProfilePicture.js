@@ -7,7 +7,7 @@ import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 
 const ProfilePicture = ({onPress, size='small', src=null}) => {
     if (!src) {
-        src = require('../assets/unknown.png');
+        src = require('../../assets/unknown.png');
     }
     return (
         <Pressable

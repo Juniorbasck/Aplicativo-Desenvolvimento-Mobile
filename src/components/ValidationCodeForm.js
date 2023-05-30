@@ -15,7 +15,7 @@ import {
     checkValidationCode,
     generateValidationCode,
     sendCodeEmail
-} from '../service';
+} from '../../service';
 
 const ValidationCodeForm = ({email, onSuccess}) => {
     const [code1, setCode1] = useState('');

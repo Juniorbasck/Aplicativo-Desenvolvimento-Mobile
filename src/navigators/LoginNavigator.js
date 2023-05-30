@@ -2,7 +2,6 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { LoginScreen } from '../screens/LoginScreen';
-import { ForgottenPasswordScreen } from '../screens/ForgottenPasswordScreen';
 import { AppNavigator } from './AppNavigator';
 import { CreateAccountNavigator } from './CreateAccountNavigator';
 import { ForgottenPasswordNavigator } from './ForgottenPasswordNavigator';

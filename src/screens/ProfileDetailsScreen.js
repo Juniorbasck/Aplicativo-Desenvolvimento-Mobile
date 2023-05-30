@@ -12,7 +12,7 @@ import { CustomButton } from '../components/CustomButton';
 import { ProfilePicture } from '../components/ProfilePicture';
 import { Snackbar } from 'react-native-paper';
 import { PickImageModal } from '../components/PickImageModal';
-import { updateUser } from '../service';
+import { updateUser } from '../../service';
 
 function validate(name, surname, username) {
     return name.length > 0 && surname.length > 0 && username.length > 0;
@@ -35,7 +35,7 @@ const ProfileDetailsScreen = ({route, navigation}) => {
         surname: 'Silva',
         username: 'mari123',
         email: 'mari123@gmail.com',
-        image: require('../assets/face1.jpg')
+        image: require('../../assets/face1.jpg')
     });
     const [name, setName] = useState(userData.name);
     const [surname, setSurname] = useState(userData.surname);

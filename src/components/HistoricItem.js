@@ -7,7 +7,7 @@ import {
 import { 
     stringifyOperation, 
     stringifyPaymentMethod 
-} from '../service';
+} from '../../service';
 import { Fonts } from '../utils/Fonts';
 
 const HistoricItem = props => {

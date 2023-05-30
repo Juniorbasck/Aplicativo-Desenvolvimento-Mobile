@@ -14,18 +14,35 @@ import { ExpenseStatus } from '../components/ExpenseStatus';
 import { ExpenseCard } from '../components/ExpenseCard';
 import { LoadingIndicator } from '../components/LoadingIndicator';
 import {
-    fetchExpenses,
-    fetchUserData
-} from '../service';
+    useAppSelector,
+    useAppDispatch
+} from '../app/hooks';
+import {
+    selectUserData,
+    setUserDataAsync
+} from '../features/userData/userDataSlice';
+import {
+    selectExpenses,
+    setExpensesAsync,
+    setExpensesMock
+} from '../features/expenses/expensesSlice';
 
 const HomeScreen = ({route, navigation}) => {
-    const [expenses, setExpenses] = useState([]);
-    const [userData, setUserData] = useState({});
     const [isLoadingData, setLoadingData] = useState(true);
 
+    const userData = useAppSelector(selectUserData);
+    const userDataStatus = useAppSelector(state => state.userData.status);
+
+    const expenses = useAppSelector(selectExpenses);
+    const expensesStatus = useAppSelector(state => state.expenses.status);
+
+    const dispatch = useAppDispatch();
+    
+    console.log(expenses.value, expensesStatus);
+
     useEffect(() => {
-        fetchExpenses(setExpenses);
-        fetchUserData(setUserData);
+        dispatch(setExpensesAsync());
+        dispatch(setUserDataAsync());
         setTimeout(() => {
             setLoadingData(false);
         }, 1000);
@@ -42,13 +59,13 @@ const HomeScreen = ({route, navigation}) => {
         setExpenses(expenses.filter(ele => ele.id != id));
     }
 
-    const getToPay = () => expenses.filter(expense => !expense.paid);
+    const getToPay = () => expenses.value.filter(expense => !expense.paid);
 
     const getTotal = () => getToPay().reduce((accumulator, expense) => accumulator + expense.price, 0.0).toFixed(2);
     
     const getExpenseTitle = () => getToPay().length > 0 ? 'Despesas Atuais' : 'Sem Despesas Atuais'; 
 
-    return isLoadingData ? (
+    return isLoadingData || userDataStatus === 'loading' || expensesStatus === 'loading' ? (
             <LoadingIndicator/>
         ) : (
         <View style={styles.outerContainer}>
@@ -58,7 +75,7 @@ const HomeScreen = ({route, navigation}) => {
                         <Text style={[Fonts.displaySmall, styles.greetingText]}>Olá,</Text>
                     </View>
                     <View>
-                        <Text style={[Fonts.headlineMedium, {color: Colors.onPrimaryKeyColor}]}>{userData.name}</Text>
+                        <Text style={[Fonts.headlineMedium, {color: Colors.onPrimaryKeyColor}]}>{userData.value.name}</Text>
                     </View>
                 </View>
                 <View style={styles.flexEnd}>

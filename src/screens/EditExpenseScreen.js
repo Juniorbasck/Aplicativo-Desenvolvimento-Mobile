@@ -16,36 +16,48 @@ import { CustomDatePicker } from '../components/CustomDatePicker';
 import { CustomDropdown } from '../components/CustomDropdown';
 import { CustomImagePicker } from '../components/CustomImagePicker';
 import { CustomCheckbox } from '../components/CustomCheckbox';
-import { getPaymentMethods } from '../service';
-import { createExpense } from '../service';
+import { getPaymentMethods } from '../../service';
 import { Snackbar } from 'react-native-paper';
 
 function validate(title, entity, price) {
     return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
 }
 
-function getFormattedTodayDate() {
-    let date = new Date();
-    let month = (date.getMonth() + 1).toString();
-    if (month.length == 1) {
-        month = '0' + month;
-    }
-    return date.getFullYear() + '-' + month + '-' + date.getDate();
+async function update(item, title, entity, date, price, paymentMethod, image, paid) {
+    let updatedItem = {
+        id: item.id,
+        title: title,
+        entity: entity,
+        date: date,
+        price: parseFloat(price),
+        paymentMethod: paymentMethod,
+        image: image,
+        paid: paid
+    };
+    let oldItem = {...item};
+    // item.title = title;
+    // item.entity = entity;
+    // item.date = date;
+    // item.price = parseFloat(price);
+    // item.paymentMethod = paymentMethod;
+    // item.image = image;
+    // item.paid = paid;
+    // await updateExpense(oldItem, updatedItem);
 }
 
-const CreateExpenseScreen = ({route, navigation}) => {
-    const [title, setTitle] = useState('');
-    const [entity, setEntity] = useState('');
-    const [date, setDate] = useState(getFormattedTodayDate());
-    const [price, setPrice] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState(1);
-    const [image, setImage] = useState(null);
-    const [paid, setPaid] = useState(false);
+function dataChanged(item, title, entity, date, price, paymentMethod, image, paid) {
+    return item.title != title || item.entity != entity || item.date != date || item.price != price || item.paymentMethod != paymentMethod || item.paid != paid;
+}
 
-    const [titleInput, setTitleInput] = useState();
-    const [entityInput, setEntityInput] = useState();
-    const [priceInput, setPriceInput] = useState();
-    const [modalOpenState, setModalOpenState] = useState(false);
+const EditExpenseScreen = ({route, navigation}) => {
+    const { item, parentRoute } = route.params;
+    const [title, setTitle] = useState(item.title);
+    const [entity, setEntity] = useState(item.entity);
+    const [date, setDate] = useState(item.date);
+    const [price, setPrice] = useState(item.price.toString());
+    const [paymentMethod, setPaymentMethod] = useState(item.paymentMethod);
+    const [image, setImage] = useState(null);
+    const [paid, setPaid] = useState(item.paid);
 
     const [snackBarVisible, setSnackBarVisible] = useState(false);
 
@@ -71,18 +83,12 @@ const CreateExpenseScreen = ({route, navigation}) => {
                     widthPercentage={90}
                     marginTopPercentage={5}
                     autofocus={true}
-                    setRef={setTitleInput}
-                    onSubmitEditing={() => entityInput.focus()}
-                    blurOnSubmit={false}
                 />
                 <CustomTextInput
                     state={entity}
                     setState={setEntity}
                     placeholder='Entidade'
                     widthPercentage={90}
-                    setRef={setEntityInput}
-                    onSubmitEditing={() => priceInput.focus()}
-                    blurOnSubmit={false}
                 />
                 <CustomTextInput
                     state={price}
@@ -91,19 +97,15 @@ const CreateExpenseScreen = ({route, navigation}) => {
                     placeholder='Preço'
                     widthPercentage={90}
                     marginBottomPercentage={4}
-                    setRef={setPriceInput}
-                    onSubmitEditing={() => setModalOpenState(true)}
                 />
                 <CustomDatePicker
                     state={date}
                     setState={setDate}
                     widthPercentage={90}
                     marginBottomPercentage={3}
-                    modalOpenState={modalOpenState}
-                    setModalOpenState={setModalOpenState}
                 />
                 <View style={styles.rowContainer}>
-                    <View style={styles.paymentMethodContainer}>
+                    <View style={{flex: 1, alignItems: 'center'}}>
                         <Text style={Fonts.bodyLarge}>Método de</Text>
                         <Text style={Fonts.bodyLarge}>Pagamento</Text>
                     </View>
@@ -123,7 +125,7 @@ const CreateExpenseScreen = ({route, navigation}) => {
                 {
                     image && (
                         <Image
-                            source={{uri: image}}
+                            source={image}
                             resizeMode='contain'
                             style={styles.image}
                         />
@@ -139,12 +141,32 @@ const CreateExpenseScreen = ({route, navigation}) => {
                     round={true}
                 />
                 <CustomButton
-                    text={'Criar'}
-                    onPress={() => {
-                            if (validate(title, entity, price)) {
-                                createExpense(title, entity, date, price, paymentMethod, image, paid);
+                    text={'Guardar'}
+                    onPress={async () => {
+                            let localTitle = title.trim(), localEntity = entity.trim(), localPrice = price.trim();
+                            if (validate(localTitle, localEntity, price)) {
+                                if (dataChanged(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid)) {
+                                    await update(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid);
+                                }
                                 setSnackBarVisible(true);
-                                setTimeout(() => navigation.goBack(), 500);
+                                setTimeout(() => {
+                                    navigation.navigate(
+                                        {
+                                            name: parentRoute,
+                                            params: {
+                                                item: {
+                                                    title: localTitle,
+                                                    entity: localEntity,
+                                                    date: date,
+                                                    price: parseFloat(localPrice),
+                                                    paymentMethod: paymentMethod,
+                                                    image: image,
+                                                    paid: paid
+                                                }
+                                            }
+                                        }
+                                    );
+                                }, 500);
                             } else {
                                 Alert.alert('Dados inválidos!', 'Preencha o título, entidade e preço e tente novamente!');
                             }
@@ -160,7 +182,7 @@ const CreateExpenseScreen = ({route, navigation}) => {
                 onDismiss={() => setSnackBarVisible(false)}
                 duration={500}
             >
-                Nova despesa criada!
+                Despesa guardada com sucesso!
             </Snackbar>
         </View>
     );
@@ -192,11 +214,7 @@ const styles = StyleSheet.create({
         width: .9 * Dimensions.get('window').width,
         height: .3 * Dimensions.get('window').height,
         marginBottom: '8%'
-    },
-    paymentMethodContainer: {
-        flex: 1, 
-        alignItems: 'center'
     }
 });
 
-export { CreateExpenseScreen };
+export { EditExpenseScreen };

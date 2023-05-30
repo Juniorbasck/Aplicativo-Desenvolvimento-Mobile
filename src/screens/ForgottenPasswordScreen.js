@@ -13,7 +13,7 @@ import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 import { validateEmail } from '../utils/Validator';
-import { generateValidationCode, sendCodeEmail } from '../service';
+import { generateValidationCode, sendCodeEmail } from '../../service';
 import { StackActions } from '@react-navigation/native';
 
 const ForgottenPasswordScreen = ({navigation}) => {
@@ -30,7 +30,7 @@ const ForgottenPasswordScreen = ({navigation}) => {
                 </View>
                 <View style={styles.marginPaddingDefault}>
                     <Image
-                        source={require('../assets/difficulties.png')}
+                        source={require('../../assets/difficulties.png')}
                         resizeMode={'contain'}
                         style={styles.image}
                     />
