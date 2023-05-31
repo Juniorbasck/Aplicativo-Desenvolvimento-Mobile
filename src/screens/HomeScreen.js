@@ -53,6 +53,15 @@ const HomeScreen = ({route, navigation}) => {
         dispatch(setExpensesAsync());
     }
 
+    function getFormattedName() {
+        const name = userData.value.name;
+        if (name) {
+            const splitName = userData.value.name.split(' ');
+            return splitName[0];
+        }
+        return name;
+    }
+
     const getToPay = () => expenses.value.filter(expense => !expense.paid);
 
     const getTotal = () => getToPay().reduce((accumulator, expense) => accumulator + expense.price, 0.0).toFixed(2);
@@ -69,7 +78,7 @@ const HomeScreen = ({route, navigation}) => {
                         <Text style={[Fonts.displaySmall, styles.greetingText]}>Olá,</Text>
                     </View>
                     <View>
-                        <Text style={[Fonts.headlineMedium, {color: Colors.onPrimaryKeyColor}]}>{userData.value.name}</Text>
+                        <Text style={[Fonts.headlineMedium, {color: Colors.onPrimaryKeyColor}]}>{getFormattedName()}</Text>
                     </View>
                 </View>
                 <View style={styles.flexEnd}>

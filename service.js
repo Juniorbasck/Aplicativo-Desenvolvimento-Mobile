@@ -159,8 +159,11 @@ const getPaymentMethods = () => {
     ];
 };
 
-const updateUser = userData => {
-    // Update user data on API.
+const updateUser = async newUserData => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    const docRef = doc(db, 'users', currentUser.email);
+    await updateDoc(docRef, newUserData);
 };
 
 const fetchHistoric = (email, onFetch) => {

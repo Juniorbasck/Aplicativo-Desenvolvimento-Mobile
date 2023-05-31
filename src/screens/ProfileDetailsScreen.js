@@ -4,75 +4,86 @@ import {
     StyleSheet,
     ScrollView,
     Dimensions,
-    Alert
 } from 'react-native';
 import { Colors } from '../utils/Colors';
 import { CustomTextInput } from '../components/CustomTextInput';
 import { CustomButton } from '../components/CustomButton';
+import { YesNoAlert } from '../components/YesNoAlert';
+import { OkAlert } from '../components/OkAlert';
 import { ProfilePicture } from '../components/ProfilePicture';
 import { Snackbar } from 'react-native-paper';
 import { PickImageModal } from '../components/PickImageModal';
 import { updateUser } from '../../service';
+import {
+    useAppSelector,
+    useAppDispatch
+} from '../app/hooks';
+import {
+    selectUserData,
+    setUserDataAsync
+} from '../features/userData/userDataSlice';
 
 function validate(name, surname, username) {
     return name.length > 0 && surname.length > 0 && username.length > 0;
 }
 
-function update(userData, name, surname, username) {
-    userData.name = name;
-    userData.surname = surname;
-    userData.username = username;
-    updateUser(userData);
-}
-
 function dataChanged(userData, name, surname, username) {
-    return userData.name != name || userData.surname != surname || userData.username != username;
+    return userData.value.name != name || userData.value.surname != surname || userData.value.username != username;
 }
 
 const ProfileDetailsScreen = ({route, navigation}) => {
-    const [userData, setUserData] = useState({
-        name: 'Marinna',
-        surname: 'Silva',
-        username: 'mari123',
-        email: 'mari123@gmail.com',
-        image: require('../../assets/face1.jpg')
-    });
-    const [name, setName] = useState(userData.name);
-    const [surname, setSurname] = useState(userData.surname);
-    const [username, setUsername] = useState(userData.username);
-    const [email, setEmail] = useState(userData.email);
-    const [image, setImage] = useState(userData.image);
+    const userData = useAppSelector(selectUserData);
+    const status = useAppSelector(state => state.userData.status);
+
+    const dispatch = useAppDispatch();
+
+    const [name, setName] = useState(userData.value.name);
+    const [surname, setSurname] = useState(userData.value.surname);
+    const [username, setUsername] = useState(userData.value.username);
+    const [email, setEmail] = useState(userData.value.email);
+    const [image, setImage] = useState(userData.value.image);
+
     const [modalVisible, setModalVisible] = useState(false);
     const [snackBarVisible, setSnackBarVisible] = useState(false);
+    const [updateDataAlertVisible, setUpdateDataAlertVisible] = useState(false);
+    const [invalidDataAlertVisible, setInvalidDataAlertVisible] = useState(false);
 
     const [nameInput, setNameInput] = useState();
     const [surnameInput, setSurnameInput] = useState();
     const [usernameInput, setUsernameInput] = useState();
 
-    useEffect(() => navigation.addListener('beforeRemove', e => {
-        let action = e.data.action;
-        if (action.type === 'POP' && dataChanged(userData, name, surname, username)) {
-            e.preventDefault();
-            Alert.alert(
-                'Detalhes da Conta',
-                'Desejas salvar as alterações?',
-                [
-                    {
-                        text: 'Sim',
-                        onPress: () => {
-                            update(userData, name, surname, username);
-                            navigation.dispatch(action);
-                        }
-                    }, 
-                    {
-                        text: 'Não',
-                        style: 'cancel',
-                        onPress: () => navigation.dispatch(action)
-                    }
-                ]
-            );
+    const [action, setAction] = useState({});
+
+    const update = async () => {
+        let localName = name.trim(), localUsername = username.trim(), localSurname = surname.trim();
+        if (validate(localName, localSurname, localUsername)) {
+            if (dataChanged(userData, localName, localSurname, localUsername)) {
+                let newUserData = {
+                    name: name,
+                    surname: surname,
+                    username: username
+                };
+                await updateUser(newUserData);
+                dispatch(setUserDataAsync());
+            }
+            return true;
+        } else {
+            setUpdateDataAlertVisible(false);
+            setInvalidDataAlertVisible(true);
+            return false;
         }
-    }), [navigation, userData, name, surname, username]);
+    };
+
+    useEffect(() => {
+        dispatch(setUserDataAsync());
+        navigation.addListener('beforeRemove', e => {
+            if (e.data.action.type === 'POP' && dataChanged(userData, name, surname, username)) {
+                e.preventDefault();
+                setAction(e.data.action);
+                setUpdateDataAlertVisible(true);
+            }
+        });
+    }, [navigation, name, surname, username]);
 
     return (
         <View style={styles.outerContainer}>
@@ -133,16 +144,11 @@ const ProfileDetailsScreen = ({route, navigation}) => {
                 />
                 <CustomButton
                     text={'Guardar'}
-                    onPress={() => {
-                            let localName = name.trim(), localUsername = username.trim(), localSurname = surname.trim();
-                            if (validate(localName, localSurname, localUsername)) {
-                                if (dataChanged(userData, localName, localSurname, localUsername)) {
-                                    update(userData, localName, localSurname, localUsername);
-                                }
-                                setSnackBarVisible(true);
-                                setTimeout(() => navigation.navigate('Profile'), 500);
-                            } else {
-                                Alert.alert('Dados Inválidos', 'Os campos de nome, apelido e nome de utilizador devem ser preenchidos');
+                    onPress={async () => {
+                            let updateStatus = await update();
+                            if (updateStatus) {
+                                setSnackBarVisible(true)
+                                setTimeout(() => navigation.goBack(), 500);
                             }
                         }
                     }
@@ -151,6 +157,28 @@ const ProfileDetailsScreen = ({route, navigation}) => {
                     widthPercentage={84}
                 />
             </ScrollView>
+            <YesNoAlert
+                visible={updateDataAlertVisible}
+                setVisible={setUpdateDataAlertVisible}
+                title={'Detalhes da Conta'}
+                description={'Desejas salvar as alterações?'}
+                onPressYes={async () => {
+                        let updateStatus = await update();
+                        if (updateStatus) {
+                            setSnackBarVisible(true);
+                            setTimeout(() => navigation.dispatch(action), 500);
+                        }
+                    }
+                }
+                onPressNo={() => navigation.dispatch(action)}
+            />
+            <OkAlert
+                visible={invalidDataAlertVisible}
+                setVisible={setInvalidDataAlertVisible}
+                title={'Dados Inválidos'}
+                description={'Os campos de nome, apelido e nome de utilizador devem ser preenchidos'}
+                onPressOk={() => {}}
+            />
             <Snackbar
                 visible={snackBarVisible}
                 onDismiss={() => setSnackBarVisible(false)}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
     Alert,
     View,
@@ -28,26 +28,23 @@ import {
 } from '../features/userData/userDataSlice';
 
 const ProfileScreen = ({route, navigation}) => {
-    const [isLoadingData, setLoadingData] = useState(true);
-
     const userData = useAppSelector(selectUserData);
     const status = useAppSelector(state => state.userData.status);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(setUserDataAsync());
-        setTimeout(() => {
-            setLoadingData(false);
-        }, 1000);
     }, []);
 
     function getFormattedName() {
+        const splitName = userData.value.name.split(' ');
+        const name = splitName[0];
         const splitSurname = userData.value.surname.split(' ');
         const surname = splitSurname[splitSurname.length - 1];
-        return userData.value.name + ' ' + surname;
+        return name + ' ' + surname;
     }
 
-    return isLoadingData || status === 'loading' ? (
+    return status === 'loading' ? (
         <LoadingIndicator/>
     ) : (
         <View style={styles.outerContainer}>
@@ -106,7 +103,7 @@ const ProfileScreen = ({route, navigation}) => {
                                                     await signOut(auth);
                                                     navigation.dispatch(StackActions.replace('Login'));
                                                 } catch (error) {
-                                                    Alert.alert('Erro ao fazer log out', error.code + '\n' + error.message);
+                                                    Alert.alert('Erro ao fazer log out\n', error.code + '\n' + error.message);
                                                 }
                                             }
                                         },
