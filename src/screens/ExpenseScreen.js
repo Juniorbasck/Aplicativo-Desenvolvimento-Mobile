@@ -11,7 +11,7 @@ import {
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { ExpenseCard } from '../components/ExpenseCard';
-import { sortState } from '../../service';
+import { sortState, sort } from '../../service';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LoadingIndicator } from '../components/LoadingIndicator';
 import {
@@ -24,22 +24,34 @@ import {
 } from '../features/expenses/expensesSlice';
 import { deleteExpense } from '../../service';
 
-const ExpenseScreen = ({route, navigation}) => {
+const ExpenseScreen = ({navigation}) => {
     const [searchText, setSearchText] = useState('');
     const [icon, setIcon] = useState('reorder-three');
     const [closeFAB, setCloseFAB] = useState(false);
+    const [title, setTitle] = useState('');
 
     const expenses = useAppSelector(selectExpenses);
     const expensesStatus = useAppSelector(state => state.expenses.status);
 
-    const filteredExpenses = useAppSelector(selectExpenses);
-    const filteredExpensesStatus = useAppSelector(state => state.expenses.status);
+    const [filteredExpenses, setFilteredExpenses] = useState(expenses.value);
 
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(setExpensesAsync());
     }, []);
+
+    useEffect(() => {
+        setFilteredExpenses(getCurrentExpenseGroup(false));
+    }, [expenses]);
+
+    useEffect(() => {
+        let text = 'Todas as Despesas';
+        if (!filteredExpenses.length) {
+            text = 'Sem Despesas';
+        }
+        setTitle(text);
+    }, [filteredExpenses]);
 
     const handleOnPress = item => {
         navigation.navigate('EditExpense', {
@@ -58,11 +70,11 @@ const ExpenseScreen = ({route, navigation}) => {
         switch (compare) {
             default:
             case 'reorder-three': 
-                return expenses;
+                return expenses.value;
             case 'cash':
-                return expenses.filter(ele => !ele.paid);
+                return expenses.value.filter(ele => !ele.paid);
             case 'checkmark-done':
-                return expenses.filter(ele => ele.paid);
+                return expenses.value.filter(ele => ele.paid);
         }
     }
 
@@ -78,17 +90,12 @@ const ExpenseScreen = ({route, navigation}) => {
         }
     }
     
-    let expenseTitle = 'Todas as Despesas';
-    if (!expenses.length) {
-        expenseTitle = 'Sem Despesas';
-    }
-
-    return expensesStatus === 'loading' || filteredExpensesStatus === 'loading' ? (
+    return expensesStatus === 'loading' ? (
         <LoadingIndicator/>
     ) : (
         <View style={styles.outerContainer}>
             <View style={styles.titleContainer}>
-                <Text style={[Fonts.displaySmall, styles.greetingText]}>{expenseTitle}</Text> 
+                <Text style={[Fonts.displaySmall, styles.greetingText]}>{title}</Text> 
             </View>
             {
                 expenses.value.length == 0 && (
@@ -114,7 +121,7 @@ const ExpenseScreen = ({route, navigation}) => {
                     <Pressable
                         onPress={() => {
                                 setSearchText('');
-                                // setFilteredExpenses(getCurrentExpenseGroup(false));
+                                setFilteredExpenses(getCurrentExpenseGroup(false));
                             }
                         }
                     >
@@ -126,13 +133,13 @@ const ExpenseScreen = ({route, navigation}) => {
                         defaultValue={searchText}
                         onChangeText={text => {
                             setSearchText(text);
-                            // if (!text.length) {
-                            //     setFilteredExpenses(getCurrentExpenseGroup(false));
-                            // } else {
-                            //     setFilteredExpenses(
-                            //         getCurrentExpenseGroup(false).filter(ele => ele.title.toLowerCase().includes(text.toLowerCase()))
-                            //     );
-                            // }
+                            if (!text.length) {
+                                setFilteredExpenses(getCurrentExpenseGroup(false));
+                            } else {
+                                setFilteredExpenses(
+                                    getCurrentExpenseGroup(false).filter(ele => ele.title.toLowerCase().includes(text.toLowerCase()))
+                                );
+                            }
                         }}
                         onFocus={() => setCloseFAB(true)}
                         onBlur={() => setCloseFAB(false)}
@@ -140,13 +147,13 @@ const ExpenseScreen = ({route, navigation}) => {
                     <Pressable
                         onPress={() => {
                                 setIcon(getNextIcon());
-                                // if (!searchText.length) {
-                                //     setFilteredExpenses(getCurrentExpenseGroup());
-                                // } else {
-                                //     setFilteredExpenses(
-                                //         getCurrentExpenseGroup().filter(ele => ele.title.toLowerCase().includes(searchText.toLowerCase()))
-                                //     );
-                                // }
+                                if (!searchText.length) {
+                                    setFilteredExpenses(getCurrentExpenseGroup());
+                                } else {
+                                    setFilteredExpenses(
+                                        getCurrentExpenseGroup().filter(ele => ele.title.toLowerCase().includes(searchText.toLowerCase()))
+                                    );
+                                }
                             }
                         }
                     >
@@ -154,7 +161,7 @@ const ExpenseScreen = ({route, navigation}) => {
                     </Pressable>
                 </View>
                 <FlatList
-                    data={sortState(filteredExpenses)}
+                    data={filteredExpenses}
                     renderItem={item => <ExpenseCard data={{...item, onPress: handleOnPress, onLongPress: handleLongPress}}/>}
                     keyExtractor={item => item.id}
                 />

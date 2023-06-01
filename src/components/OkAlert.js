@@ -4,7 +4,8 @@ import {
     Text,
     StyleSheet,
     Pressable,
-    Modal
+    Modal,
+    Dimensions
 } from 'react-native';
 import { Fonts } from '../utils/Fonts';
 
@@ -50,8 +51,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: '10%',
         top: '35%',
-        width: '80%',
-        height: '30%',
+        width: .8 * Dimensions.get('window').width,
+        height: .3 * Dimensions.get('window').height,
         backgroundColor: 'white',
         padding: '5%'
     },
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
         textAlign: 'left'
     },
     buttonContainer: {
-        marginTop: '20%',
+        marginTop: '25%',
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'flex-end'

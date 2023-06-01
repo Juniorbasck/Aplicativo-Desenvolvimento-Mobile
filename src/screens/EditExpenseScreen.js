@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     View,
     StyleSheet,
@@ -21,6 +21,7 @@ import { updateExpense } from '../../service';
 import { useAppDispatch } from '../app/hooks';
 import { setExpensesAsync } from '../features/expenses/expensesSlice';
 import { OkAlert } from '../components/OkAlert';
+import { YesNoAlert } from '../components/YesNoAlert';
 
 function validate(title, entity, price) {
     return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
@@ -40,9 +41,13 @@ const EditExpenseScreen = ({route, navigation}) => {
     const [image, setImage] = useState(null);
     const [paid, setPaid] = useState(item.paid);
     
+    const [action, setAction] = useState();
+
     const [snackBarVisible, setSnackBarVisible] = useState(false);
-    const [alertVisible, setAlertVisible] = useState(false);
-    const [alertMsg, setAlertMsg] = useState('');
+    const [invalidDataAlertVisible, setInvalidDataAlertVisible] = useState(false);
+    const [updateDataAlertVisible, setUpdateDataAlertVisible] = useState(false);
+
+    const [invalidDataAlertMsg, setInvalidDataAlertMsg] = useState('');
 
     const dispatch = useAppDispatch();
     
@@ -52,6 +57,7 @@ const EditExpenseScreen = ({route, navigation}) => {
             if (dataChanged(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid)) {
                 try {
                     let newExpense = {
+                        id: item.id,
                         title: localTitle,
                         entity: localEntity,
                         date: date,
@@ -63,17 +69,29 @@ const EditExpenseScreen = ({route, navigation}) => {
                     await updateExpense(item, newExpense);
                     dispatch(setExpensesAsync());
                 } catch (err) {
-                    setAlertMsg(err.message);
-                    setAlertVisible(true);
+                    setInvalidDataAlertMsg(err.message);
+                    setInvalidDataAlertVisible(true);
                     return false;
                 }
             }
             return true;
         } else {
-            setAlertMsg('Preencha o título, entidade e preço corretamente');
-            setAlertVisible(true);
+            setInvalidDataAlertMsg('Preencha o título, entidade e preço corretamente');
+            setInvalidDataAlertVisible(true);
+            return false;
         }
     }
+
+    useEffect(() => {
+        navigation.addListener('beforeRemove', e => {
+            let localTitle = title.trim(), localEntity = entity.trim(), localPrice = price.trim();
+            if (e.data.action.type === 'POP' && dataChanged(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid)) {
+                e.preventDefault();
+                setAction(e.data.action);
+                setUpdateDataAlertVisible(true);
+            }
+        });
+    }, [navigation, title, entity, date, price, paymentMethod, image, paid]);
 
     return (
         <View style={styles.outerContainer}>
@@ -177,11 +195,26 @@ const EditExpenseScreen = ({route, navigation}) => {
             >
                 Despesa guardada com sucesso!
             </Snackbar>
+            <YesNoAlert
+                title={'Editar Despesa'}
+                description={'Desejas salvar as alterações?'}
+                visible={updateDataAlertVisible}
+                setVisible={setUpdateDataAlertVisible}
+                onPressYes={async () => {
+                        let editStatus = await edit();
+                        if (editStatus) {
+                            setSnackBarVisible(true);
+                            setTimeout(() => navigation.dispatch(action), 500);
+                        }
+                    }
+                }
+                onPressNo={() => navigation.dispatch(action)}
+            />
             <OkAlert
-                title={'Dados inválidos!'}
-                description={alertMsg}
-                visible={alertVisible}
-                setVisible={setAlertVisible}
+                title={'Dados Inválidos!'}
+                description={invalidDataAlertMsg}
+                visible={invalidDataAlertVisible}
+                setVisible={setInvalidDataAlertVisible}
                 onPressOk={() => {}}
             />
         </View>

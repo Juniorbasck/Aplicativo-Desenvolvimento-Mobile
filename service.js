@@ -11,8 +11,10 @@ import {
     updateDoc,
     arrayUnion,
     arrayRemove,
+    increment,
 } from 'firebase/firestore';
 import { db } from './firebase.config';
+import { RotationGestureHandler } from 'react-native-gesture-handler';
 
 const USE_MOCK_DATA = false;
 
@@ -118,14 +120,22 @@ const fetchUserDataMock = () => {
 };
 
 const updateExpense = async (oldExpense, updatedExpense) => {
+    updatedExpense.price = parseFloat(updatedExpense.price);
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    const expenseDoc = doc(db, 'expenses', currentUser.email);
-    const theDoc = await getDoc(expenseDoc);
+    const docRef = doc(db, 'expenses', currentUser.email);
+    const theDoc = await getDoc(docRef);
     let expenses = theDoc.get('expenses');
     expenses.forEach(e => {
-        if (e.title === updateExpense.title) {
-            throw new Error('Já existe uma despesa com o mesmo título. Tente novamente mudando o valor deste campo');
+        if (
+            e.id !== updatedExpense.id &&
+            e.title === updatedExpense.title && 
+            e.entity === updatedExpense.entity && 
+            e.price === updatedExpense.price &&
+            e.date === updatedExpense.date &&
+            e.paymentMethod === updatedExpense.paymentMethod
+        ) {
+            throw new Error('Já existe uma despesa com esses mesmos dados. Tente novamente mudando os valores dos campos');
         }
     });
     // Remove former expense from database.
@@ -140,6 +150,7 @@ const updateExpense = async (oldExpense, updatedExpense) => {
 
 const createExpense = async (title, entity, date, price, paymentMethod, image, paid) => {
     let newExpense = {
+        id: await nextId(),
         title: title,
         entity: entity,
         date: date,
@@ -151,18 +162,37 @@ const createExpense = async (title, entity, date, price, paymentMethod, image, p
     const auth = getAuth();
     const currentUser = auth.currentUser;
     // Check if the new expense is not repeated.
-    const expenseDoc = doc(db, 'expenses', currentUser.email);
-    const theDoc = await getDoc(expenseDoc);
+    const docRef = doc(db, 'expenses', currentUser.email);
+    const theDoc = await getDoc(docRef);
     let expenses = theDoc.get('expenses');
     expenses.forEach(e => {
-        if (e.title === title) {
-            throw new Error('Já existe uma despesa com o mesmo título. Tente novamente mudando o valor deste campo');
+        if (
+            e.id !== newExpense.id,
+            e.title === title && 
+            e.entity === entity && 
+            e.price === price &&
+            e.date === date &&
+            e.paymentMethod === paymentMethod
+        ) {
+            throw new Error('Já existe uma despesa com esses mesmos dados. Tente novamente mudando os valores dos campos');
         }
     });
-    await setDoc(expenseDoc, {
+    await updateDoc(docRef, {
         expenses: arrayUnion(newExpense)
     });
 }
+
+const nextId = async () => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    const docRef = doc(db, 'expenses', currentUser.email);
+    const theDoc = await getDoc(docRef);
+    let nextId = theDoc.get('nextId');
+    await updateDoc(docRef, {
+        nextId: increment(1)
+    });
+    return nextId;
+};
 
 const deleteExpense = async expense => {
     const auth = getAuth();
@@ -190,13 +220,6 @@ const getPaymentMethods = () => {
     ];
 };
 
-// const updateUser = async newUserData => {
-//     const auth = getAuth();
-//     const currentUser = auth.currentUser;
-//     const docRef = doc(db, 'users', currentUser.email);
-//     await updateDoc(docRef, newUserData);
-// };
-
 const updateUser = async newUserData => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
@@ -204,7 +227,7 @@ const updateUser = async newUserData => {
     const users = collection(db, 'users');
     const querySnapshot = await getDocs(users);
     querySnapshot.forEach(doc => {
-        if (!doc.id != currentUser.email) {
+        if (doc.id != currentUser.email) {
             if (doc.get('username') === newUserData.username) {
                 throw new Error(`O nome de utilizador '${newUserData.username}' já está sendo usado`);
             }

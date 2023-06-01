@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     View,
     StyleSheet,
@@ -23,6 +23,7 @@ import { Snackbar } from 'react-native-paper';
 import { OkAlert } from '../components/OkAlert';
 import { useAppDispatch } from '../app/hooks';
 import { setExpensesAsync } from '../features/expenses/expensesSlice';
+import { YesNoAlert } from '../components/YesNoAlert';
 
 function validate(title, entity, price) {
     return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
@@ -52,8 +53,11 @@ const CreateExpenseScreen = ({navigation}) => {
     const [modalOpenState, setModalOpenState] = useState(false);
 
     const [snackBarVisible, setSnackBarVisible] = useState(false);
-    const [alertVisible, setAlertVisible] = useState(false);
-    const [alertMsg, setAlertMsg] = useState('');
+    const [invalidDataAlertVisible, setInvalidDataAlertVisible] = useState(false);
+    const [invalidDataAlertMsg, setInvalidDataAlertMsg] = useState('');
+    const [createExpenseAlertVisible, setCreateExpenseAlertVisible] = useState(false);
+
+    const [action, setAction] = useState();
 
     const dispatch = useAppDispatch();
 
@@ -64,17 +68,27 @@ const CreateExpenseScreen = ({navigation}) => {
                 await createExpense(localTitle, localEntity, date, localPrice, paymentMethod, image, paid);
                 dispatch(setExpensesAsync());
             } catch(err) {
-                setAlertMsg(err.message);
-                setAlertVisible(true);
+                setInvalidDataAlertMsg(err.message);
+                setInvalidDataAlertVisible(true);
                 return false;
             }
             return true;
         } else {
-            setAlertMsg('Preencha os campos de título, entidade e preço corretamente');
-            setAlertVisible(true);
+            setInvalidDataAlertMsg('Preencha os campos de título, entidade e preço corretamente');
+            setInvalidDataAlertVisible(true);
             return false;
         }
     }
+
+    useEffect(() => {
+        navigation.addListener('beforeRemove', e => {
+            if (e.data.action.type === 'POP') {
+                e.preventDefault();
+                setAction(e.data.action);
+                setCreateExpenseAlertVisible(true);
+            }
+        });
+    }, [navigation]);
 
     return (
         <View style={styles.outerContainer}>
@@ -187,11 +201,19 @@ const CreateExpenseScreen = ({navigation}) => {
             >
                 Nova despesa criada!
             </Snackbar>
+            <YesNoAlert
+                title={'Criar Despesa'}
+                description={'Se saíres, perderás qualquer dado inserido. Proceder?'}
+                visible={createExpenseAlertVisible}
+                setVisible={setCreateExpenseAlertVisible}
+                onPressYes={() => navigation.dispatch(action)}
+                onPressNo={() => {}}
+            />
             <OkAlert
                 title={'Dados Inválidos!'}
-                description={alertMsg}
-                visible={alertVisible}
-                setVisible={setAlertVisible}
+                description={invalidDataAlertMsg}
+                visible={invalidDataAlertVisible}
+                setVisible={setInvalidDataAlertVisible}
                 onPressOk={() => {}}
             />
         </View>

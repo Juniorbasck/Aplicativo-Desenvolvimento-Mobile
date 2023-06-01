@@ -85,6 +85,9 @@ const ProfileDetailsScreen = ({route, navigation}) => {
 
     useEffect(() => {
         dispatch(setUserDataAsync());
+    }, []);
+
+    useEffect(() => {
         navigation.addListener('beforeRemove', e => {
             if (e.data.action.type === 'POP' && dataChanged(userData, name, surname, username)) {
                 e.preventDefault();

@@ -61,8 +61,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: '10%',
         top: '35%',
-        width: '80%',
-        height: '30%',
+        width: .8 * Dimensions.get('window').width,
+        height: .3 * Dimensions.get('window').height,
         backgroundColor: 'white',
         padding: 20
     },
@@ -77,8 +77,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flex: 1,
-        margin: 5,
-        marginTop: .12 * Dimensions.get('window').height,
+        marginTop: '25%',
         flexDirection: 'row',
         justifyContent: 'flex-end'
     },
