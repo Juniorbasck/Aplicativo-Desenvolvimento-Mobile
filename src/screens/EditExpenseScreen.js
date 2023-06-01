@@ -5,8 +5,7 @@ import {
     Text,
     ScrollView,
     Dimensions,
-    Image,
-    Alert
+    Image
 } from 'react-native';
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
@@ -21,24 +20,10 @@ import { Snackbar } from 'react-native-paper';
 import { updateExpense } from '../../service';
 import { useAppDispatch } from '../app/hooks';
 import { setExpensesAsync } from '../features/expenses/expensesSlice';
+import { OkAlert } from '../components/OkAlert';
 
 function validate(title, entity, price) {
     return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
-}
-
-async function update(item, title, entity, date, price, paymentMethod, image, paid) {
-    let updatedItem = {
-        id: item.id,
-        title: title,
-        entity: entity,
-        date: date,
-        price: parseFloat(price),
-        paymentMethod: paymentMethod,
-        image: image,
-        paid: paid
-    };
-    let oldItem = {...item};
-    await updateExpense(oldItem, updatedItem);
 }
 
 function dataChanged(item, title, entity, date, price, paymentMethod, image, paid) {
@@ -56,8 +41,40 @@ const EditExpenseScreen = ({route, navigation}) => {
     const [paid, setPaid] = useState(item.paid);
     
     const [snackBarVisible, setSnackBarVisible] = useState(false);
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [alertMsg, setAlertMsg] = useState('');
+
     const dispatch = useAppDispatch();
     
+    const edit = async () => {
+        let localTitle = title.trim(), localEntity = entity.trim(), localPrice = price.trim();
+        if (validate(localTitle, localEntity, price)) {
+            if (dataChanged(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid)) {
+                try {
+                    let newExpense = {
+                        title: localTitle,
+                        entity: localEntity,
+                        date: date,
+                        price: localPrice,
+                        paymentMethod: paymentMethod,
+                        image: null,
+                        paid: paid
+                    };
+                    await updateExpense(item, newExpense);
+                    dispatch(setExpensesAsync());
+                } catch (err) {
+                    setAlertMsg(err.message);
+                    setAlertVisible(true);
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            setAlertMsg('Preencha o título, entidade e preço corretamente');
+            setAlertVisible(true);
+        }
+    }
+
     return (
         <View style={styles.outerContainer}>
             <ScrollView 
@@ -140,34 +157,12 @@ const EditExpenseScreen = ({route, navigation}) => {
                 <CustomButton
                     text={'Guardar'}
                     onPress={async () => {
-                            let localTitle = title.trim(), localEntity = entity.trim(), localPrice = price.trim();
-                            if (validate(localTitle, localEntity, price)) {
-                                if (dataChanged(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid)) {
-                                    await update(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid);
-                                    dispatch(setExpensesAsync());
-                                }
+                            let edited = await edit();
+                            if (edited) {
                                 setSnackBarVisible(true);
-                                setTimeout(() => {
-                                    navigation.navigate(
-                                        {
-                                            name: parentRoute,
-                                            params: {
-                                                item: {
-                                                    title: localTitle,
-                                                    entity: localEntity,
-                                                    date: date,
-                                                    price: parseFloat(localPrice),
-                                                    paymentMethod: paymentMethod,
-                                                    image: image,
-                                                    paid: paid
-                                                }
-                                            }
-                                        }
-                                    );
-                                }, 500);
-                            } else {
-                                Alert.alert('Dados inválidos!', 'Preencha o título, entidade e preço e tente novamente!');
+                                setTimeout(() => navigation.navigate(parentRoute), 500);
                             }
+                            
                         }
                     }
                     backgroundColor={Colors.primaryKeyColor}
@@ -182,6 +177,13 @@ const EditExpenseScreen = ({route, navigation}) => {
             >
                 Despesa guardada com sucesso!
             </Snackbar>
+            <OkAlert
+                title={'Dados inválidos!'}
+                description={alertMsg}
+                visible={alertVisible}
+                setVisible={setAlertVisible}
+                onPressOk={() => {}}
+            />
         </View>
     );
 }

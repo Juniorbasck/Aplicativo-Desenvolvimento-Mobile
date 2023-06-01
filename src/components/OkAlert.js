@@ -44,7 +44,7 @@ const OkAlert = ({visible, setVisible, title, description, onPressOk}) => {
 const styles = StyleSheet.create({
     alertOuterPressable: {
         width: '100%', 
-        height: '100%'
+        height: '100%',
     },
     alertContainer: {
         position: 'absolute',
@@ -65,8 +65,7 @@ const styles = StyleSheet.create({
         textAlign: 'left'
     },
     buttonContainer: {
-        margin: '2%',
-        marginTop: '35%',
+        marginTop: '20%',
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'flex-end'

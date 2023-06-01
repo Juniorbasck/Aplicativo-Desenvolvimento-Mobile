@@ -53,6 +53,7 @@ const ProfileDetailsScreen = ({route, navigation}) => {
     const [usernameInput, setUsernameInput] = useState();
 
     const [action, setAction] = useState({});
+    const [invalidDataMsg, setInvalidDataMsg] = useState('');
 
     const update = async () => {
         let localName = name.trim(), localUsername = username.trim(), localSurname = surname.trim();
@@ -63,12 +64,20 @@ const ProfileDetailsScreen = ({route, navigation}) => {
                     surname: surname,
                     username: username
                 };
-                await updateUser(newUserData);
-                dispatch(setUserDataAsync());
+                try {
+                    await updateUser(newUserData);
+                    dispatch(setUserDataAsync());
+                } catch (err) {
+                    setUpdateDataAlertVisible(false);
+                    setInvalidDataMsg(err.message);
+                    setInvalidDataAlertVisible(true);
+                    return false;
+                } 
             }
             return true;
         } else {
             setUpdateDataAlertVisible(false);
+            setInvalidDataMsg('Preencha os campos de nome, apelido e nome de utilizador corretamente');
             setInvalidDataAlertVisible(true);
             return false;
         }
@@ -176,7 +185,7 @@ const ProfileDetailsScreen = ({route, navigation}) => {
                 visible={invalidDataAlertVisible}
                 setVisible={setInvalidDataAlertVisible}
                 title={'Dados Inválidos'}
-                description={'Os campos de nome, apelido e nome de utilizador devem ser preenchidos'}
+                description={invalidDataMsg}
                 onPressOk={() => {}}
             />
             <Snackbar

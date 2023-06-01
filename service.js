@@ -4,11 +4,13 @@ import expenses from './expenses.json';
 import { getAuth } from 'firebase/auth';
 import { 
     doc,
+    collection,
     getDoc, 
     setDoc,
+    getDocs,
     updateDoc,
     arrayUnion,
-    arrayRemove
+    arrayRemove,
 } from 'firebase/firestore';
 import { db } from './firebase.config';
 
@@ -118,7 +120,14 @@ const fetchUserDataMock = () => {
 const updateExpense = async (oldExpense, updatedExpense) => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    const docRef = doc(db, 'expenses', currentUser.email);
+    const expenseDoc = doc(db, 'expenses', currentUser.email);
+    const theDoc = await getDoc(expenseDoc);
+    let expenses = theDoc.get('expenses');
+    expenses.forEach(e => {
+        if (e.title === updateExpense.title) {
+            throw new Error('Já existe uma despesa com o mesmo título. Tente novamente mudando o valor deste campo');
+        }
+    });
     // Remove former expense from database.
     await updateDoc(docRef, {
         expenses: arrayRemove(oldExpense)
@@ -129,8 +138,30 @@ const updateExpense = async (oldExpense, updatedExpense) => {
      });
 }
 
-const createExpense = (title, entity, date, price, paymentMethod, image, paid) => {
-    // Create on API.
+const createExpense = async (title, entity, date, price, paymentMethod, image, paid) => {
+    let newExpense = {
+        title: title,
+        entity: entity,
+        date: date,
+        price: parseFloat(price),
+        paymentMethod: paymentMethod,
+        image: null,
+        paid: paid
+    };
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    // Check if the new expense is not repeated.
+    const expenseDoc = doc(db, 'expenses', currentUser.email);
+    const theDoc = await getDoc(expenseDoc);
+    let expenses = theDoc.get('expenses');
+    expenses.forEach(e => {
+        if (e.title === title) {
+            throw new Error('Já existe uma despesa com o mesmo título. Tente novamente mudando o valor deste campo');
+        }
+    });
+    await setDoc(expenseDoc, {
+        expenses: arrayUnion(newExpense)
+    });
 }
 
 const deleteExpense = async expense => {
@@ -159,9 +190,26 @@ const getPaymentMethods = () => {
     ];
 };
 
+// const updateUser = async newUserData => {
+//     const auth = getAuth();
+//     const currentUser = auth.currentUser;
+//     const docRef = doc(db, 'users', currentUser.email);
+//     await updateDoc(docRef, newUserData);
+// };
+
 const updateUser = async newUserData => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
+    // Check if username is not already taken.
+    const users = collection(db, 'users');
+    const querySnapshot = await getDocs(users);
+    querySnapshot.forEach(doc => {
+        if (!doc.id != currentUser.email) {
+            if (doc.get('username') === newUserData.username) {
+                throw new Error(`O nome de utilizador '${newUserData.username}' já está sendo usado`);
+            }
+        }
+    });
     const docRef = doc(db, 'users', currentUser.email);
     await updateDoc(docRef, newUserData);
 };

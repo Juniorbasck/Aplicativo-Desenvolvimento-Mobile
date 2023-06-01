@@ -41,11 +41,6 @@ const ExpenseScreen = ({route, navigation}) => {
         dispatch(setExpensesAsync());
     }, []);
 
-    // const onChangedOrder = () => {
-    //     setExpenses(sort(expenses));
-    //     setFilteredExpenses(sort(filteredExpenses));
-    // }
-
     const handleOnPress = item => {
         navigation.navigate('EditExpense', {
             item: item,
@@ -96,7 +91,7 @@ const ExpenseScreen = ({route, navigation}) => {
                 <Text style={[Fonts.displaySmall, styles.greetingText]}>{expenseTitle}</Text> 
             </View>
             {
-                expenses.length == 0 && (
+                expenses.value.length == 0 && (
                     <Pressable
                         style={{marginVertical: '5%'}}
                         onPress={() => navigation.navigate('CreateExpense')}
@@ -109,7 +104,7 @@ const ExpenseScreen = ({route, navigation}) => {
                 style={
                     [
                         styles.expenseBoard,
-                        expenses.length == 0 ? {opacity: 0} : {flex: 5}
+                        expenses.value.length == 0 ? {opacity: 0} : {flex: 5}
                     ]
                 }
             >
@@ -164,7 +159,7 @@ const ExpenseScreen = ({route, navigation}) => {
                     keyExtractor={item => item.id}
                 />
                 {
-                    expenses.length > 0 && !closeFAB && (
+                    expenses.value.length > 0 && !closeFAB && (
                         <Pressable 
                             style={styles.floatingActionButton}
                             onPress={() => navigation.navigate('CreateExpense')}

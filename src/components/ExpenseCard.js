@@ -1,13 +1,13 @@
+import { useState } from 'react';
 import {
     View,
     Text,
     Pressable,
-    StyleSheet,
-    Alert
+    StyleSheet
 } from 'react-native';
 import { Fonts } from '../utils/Fonts';
 import { Colors } from '../utils/Colors';
-import { deleteExpense } from '../../service';
+import { YesNoAlert } from './YesNoAlert';
 
 const ExpenseCard = props => {
     const { title, entity, price, paid, date } = props.data.item;
@@ -27,36 +27,33 @@ const ExpenseCard = props => {
         }
     }
 
+    const [alertVisible, setAlertVisible] = useState(false);
+
     return (
-        <Pressable
-            onPress={() => onPress(props.data.item)}
-            onLongPress={() => {
-                Alert.alert(
-                    'Deletar despesa?', 
-                    'Tem certeza que deseja deletar despesa?',
-                    [
-                        {
-                            text: 'Sim',
-                            onPress: () => onLongPress(props.data.item)
-                        },
-                        {
-                            text: 'Não',
-                            style: 'cancel'
-                        }
-                    ]
-                );
-            }}
-        >
-            <View style={[styles.pressableContainer, {backgroundColor: backgroundColor}]}>
-                <View style={{flex: 1, alignItems: 'flex-start'}}>
-                    <Text style={[Fonts.bodyLarge, styles.title]} numberOfLines={2}>{title}</Text>
-                    <Text style={[Fonts.bodyMedium, styles.entity]}>{entity}</Text>
+        <>
+            <Pressable
+                onPress={() => onPress(props.data.item)}
+                onLongPress={() => setAlertVisible(true)}
+            >
+                <View style={[styles.pressableContainer, {backgroundColor: backgroundColor}]}>
+                    <View style={{flex: 1, alignItems: 'flex-start'}}>
+                        <Text style={[Fonts.bodyLarge, styles.title]} numberOfLines={2}>{title}</Text>
+                        <Text style={[Fonts.bodyMedium, styles.entity]}>{entity}</Text>
+                    </View>
+                    <View style={{flex: 1, alignItems: 'flex-end'}}>
+                        <Text style={[Fonts.headlineSmall, styles.price]}>{price}€</Text>
+                    </View>
                 </View>
-                <View style={{flex: 1, alignItems: 'flex-end'}}>
-                    <Text style={[Fonts.headlineSmall, styles.price]}>{price}€</Text>
-                </View>
-            </View>
-        </Pressable>
+            </Pressable>
+            <YesNoAlert
+                title={'Deletar despesa?'}
+                description={'Tem certeza que deseja deletar despesa?'}
+                visible={alertVisible}
+                setVisible={setAlertVisible}
+                onPressYes={() => onLongPress(props.data.item)}
+                onPressNo={() => {}}
+            />
+        </>
     );
 };
 
