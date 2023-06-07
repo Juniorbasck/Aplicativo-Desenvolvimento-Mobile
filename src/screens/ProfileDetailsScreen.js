@@ -13,7 +13,7 @@ import { OkAlert } from '../components/OkAlert';
 import { ProfilePicture } from '../components/ProfilePicture';
 import { Snackbar } from 'react-native-paper';
 import { PickImageModal } from '../components/PickImageModal';
-import { updateUser } from '../../service';
+import { updateUserAsync } from '../../service';
 import {
     useAppSelector,
     useAppDispatch
@@ -65,7 +65,7 @@ const ProfileDetailsScreen = ({route, navigation}) => {
                     username: username
                 };
                 try {
-                    await updateUser(newUserData);
+                    await updateUserAsync(newUserData);
                     dispatch(setUserDataAsync());
                 } catch (err) {
                     setUpdateDataAlertVisible(false);

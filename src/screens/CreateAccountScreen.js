@@ -17,40 +17,57 @@ import {
 } from '../utils/Validator';
 import { PasswordInput } from '../components/PasswordInput';
 import { StackActions } from '@react-navigation/native';
+import {
+    createNewUser,
+    emailNotTaken,
+    usernameNotTaken
+} from '../../service';
+import { OkAlert } from '../components/OkAlert';
+import { YesNoAlert } from '../components/YesNoAlert';
+import {
+    createUserWithEmailAndPassword, 
+    getAuth,
+    sendEmailVerification
+} from 'firebase/auth';
 
-function validateData(name, surname, username, email, password, confirmPassword) {
+async function validateData(name, surname, username, email, password, confirmPassword) {
     let message = {};
     if (validateTextField(name) && validateTextField(surname) && validateTextField(username)) {
         if (validateEmail(email)) {
-            if (validatePassword(password)) {
-                if (password === confirmPassword) {
-                    message.header = 'Validação de E-mail';
-                    message.body = `Um e-mail contendo um código de validação foi enviado com sucesso para ${email}!`;
-                    // return 'Conta criada com sucesso!'
+            if (await emailNotTaken(email)) {
+                if (await usernameNotTaken(username)) {
+                    if (validatePassword(password)) {
+                        if (password === confirmPassword) {
+                            message.header = 'Validação de E-mail';
+                            message.body = `Um e-mail contendo um link para validação foi enviado com sucesso para ${email}!`;
+                        } else {
+                            message.header = 'Palavra-passe e Confirmação';
+                            message.body = 'A palavra passe e confirmação da palavra-passe diferem!';
+                        }
+                    } else {
+                        message.header = 'Palavra-Passe';
+                        message.body = 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!';
+                    }
                 } else {
-                    message.header = 'Palavra-passe e Confirmação';
-                    message.body = 'A palavra passe e confirmação da palavra-passe diferem!';
-                    // return 'A palavra passe e confirmar palavra-passe diferem!'
+                    message.header = 'Nome de Utilizador Repetido';
+                    message.body = 'Nome de Utilizador já está em uso!';
                 }
             } else {
-                message.header = 'Palavra-Passe';
-                message.body = 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!';
-                // return 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!';
+                message.header = 'E-mail Repetido';
+                message.body = 'E-mail já está em uso!';
             }
         } else {
-            message.header = 'E-mail';
-            message.body = 'E-mail inválido!';
-            // return 'E-mail inválido!';
+            message.header = 'Formato do E-mail';
+            message.body = 'E-mail com formato inválido!';
         }
     } else {
         message.header = 'Campo de Texto';
         message.body = 'Campo de texto inválido!';
-        // return 'Campo de texto inválido!';
     }
     return message;
 }
 
-const CreateAccountScreen = ({route, navigation}) => {
+const CreateAccountScreen = ({navigation}) => {
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [username, setUsername] = useState('');
@@ -68,26 +85,23 @@ const CreateAccountScreen = ({route, navigation}) => {
 
     const [avoidUseEffect, setAvoidUseEffect] = useState(false);
 
+    const [errorOkAlertVisible, setErrorOkAlertVisible] = useState(false);
+    const [errorOkAlertTitle, setErrorOkAlertTitle] = useState('');
+    const [errorOkAlertDescription, setErrorOkAlertDescription] = useState('');
+
+    const [successOkAlertVisible, setSuccessOkAlertVisible] = useState(false);
+    const [successOkAlertTitle, setSuccessOkAlertTitle] = useState('');
+    const [successOkAlertDescription, setSuccessOkAlertDescription] = useState('');
+
+    const [yesNoAlertVisible, setYesNoAlertVisible] = useState(false);
+    const [action, setAction] = useState();
+
     useEffect(() => navigation.addListener('beforeRemove', e => {
         let action = e.data.action;
         if (!avoidUseEffect) {
             e.preventDefault();
-            Alert.alert(
-                'Criação de Conta',
-                'Se voltares os dados serão perdidos. Desejas realmente fazer isso?',
-                [
-                    {
-                        text: 'Sim',
-                        style: 'destructive',
-                        onPress: () => navigation.dispatch(action)
-                    }, 
-                    {
-                        text: 'Não',
-                        style: 'cancel',
-                        onPress: () => {}
-                    }
-                ]
-            );
+            setAction(action);
+            setYesNoAlertVisible(true);
         }
     }), [navigation, avoidUseEffect]);
 
@@ -161,22 +175,32 @@ const CreateAccountScreen = ({route, navigation}) => {
                 <View style={{marginTop: '10%'}}>
                     <CustomButton
                         text={'Criar'}
-                        onPress={() => {
-                            let res = validateData(name, surname, username, email, password, confirmPassword);
+                        onPress={async () => {
+                            let res = await validateData(name, surname, username, email, password, confirmPassword);
                             if (res.header == 'Validação de E-mail') {
                                 setAvoidUseEffect(true);
-                                Alert.alert(
-                                    res.header, 
-                                    res.body,
-                                    [
-                                        {
-                                            text: 'Ok',
-                                            onPress: () => navigation.dispatch(StackActions.replace('ValidationCode', { email: email }))
-                                        }
-                                    ]
-                                );
+                                let auth = getAuth();
+                                await createUserWithEmailAndPassword(auth, email, password)
+                                .then(_ => {
+                                    sendEmailVerification(
+                                        auth.currentUser, {
+                                        handleCodeInApp: true,
+                                        url: 'https://meu-controlo-financeiro.firebaseapp.com'
+                                    }).then(async _ => {
+                                        await createNewUser(name, surname, username, email);
+                                        setSuccessOkAlertTitle(res.header);
+                                        setSuccessOkAlertDescription(res.body);
+                                        setSuccessOkAlertVisible(true);
+                                    });
+                                }).catch(err => {
+                                    setErrorOkAlertTitle('Erro ao Tentar Criar Conta');
+                                    setErrorOkAlertDescription(err.message);
+                                    setErrorOkAlertVisible(true);
+                                });
                             } else {
-                                Alert.alert(res.header, res.body);
+                                setErrorOkAlertTitle(res.header);
+                                setErrorOkAlertDescription(res.body);
+                                setErrorOkAlertVisible(true);
                             }
                         }}
                         backgroundColor={checked ? Colors.tertiaryKeyColor : Colors.tertiaryKeyColorDisabled}
@@ -186,6 +210,38 @@ const CreateAccountScreen = ({route, navigation}) => {
                     />
                 </View>
             </ScrollView>
+            <OkAlert
+                visible={errorOkAlertVisible}
+                setVisible={setErrorOkAlertVisible}
+                title={errorOkAlertTitle}
+                description={errorOkAlertDescription}
+            />
+            <OkAlert
+                visible={successOkAlertVisible}
+                setVisible={setSuccessOkAlertVisible}
+                title={successOkAlertTitle}
+                description={successOkAlertDescription}
+                onPressOk={() => {
+                        if (getAuth().currentUser.emailVerified) {
+                            navigation.goBack();
+                            navigation.dispatch(StackActions.replace('AppNavigator'));
+                        } else {
+                            setSuccessOkAlertTitle('E-mail Ainda Não Verificado');
+                            setSuccessOkAlertDescription('Clique no link enviado por e-mail para validar sua conta');
+                            setTimeout(() => {
+                                navigation.goBack();
+                            }, 2000);
+                        }
+                    }
+                }
+            />
+            <YesNoAlert
+                visible={yesNoAlertVisible}
+                setVisible={setYesNoAlertVisible}
+                title={'Criação de Conta'}
+                description={'Se voltares os dados serão perdidos. Desejas realmente fazer isso?'}
+                onPressYes={() => navigation.dispatch(action)}
+            />
         </View>
     );
 };

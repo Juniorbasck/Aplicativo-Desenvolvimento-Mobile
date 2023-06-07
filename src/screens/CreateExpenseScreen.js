@@ -17,7 +17,7 @@ import { CustomImagePicker } from '../components/CustomImagePicker';
 import { CustomCheckbox } from '../components/CustomCheckbox';
 import { 
     getPaymentMethods, 
-    createExpense 
+    createExpenseAsync
 } from '../../service';
 import { Snackbar } from 'react-native-paper';
 import { OkAlert } from '../components/OkAlert';
@@ -65,7 +65,7 @@ const CreateExpenseScreen = ({navigation}) => {
         let localTitle = title.trim(), localEntity = entity.trim(), localPrice = price.trim();
         if (validate(localTitle, localEntity, localPrice)) {
             try {
-                await createExpense(localTitle, localEntity, date, localPrice, paymentMethod, image, paid);
+                await createExpenseAsync(localTitle, localEntity, date, localPrice, paymentMethod, image, paid);
                 dispatch(setExpensesAsync());
             } catch(err) {
                 setInvalidDataAlertMsg(err.message);

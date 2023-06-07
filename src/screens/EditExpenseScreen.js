@@ -17,7 +17,7 @@ import { CustomImagePicker } from '../components/CustomImagePicker';
 import { CustomCheckbox } from '../components/CustomCheckbox';
 import { getPaymentMethods } from '../../service';
 import { Snackbar } from 'react-native-paper';
-import { updateExpense } from '../../service';
+import { updateExpenseAsync } from '../../service';
 import { useAppDispatch } from '../app/hooks';
 import { setExpensesAsync } from '../features/expenses/expensesSlice';
 import { OkAlert } from '../components/OkAlert';
@@ -66,7 +66,7 @@ const EditExpenseScreen = ({route, navigation}) => {
                         image: null,
                         paid: paid
                     };
-                    await updateExpense(item, newExpense);
+                    await updateExpenseAsync(item, newExpense);
                     dispatch(setExpensesAsync());
                 } catch (err) {
                     setInvalidDataAlertMsg(err.message);

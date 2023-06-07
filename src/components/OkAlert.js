@@ -28,7 +28,7 @@ const OkAlert = ({visible, setVisible, title, description, onPressOk}) => {
                         <Pressable 
                             style={styles.alertButton}
                             onPress={() => {
-                                    onPressOk();
+                                    onPressOk && onPressOk();
                                     setVisible(false);
                                 }
                             }
@@ -50,9 +50,9 @@ const styles = StyleSheet.create({
     alertContainer: {
         position: 'absolute',
         left: '10%',
-        top: '35%',
+        top: '37.5%',
         width: .8 * Dimensions.get('window').width,
-        height: .3 * Dimensions.get('window').height,
+        height: .35 * Dimensions.get('window').height,
         backgroundColor: 'white',
         padding: '5%'
     },

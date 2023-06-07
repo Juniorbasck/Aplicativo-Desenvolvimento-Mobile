@@ -15,11 +15,11 @@ const CreateAccountNavigator = () => {
                 component={CreateAccountScreen}
                 options={{headerShown: true, headerTitle: 'Criar Conta', headerTitleAlign: 'center'}}
             />
-            <Stack.Screen 
+            {/* <Stack.Screen 
                 name='ValidationCode' 
                 component={CreateAccountValidationCodeScreen} 
                 options={{headerShown: true, headerTitle: 'Validação de Código', headerTitleAlign: 'center'}}
-            />
+            /> */}
         </Stack.Navigator>
     );
 };

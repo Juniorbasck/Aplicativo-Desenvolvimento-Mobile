@@ -11,7 +11,6 @@ import {
 import { Colors } from '../utils/Colors';
 import { Fonts } from '../utils/Fonts';
 import { ExpenseCard } from '../components/ExpenseCard';
-import { sortState, sort } from '../../service';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LoadingIndicator } from '../components/LoadingIndicator';
 import {
@@ -22,7 +21,7 @@ import {
     selectExpenses,
     setExpensesAsync,
 } from '../features/expenses/expensesSlice';
-import { deleteExpense } from '../../service';
+import { deleteExpenseAsync } from '../../service';
 
 const ExpenseScreen = ({navigation}) => {
     const [searchText, setSearchText] = useState('');
@@ -61,7 +60,7 @@ const ExpenseScreen = ({navigation}) => {
     };
 
     const handleLongPress = async expense => {
-        await deleteExpense(expense);
+        await deleteExpenseAsync(expense);
         dispatch(setExpensesAsync());
     }
 

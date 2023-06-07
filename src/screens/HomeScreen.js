@@ -25,7 +25,8 @@ import {
     selectExpenses,
     setExpensesAsync,
 } from '../features/expenses/expensesSlice';
-import { deleteExpense } from '../../service';
+import { deleteExpenseAsync } from '../../service';
+import { getAuth } from 'firebase/auth';
 
 const HomeScreen = ({route, navigation}) => {
     const userData = useAppSelector(selectUserData);
@@ -37,10 +38,12 @@ const HomeScreen = ({route, navigation}) => {
     const dispatch = useAppDispatch();
     
     useEffect(() => {
+        if (!getAuth().currentUser.emailVerified)
+            navigation.goBack();
         dispatch(setExpensesAsync());
         dispatch(setUserDataAsync());
     }, []);
-
+    
     const handleOnPress = item => {
         navigation.navigate('EditExpense', {
             item: item,
@@ -49,7 +52,7 @@ const HomeScreen = ({route, navigation}) => {
     }
 
     const handleLongPress = async expense => {
-        await deleteExpense(expense);
+        await deleteExpenseAsync(expense);
         dispatch(setExpensesAsync());
     }
 

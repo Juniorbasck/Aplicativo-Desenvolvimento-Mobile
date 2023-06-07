@@ -14,9 +14,6 @@ import {
     increment,
 } from 'firebase/firestore';
 import { db } from './firebase.config';
-import { RotationGestureHandler } from 'react-native-gesture-handler';
-
-const USE_MOCK_DATA = false;
 
 const sort = exps => {
     let sorted = exps.sort((exp1, exp2) => new Date(exp1.date).getTime() - new Date(exp2.date).getTime());
@@ -44,6 +41,48 @@ const sortState = exps => {
     return notPaid.concat(paid);
 };
 
+const emailNotTaken = async email => {
+    const collecRef = collection(db, 'users');
+    const theDocs = await getDocs(collecRef);
+    let answer = true;
+    theDocs.forEach(doc => {
+        if (doc.id === email)
+            answer = false;
+    });
+    return answer;
+};
+
+const usernameNotTaken = async username => {
+    const collecRef = collection(db, 'users');
+    const theDocs = await getDocs(collecRef);
+    let docData;
+    let answer = true;
+    theDocs.forEach(doc => {
+        docData = doc.data();
+        if (docData.username === username)
+            answer = false;
+    });
+    return answer;
+};
+
+const createNewUser = async (name, surname, username, email) => {
+    const docRef = doc(db, 'users', email);
+    // Create user data document.
+    await setDoc(docRef, {
+        name: name,
+        surname: surname,
+        username: username,
+        email: email,
+        id: await nextUserIdAsync(),
+        image: null
+    });
+    // Create user expenses document.
+    const expDocRef = doc(db, 'expenses', email);
+    await setDoc(expDocRef, {
+        expenses: []
+    });
+};
+
 const fetchExpensesAsync = async () => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
@@ -57,57 +96,12 @@ const fetchExpensesMock = () => {
     return sort(expenses);
 }
 
-const fetchExpenses = async onFetchData => {
-    let exps;
-    if (USE_MOCK_DATA) {
-        exps = expenses;
-    } else {
-        const auth = getAuth();
-        const currentUser = auth.currentUser;
-        const docRef = doc(db, 'expenses', currentUser.email);
-        const theDoc = await getDoc(docRef);
-        let temp = theDoc.data();
-        exps = temp.expenses;
-    }
-    onFetchData(sort(exps));
-};
-
-const fetchUserData = async onFetchData => {
-    let userData;
-    if (USE_MOCK_DATA) {
-        userData = {
-            name: 'Marinna',
-            surname: 'Silva',
-            username: 'mari123',
-            email: 'mari123@gmail.com'
-        };
-    } else {
-        const auth = getAuth();
-        const currentUser = auth.currentUser;
-        const docRef = doc(db, 'users', currentUser.email);
-        const theDoc = await getDoc(docRef);
-        userData = theDoc.data();
-    }
-    onFetchData(userData);
-};
-
 const fetchUserDataAsync = async () => {
-    let userData;
-    if (USE_MOCK_DATA) {
-        userData = {
-            name: 'Marinna',
-            surname: 'Silva',
-            username: 'mari123',
-            email: 'mari123@gmail.com'
-        };
-    } else {
-        const auth = getAuth();
-        const currentUser = auth.currentUser;
-        const docRef = doc(db, 'users', currentUser.email);
-        const theDoc = await getDoc(docRef);
-        userData = theDoc.data();
-    }
-    return userData;
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    const docRef = doc(db, 'users', currentUser.email);
+    const theDoc = await getDoc(docRef);
+    return theDoc.data();
 };
 
 const fetchUserDataMock = () => {
@@ -119,7 +113,7 @@ const fetchUserDataMock = () => {
     };
 };
 
-const updateExpense = async (oldExpense, updatedExpense) => {
+const updateExpenseAsync = async (oldExpense, updatedExpense) => {
     updatedExpense.price = parseFloat(updatedExpense.price);
     const auth = getAuth();
     const currentUser = auth.currentUser;
@@ -148,9 +142,9 @@ const updateExpense = async (oldExpense, updatedExpense) => {
      });
 }
 
-const createExpense = async (title, entity, date, price, paymentMethod, image, paid) => {
+const createExpenseAsync = async (title, entity, date, price, paymentMethod, image, paid) => {
     let newExpense = {
-        id: await nextId(),
+        id: await currentUserExpenseNextIdAsync(),
         title: title,
         entity: entity,
         date: date,
@@ -167,7 +161,7 @@ const createExpense = async (title, entity, date, price, paymentMethod, image, p
     let expenses = theDoc.get('expenses');
     expenses.forEach(e => {
         if (
-            e.id !== newExpense.id,
+            e.id !== newExpense.id, // The id is used to differentiate one expense from the others.
             e.title === title && 
             e.entity === entity && 
             e.price === price &&
@@ -182,7 +176,7 @@ const createExpense = async (title, entity, date, price, paymentMethod, image, p
     });
 }
 
-const nextId = async () => {
+const currentUserExpenseNextIdAsync = async _ => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
     const docRef = doc(db, 'expenses', currentUser.email);
@@ -194,7 +188,17 @@ const nextId = async () => {
     return nextId;
 };
 
-const deleteExpense = async expense => {
+const nextUserIdAsync = async _ => {
+    const docRef = doc(db, 'config', 'nextUserId');
+    const theDoc = await getDoc(docRef);
+    let nextUserId = theDoc.get('nextUserId');
+    await updateDoc(docRef, {
+        nextUserId: increment(1)
+    });
+    return nextUserId;
+};
+
+const deleteExpenseAsync = async expense => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
     const docRef = doc(db, 'expenses', currentUser.email);
@@ -220,7 +224,7 @@ const getPaymentMethods = () => {
     ];
 };
 
-const updateUser = async newUserData => {
+const updateUserAsync = async newUserData => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
     // Check if username is not already taken.
@@ -341,19 +345,21 @@ const getDataAsync = async (key, onGetData) => {
 };
 
 export { 
+    sort,
+    sortState,
+    emailNotTaken,
+    usernameNotTaken,
+    fetchExpensesAsync,
+    fetchExpensesMock,
+    updateExpenseAsync,
+    createExpenseAsync,
+    deleteExpenseAsync,
+    updateUserAsync,
     getPaymentMethods,
-    fetchExpenses,
-    fetchUserData,
     fetchUserDataAsync,
     fetchUserDataMock,
     fetchHistoric,
-    updateExpense, 
-    createExpense, 
-    deleteExpense, 
     signInGoogle,
-    updateUser,
-    sort,
-    sortState,
     stringifyOperation,
     stringifyPaymentMethod,
     checkValidationCode,
@@ -361,6 +367,5 @@ export {
     sendCodeEmail,
     storeDataAsync,
     getDataAsync,
-    fetchExpensesAsync,
-    fetchExpensesMock
+    createNewUser
 };

@@ -23,6 +23,7 @@ import {
     getAuth,
     signInWithEmailAndPassword
 } from 'firebase/auth';
+import { OkAlert } from '../components/OkAlert';
 
 function validateData(email, password){
     let message = {};
@@ -49,24 +50,22 @@ const login = async (email, password) => {
             password
         );
         await auth.currentUser.reload();
-        const user = userCred.user;
-        return user;
     } catch (error) {
-        let header, body;
+        let message;
         switch (error.code) {
             case 'auth/user-not-found':
-                header = 'Usuário Não Encontrado';
-                body = 'Nenhum utilizador foi encontrado com essas credenciais!';
+                message.header = 'Usuário Não Encontrado';
+                message.body = 'Nenhum utilizador foi encontrado com essas credenciais!';
                 break;
             case 'auth/wrong-password':
-                header = 'Credenciais Inválidas';
-                body = 'Suas credenciais não puderam ser validadas!';
+                message.header = 'Credenciais Inválidas';
+                message.body = 'Suas credenciais não puderam ser validadas!';
                 break;
             default:
-                header = error.code;
-                body = error.body;
+                message.header = error.code;
+                message.body = error.body;
         }
-        Alert.alert(header, body);
+        return message;
     }
 };
 
@@ -76,6 +75,10 @@ const LoginScreen = ({route, navigation}) => {
 
     const [emailInput, setEmailInput] = useState();
     const [passwordInput, setPasswordInput] = useState();
+
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [alertTitle, setAlertTitle] = useState('');
+    const [alertDescription, setAlertDescription] = useState('');
 
     function cleanInputs() {
         setEmail('');
@@ -120,20 +123,21 @@ const LoginScreen = ({route, navigation}) => {
                         backgroundColor={'#486D31'}
                         textColor={'white'}
                         widthPercentage={88}
-                        onPress={async () =>  {
-                                let res = validateData(email, password);
-                                if (res.header == 'Sucesso') {
-                                    let user = await login(email, password);
-                                    if (user) {
+                        onPress={async () => {
+                                let valRes = validateData(email, password);
+                                if (valRes.header === 'Sucesso') {
+                                    let logRes = await login(email, password);
+                                    if (!logRes) { // No error reports.
                                         navigation.dispatch(StackActions.replace('AppNavigator'));
                                     } else {
-                                        cleanInputs();
-                                        emailInput.focus();
+                                        setAlertTitle(logRes.header);
+                                        setAlertDescription(logRes.body);
+                                        setAlertVisible(true);
                                     }
                                 } else {
-                                    Alert.alert(res.header, res.body);
-                                    cleanInputs();
-                                    emailInput.focus();
+                                    setAlertTitle(valRes.header);
+                                    setAlertDescription(valRes.body);
+                                    setAlertVisible(true);
                                 }
                             }
                         }
@@ -154,6 +158,17 @@ const LoginScreen = ({route, navigation}) => {
                     Ir para criar conta
                 </Text> 
             </ScrollView>
+            <OkAlert
+                visible={alertVisible}
+                setVisible={setAlertVisible}
+                title={alertTitle}
+                description={alertDescription}
+                onPressOk={() => {
+                        cleanInputs();
+                        emailInput.focus();
+                    }
+                }
+            />
         </View>
     );
 };

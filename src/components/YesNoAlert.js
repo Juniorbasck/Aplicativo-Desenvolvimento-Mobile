@@ -28,7 +28,7 @@ const YesNoAlert = ({visible, setVisible, title, description, onPressYes, onPres
                         <Pressable 
                             style={styles.alertButton}
                             onPress={() => {
-                                    onPressYes();
+                                    onPressYes && onPressYes();
                                     setVisible(false);
                                 }
                             }
@@ -38,7 +38,7 @@ const YesNoAlert = ({visible, setVisible, title, description, onPressYes, onPres
                         <Pressable 
                             style={styles.alertButton}
                             onPress={() => {
-                                    onPressNo();
+                                    onPressNo && onPressNo();
                                     setVisible(false);
                                 }
                             }
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
         width: .8 * Dimensions.get('window').width,
         height: .3 * Dimensions.get('window').height,
         backgroundColor: 'white',
-        padding: 20
+        padding: 15
     },
     title: {
         margin: 5,

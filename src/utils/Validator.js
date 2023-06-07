@@ -41,4 +41,6 @@ function validateTextField(text) {
     return text.trim().length > 0;
 }
 
+
+
 export { validateEmail, validatePassword, validateTextField };
