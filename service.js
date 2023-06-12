@@ -13,7 +13,17 @@ import {
     arrayRemove,
     increment,
 } from 'firebase/firestore';
-import { db } from './firebase.config';
+import {
+    ref,
+    uploadBytes,
+    uploadString,
+    deleteObject,
+    getDownloadURL
+} from 'firebase/storage';
+import { 
+    firestore,
+    storage
+} from './firebase.config';
 
 const sort = exps => {
     let sorted = exps.sort((exp1, exp2) => new Date(exp1.date).getTime() - new Date(exp2.date).getTime());
@@ -42,7 +52,7 @@ const sortState = exps => {
 };
 
 const emailNotTaken = async email => {
-    const collecRef = collection(db, 'users');
+    const collecRef = collection(firestore, 'users');
     const theDocs = await getDocs(collecRef);
     let answer = true;
     theDocs.forEach(doc => {
@@ -53,7 +63,7 @@ const emailNotTaken = async email => {
 };
 
 const usernameNotTaken = async username => {
-    const collecRef = collection(db, 'users');
+    const collecRef = collection(firestore, 'users');
     const theDocs = await getDocs(collecRef);
     let docData;
     let answer = true;
@@ -66,7 +76,7 @@ const usernameNotTaken = async username => {
 };
 
 const createNewUser = async (name, surname, username, email) => {
-    const docRef = doc(db, 'users', email);
+    const docRef = doc(firestore, 'users', email);
     // Create user data document.
     await setDoc(docRef, {
         name: name,
@@ -77,17 +87,25 @@ const createNewUser = async (name, surname, username, email) => {
         image: null
     });
     // Create user expenses document.
-    const expDocRef = doc(db, 'expenses', email);
+    const expDocRef = doc(firestore, 'expenses', email);
     await setDoc(expDocRef, {
         expenses: [],
         nextId: 1
     });
+    // Create user image storage.
+    // const imagesPath = 'users/' + email + '/images';
+    // const expenseImagesPath = imagesPath + '/expenses/dir.txt';
+    // const profileImagePath = imagesPath + '/profile/dir.txt';
+    // const expDirRef = ref(storage, expenseImagesPath);
+    // const profDirRef = ref(storage, profileImagePath);
+    // await uploadString(expDirRef, '');
+    // await uploadString(profDirRef, '');
 };
 
 const fetchExpensesAsync = async () => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    const docRef = doc(db, 'expenses', currentUser.email);
+    const docRef = doc(firestore, 'expenses', currentUser.email);
     const theDoc = await getDoc(docRef);
     let temp = theDoc.data();
     return sort(temp.expenses);
@@ -100,9 +118,15 @@ const fetchExpensesMock = () => {
 const fetchUserDataAsync = async () => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    const docRef = doc(db, 'users', currentUser.email);
+    const docRef = doc(firestore, 'users', currentUser.email);
     const theDoc = await getDoc(docRef);
-    return theDoc.data();
+    let data = theDoc.data();
+    try {
+        await fetch(data.image.uri);
+    } catch (err) {
+        await getDownloadURL(ref(storage, 'users/' + currentUser.email + '/images/profile/profile.jpeg'));
+    }
+    return data;
 };
 
 const fetchUserDataMock = () => {
@@ -118,7 +142,7 @@ const updateExpenseAsync = async (oldExpense, updatedExpense) => {
     updatedExpense.price = parseFloat(updatedExpense.price);
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    const docRef = doc(db, 'expenses', currentUser.email);
+    const docRef = doc(firestore, 'expenses', currentUser.email);
     const theDoc = await getDoc(docRef);
     let expenses = theDoc.get('expenses');
     expenses.forEach(e => {
@@ -158,7 +182,7 @@ const createExpenseAsync = async (title, entity, date, price, paymentMethod, ima
     const auth = getAuth();
     const currentUser = auth.currentUser;
     // Check if the new expense is not repeated.
-    const docRef = doc(db, 'expenses', currentUser.email);
+    const docRef = doc(firestore, 'expenses', currentUser.email);
     const theDoc = await getDoc(docRef);
     let expenses = theDoc.get('expenses');
     expenses.forEach(e => {
@@ -181,7 +205,7 @@ const createExpenseAsync = async (title, entity, date, price, paymentMethod, ima
 const currentUserExpenseNextIdAsync = async _ => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    const docRef = doc(db, 'expenses', currentUser.email);
+    const docRef = doc(firestore, 'expenses', currentUser.email);
     const theDoc = await getDoc(docRef);
     let nextId = theDoc.get('nextId');
     await updateDoc(docRef, {
@@ -191,7 +215,7 @@ const currentUserExpenseNextIdAsync = async _ => {
 };
 
 const nextUserIdAsync = async _ => {
-    const docRef = doc(db, 'config', 'nextUserId');
+    const docRef = doc(firestore, 'config', 'nextUserId');
     const theDoc = await getDoc(docRef);
     let nextUserId = theDoc.get('nextUserId');
     await updateDoc(docRef, {
@@ -203,7 +227,7 @@ const nextUserIdAsync = async _ => {
 const deleteExpenseAsync = async expense => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    const docRef = doc(db, 'expenses', currentUser.email);
+    const docRef = doc(firestore, 'expenses', currentUser.email);
     await updateDoc(docRef, {
         expenses: arrayRemove(expense)
     });
@@ -230,7 +254,7 @@ const updateUserAsync = async newUserData => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
     // Check if username is not already taken.
-    const users = collection(db, 'users');
+    const users = collection(firestore, 'users');
     const querySnapshot = await getDocs(users);
     querySnapshot.forEach(doc => {
         if (doc.id != currentUser.email) {
@@ -239,7 +263,25 @@ const updateUserAsync = async newUserData => {
             }
         }
     });
-    const docRef = doc(db, 'users', currentUser.email);
+    const profileImagePath = 'users/' + getAuth().currentUser.email + '/images/profile/profile.jpeg';
+    const profileRef = ref(storage, profileImagePath);
+    if (newUserData.image) { // If there's an image, save it to firebase storage.
+        const imageResponse = await fetch(newUserData.image.uri);
+        const imageBlob = await imageResponse.blob();
+        await uploadBytes(profileRef, imageBlob);
+        getDownloadURL(profileRef)
+        .then(url => {
+            newUserData.image = {uri: url}
+        });
+    } else { // Else, try to delete the one that's in the firebase storage if any.
+        try {
+            await deleteObject(profileRef);
+        } catch(err) {
+            console.log('Error when trying to delete the profile image ------');
+            console.log(err.message);
+        }
+    }
+    const docRef = doc(firestore, 'users', currentUser.email);
     await updateDoc(docRef, newUserData);
 };
 

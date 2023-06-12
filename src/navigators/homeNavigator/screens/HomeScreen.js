@@ -27,6 +27,7 @@ import {
 } from '../../../features/expenses/expensesSlice';
 import { deleteExpenseAsync } from '../../../../service';
 import { getAuth } from 'firebase/auth';
+import { StackActions } from '@react-navigation/native';
 
 const HomeScreen = ({route, navigation}) => {
     const userData = useAppSelector(selectUserData);
@@ -36,10 +37,8 @@ const HomeScreen = ({route, navigation}) => {
     const expensesStatus = useAppSelector(state => state.expenses.status);
 
     const dispatch = useAppDispatch();
-    
+
     useEffect(() => {
-        if (!getAuth().currentUser.emailVerified)
-            navigation.goBack();
         dispatch(setExpensesAsync());
         dispatch(setUserDataAsync());
     }, []);
@@ -87,7 +86,7 @@ const HomeScreen = ({route, navigation}) => {
                 <View style={styles.flexEnd}>
                     <ProfilePicture
                         onPress={() => navigation.navigate('ProfileNavigator')}
-                        src={userData.image}
+                        src={userData.value.image}
                     />
                 </View>
             </View>

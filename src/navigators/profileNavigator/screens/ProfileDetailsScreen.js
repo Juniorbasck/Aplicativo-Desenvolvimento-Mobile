@@ -27,8 +27,8 @@ function validate(name, surname, username) {
     return name.length > 0 && surname.length > 0 && username.length > 0;
 }
 
-function dataChanged(userData, name, surname, username) {
-    return userData.value.name != name || userData.value.surname != surname || userData.value.username != username;
+function dataChanged(userData, name, surname, username, image) {
+    return userData.value.name != name || userData.value.surname != surname || userData.value.username != username || userData.value.image != image;
 }
 
 const ProfileDetailsScreen = ({route, navigation}) => {
@@ -58,11 +58,12 @@ const ProfileDetailsScreen = ({route, navigation}) => {
     const update = async () => {
         let localName = name.trim(), localUsername = username.trim(), localSurname = surname.trim();
         if (validate(localName, localSurname, localUsername)) {
-            if (dataChanged(userData, localName, localSurname, localUsername)) {
+            if (dataChanged(userData, localName, localSurname, localUsername, image)) {
                 let newUserData = {
                     name: name,
                     surname: surname,
-                    username: username
+                    username: username,
+                    image: image
                 };
                 try {
                     await updateUserAsync(newUserData);
@@ -89,7 +90,7 @@ const ProfileDetailsScreen = ({route, navigation}) => {
 
     useEffect(() => {
         navigation.addListener('beforeRemove', e => {
-            if (e.data.action.type === 'POP' && dataChanged(userData, name, surname, username)) {
+            if (e.data.action.type === 'POP' && dataChanged(userData, name, surname, username, image)) {
                 e.preventDefault();
                 setAction(e.data.action);
                 setUpdateDataAlertVisible(true);

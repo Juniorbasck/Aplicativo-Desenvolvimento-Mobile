@@ -15,7 +15,7 @@ const ProfilePicture = ({onPress, size='small', src=null}) => {
         >   
             <Image
                 source={src}
-                resizeMode={'contain'}
+                resizeMode={'cover'}
                 style={ResponsiveDimensions.roundImageContainer[size]}
             />
         </Pressable>

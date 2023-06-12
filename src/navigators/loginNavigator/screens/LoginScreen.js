@@ -20,6 +20,8 @@ import { Fonts } from '../../../utils/Fonts';
 import { PasswordInput } from '../../../components/PasswordInput';
 import { 
     getAuth,
+    signOut,
+    sendEmailVerification,
     signInWithEmailAndPassword
 } from 'firebase/auth';
 import { OkAlert } from '../../../components/OkAlert';
@@ -54,6 +56,12 @@ const login = async (email, password) => {
         if (!currentUser.emailVerified) {
             message.header = 'E-mail Não Verificado';
             message.body = 'Clique no link enviado para este e-mail para verificar!';
+            await sendEmailVerification(
+                auth.currentUser, {
+                handleCodeInApp: true,
+                url: 'https://meu-controlo-financeiro.firebaseapp.com'
+            });
+            await signOut(auth);
             return message;
         }
     } catch (error) {
@@ -90,7 +98,7 @@ const LoginScreen = ({route, navigation}) => {
 
     useEffect(() => {
         const subscriber = getAuth().onAuthStateChanged(user => {
-            setUser(user);
+            user && setUser(user.emailVerified ? user : null);
             if (initializing)
                 setInitializing(false);
         });
@@ -124,7 +132,7 @@ const LoginScreen = ({route, navigation}) => {
                 <CustomTextInput
                     state={email}
                     setState={setEmail}
-                    placeholder='E-mail ou usuário'
+                    placeholder='E-mail'
                     widthPercentage={90}
                     setRef={setEmailInput}
                     keyboardType='email-address'
@@ -153,7 +161,7 @@ const LoginScreen = ({route, navigation}) => {
                                 if (valRes.header === 'Sucesso') {
                                     let logRes = await login(email, password);
                                     if (!logRes) { // No error reports. 
-                                        navigation.dispatch(StackActions.replace('AppNavigator'));
+                                        // navigation.dispatch(StackActions.replace('AppNavigator'));
                                     } else {
                                         setAlertTitle(logRes.header);
                                         setAlertDescription(logRes.body);
