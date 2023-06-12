@@ -169,7 +169,7 @@ const LoginScreen = ({route, navigation}) => {
                     />
                 </View>
                 <Pressable
-                    style={styles.googleSignInContainer}
+                    style={[styles.googleSignInContainer, { flexDirection: 'row' }]}
                     onPress={signInGoogle}
                 >
                     <Image
@@ -177,7 +177,7 @@ const LoginScreen = ({route, navigation}) => {
                         style={styles.googleLogo}
                         resizeMode='contain'
                     />
-                    <Text style={[Fonts.headlineSmall, {flex: 3}]}>Acessar com Google</Text>
+                    <Text style={Fonts.headlineSmall}>Acessar com Google</Text>
                 </Pressable>
                 <Text style={styles.createAccount} onPress={() => navigation.navigate('CreateAccountNavigator')}>
                     Ir para criar conta

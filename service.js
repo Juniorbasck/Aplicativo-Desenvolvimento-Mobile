@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import expenses from './expenses.json';
-import { getAuth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { 
     doc,
     collection,
@@ -210,7 +210,17 @@ const deleteExpenseAsync = async expense => {
 };
 
 const signInGoogle = () => {
-    Alert.alert('Entrar com API do Google');
+
+    const provider = new GoogleAuthProvider();
+    
+    signInWithPopup(auth, provider)
+    .then((result) => {
+        console.log(result);
+        // The signed-in user info.
+    })
+    .catch((error) => {
+        console.log(error);
+    });
 }
 
 const getPaymentMethods = () => {
