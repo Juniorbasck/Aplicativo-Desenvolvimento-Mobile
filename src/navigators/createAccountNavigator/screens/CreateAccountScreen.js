@@ -6,24 +6,24 @@ import {
     Alert,
     Dimensions
 } from 'react-native';
-import { Colors } from '../utils/Colors';
-import { CustomTextInput } from '../components/CustomTextInput';
-import { TermsAndConditions } from '../components/TermsAndConditions'; 
-import { CustomButton } from '../components/CustomButton';
+import { Colors } from '../../../utils/Colors';
+import { CustomTextInput } from '../../../components/CustomTextInput';
+import { TermsAndConditions } from '../../../components/TermsAndConditions'; 
+import { CustomButton } from '../../../components/CustomButton';
 import { 
     validateEmail, 
     validatePassword, 
     validateTextField 
-} from '../utils/Validator';
-import { PasswordInput } from '../components/PasswordInput';
+} from '../../../utils/Validator';
+import { PasswordInput } from '../../../components/PasswordInput';
 import { StackActions } from '@react-navigation/native';
 import {
     createNewUser,
     emailNotTaken,
     usernameNotTaken
-} from '../../service';
-import { OkAlert } from '../components/OkAlert';
-import { YesNoAlert } from '../components/YesNoAlert';
+} from '../../../../service';
+import { OkAlert } from '../../../components/OkAlert';
+import { YesNoAlert } from '../../../components/YesNoAlert';
 import {
     createUserWithEmailAndPassword, 
     getAuth,

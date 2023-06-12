@@ -6,26 +6,26 @@ import {
     StyleSheet,
     Dimensions,
 } from 'react-native';
-import { Colors } from '../utils/Colors';
-import { Fonts } from '../utils/Fonts';
-import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
-import { ProfilePicture } from '../components/ProfilePicture';
-import { ExpenseStatus } from '../components/ExpenseStatus';
-import { ExpenseCard } from '../components/ExpenseCard';
-import { LoadingIndicator } from '../components/LoadingIndicator';
+import { Colors } from '../../../utils/Colors';
+import { Fonts } from '../../../utils/Fonts';
+import { ResponsiveDimensions } from '../../../utils/ResponsiveDimensions';
+import { ProfilePicture } from '../../../components/ProfilePicture';
+import { ExpenseStatus } from '../../../components/ExpenseStatus';
+import { ExpenseCard } from '../../../components/ExpenseCard';
+import { LoadingIndicator } from '../../../components/LoadingIndicator';
 import {
     useAppSelector,
     useAppDispatch
-} from '../app/hooks';
+} from '../../../app/hooks';
 import {
     selectUserData,
     setUserDataAsync
-} from '../features/userData/userDataSlice';
+} from '../../../features/userData/userDataSlice';
 import {
     selectExpenses,
     setExpensesAsync,
-} from '../features/expenses/expensesSlice';
-import { deleteExpenseAsync } from '../../service';
+} from '../../../features/expenses/expensesSlice';
+import { deleteExpenseAsync } from '../../../../service';
 import { getAuth } from 'firebase/auth';
 
 const HomeScreen = ({route, navigation}) => {

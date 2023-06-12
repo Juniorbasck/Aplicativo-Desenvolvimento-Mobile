@@ -1,8 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { ExpenseScreen } from '../screens/ExpenseScreen';
-import { EditExpenseScreen } from '../screens/EditExpenseScreen';
-import { CreateExpenseScreen } from '../screens/CreateExpenseScreen';
+import { ExpenseScreen } from './screens/ExpenseScreen';
+import { EditExpenseScreen } from './screens/EditExpenseScreen';
+import { CreateExpenseScreen } from './screens/CreateExpenseScreen';
 
 const Stack = createStackNavigator();
 

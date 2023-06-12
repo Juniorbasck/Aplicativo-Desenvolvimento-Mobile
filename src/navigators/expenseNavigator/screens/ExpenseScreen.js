@@ -8,20 +8,20 @@ import {
     Dimensions,
     TextInput
 } from 'react-native';
-import { Colors } from '../utils/Colors';
-import { Fonts } from '../utils/Fonts';
-import { ExpenseCard } from '../components/ExpenseCard';
+import { Colors } from '../../../utils/Colors';
+import { Fonts } from '../../../utils/Fonts';
+import { ExpenseCard } from '../../../components/ExpenseCard';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { LoadingIndicator } from '../components/LoadingIndicator';
+import { LoadingIndicator } from '../../../components/LoadingIndicator';
 import {
     useAppSelector,
     useAppDispatch
-} from '../app/hooks';
+} from '../../../app/hooks';
 import {
     selectExpenses,
     setExpensesAsync,
-} from '../features/expenses/expensesSlice';
-import { deleteExpenseAsync } from '../../service';
+} from '../../../features/expenses/expensesSlice';
+import { deleteExpenseAsync } from '../../../../service';
 
 const ExpenseScreen = ({navigation}) => {
     const [searchText, setSearchText] = useState('');

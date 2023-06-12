@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Colors } from '../utils/Colors';
-import { HomeNavigator } from './HomeNavigator';
-import { ProfileNavigator } from './ProfileNavigator';
-import { ExpenseNavigator } from './ExpenseNavigator';
+import { Colors } from '../../utils/Colors';
+import { HomeNavigator } from '../homeNavigator/HomeNavigator';
+import { ProfileNavigator } from '../profileNavigator/ProfileNavigator';
+import { ExpenseNavigator } from '../expenseNavigator/ExpenseNavigator';
 
 const Tab = createBottomTabNavigator();
 

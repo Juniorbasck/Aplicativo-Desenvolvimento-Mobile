@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import { CreateAccountScreen } from "../screens/CreateAccountScreen";
-import { CreateAccountValidationCodeScreen } from "../screens/CreateAccountValidationCodeScreen";
+import { CreateAccountScreen } from "./screens/CreateAccountScreen";
+import { CreateAccountValidationCodeScreen } from "./screens/CreateAccountValidationCodeScreen";
 
 const Stack = createStackNavigator();
 

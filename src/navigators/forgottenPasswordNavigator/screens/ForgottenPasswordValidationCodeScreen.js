@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import {
     Alert,
     View,
@@ -6,10 +6,11 @@ import {
     StyleSheet,
     Dimensions,
 } from 'react-native';
-import { Colors } from '../utils/Colors';
-import { ValidationCodeForm } from '../components/ValidationCodeForm';
+import { Colors } from '../../../utils/Colors';
+import { ValidationCodeForm } from '../../../components/ValidationCodeForm';
+import { StackActions } from '@react-navigation/native';
 
-const CreateAccountValidationCodeScreen = ({route, navigation}) => {
+const ForgottenPasswordValidationCodeScreen = ({route, navigation}) => {
     const { email } = route.params;
 
     useEffect(() => navigation.addListener('beforeRemove', e => {
@@ -23,7 +24,7 @@ const CreateAccountValidationCodeScreen = ({route, navigation}) => {
                     {
                         text: 'Sim',
                         style: 'destructive',
-                        onPress: () => navigation.dispatch(e.data.action)
+                        onPress: () => navigation.dispatch(action)
                     }, 
                     {
                         text: 'Não',
@@ -43,13 +44,7 @@ const CreateAccountValidationCodeScreen = ({route, navigation}) => {
             >
                 <ValidationCodeForm
                     email={email}
-                    onSuccess={() => {
-                            navigation.reset({
-                                index: 0,
-                                routes: [ { name: 'AppNavigator' } ]
-                            });
-                        }
-                    }
+                    onSuccess={() => navigation.dispatch(StackActions.replace('RedefinePassword'))}
                 />
             </ScrollView>
         </View>
@@ -74,4 +69,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { CreateAccountValidationCodeScreen };
+export { ForgottenPasswordValidationCodeScreen };

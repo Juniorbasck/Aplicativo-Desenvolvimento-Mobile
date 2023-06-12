@@ -7,23 +7,23 @@ import {
     Dimensions,
     Image
 } from 'react-native';
-import { Colors } from '../utils/Colors';
-import { Fonts } from '../utils/Fonts';
-import { CustomTextInput } from '../components/CustomTextInput';
-import { CustomButton } from '../components/CustomButton';
-import { CustomDatePicker } from '../components/CustomDatePicker';
-import { CustomDropdown } from '../components/CustomDropdown';
-import { CustomImagePicker } from '../components/CustomImagePicker';
-import { CustomCheckbox } from '../components/CustomCheckbox';
+import { Colors } from '../../../utils/Colors';
+import { Fonts } from '../../../utils/Fonts';
+import { CustomTextInput } from '../../../components/CustomTextInput';
+import { CustomButton } from '../../../components/CustomButton';
+import { CustomDatePicker } from '../../../components/CustomDatePicker';
+import { CustomDropdown } from '../../../components/CustomDropdown';
+import { CustomImagePicker } from '../../../components/CustomImagePicker';
+import { CustomCheckbox } from '../../../components/CustomCheckbox';
 import { 
     getPaymentMethods, 
     createExpenseAsync
-} from '../../service';
+} from '../../../../service';
 import { Snackbar } from 'react-native-paper';
-import { OkAlert } from '../components/OkAlert';
-import { useAppDispatch } from '../app/hooks';
-import { setExpensesAsync } from '../features/expenses/expensesSlice';
-import { YesNoAlert } from '../components/YesNoAlert';
+import { OkAlert } from '../../../components/OkAlert';
+import { useAppDispatch } from '../../../app/hooks';
+import { setExpensesAsync } from '../../../features/expenses/expensesSlice';
+import { YesNoAlert } from '../../../components/YesNoAlert';
 
 function validate(title, entity, price) {
     return title.length > 0 && entity.length > 0 && price?.toString().length > 0;

@@ -8,21 +8,21 @@ import {
     Pressable,
     Image,
 } from 'react-native';
-import { CustomButton } from '../components/CustomButton';
-import { CustomTextInput } from '../components/CustomTextInput';
+import { CustomButton } from '../../../components/CustomButton';
+import { CustomTextInput } from '../../../components/CustomTextInput';
 import { StackActions } from '@react-navigation/native';
-import { validateEmail, validatePassword } from '../utils/Validator';
+import { validateEmail, validatePassword } from '../../../utils/Validator';
 import { 
     signInGoogle,
-} from '../../service';
-import { Colors } from '../utils/Colors';
-import { Fonts } from '../utils/Fonts';
-import { PasswordInput } from '../components/PasswordInput';
+} from '../../../../service';
+import { Colors } from '../../../utils/Colors';
+import { Fonts } from '../../../utils/Fonts';
+import { PasswordInput } from '../../../components/PasswordInput';
 import { 
     getAuth,
     signInWithEmailAndPassword
 } from 'firebase/auth';
-import { OkAlert } from '../components/OkAlert';
+import { OkAlert } from '../../../components/OkAlert';
 
 function validateData(email, password){
     let message = {};
@@ -173,7 +173,7 @@ const LoginScreen = ({route, navigation}) => {
                     onPress={signInGoogle}
                 >
                     <Image
-                        source={require('../../assets/google.png')}
+                        source={require('../../../../assets/google.png')}
                         style={styles.googleLogo}
                         resizeMode='contain'
                     />

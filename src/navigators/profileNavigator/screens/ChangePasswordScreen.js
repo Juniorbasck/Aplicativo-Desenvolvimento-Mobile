@@ -7,11 +7,11 @@ import {
     Text,
     Dimensions
 } from 'react-native';
-import { Colors } from '../utils/Colors';
-import { Fonts } from '../utils/Fonts';
-import { PasswordInput } from '../components/PasswordInput';
-import { CustomButton } from '../components/CustomButton';
-import { validatePassword } from '../utils/Validator';
+import { Colors } from '../../../utils/Colors';
+import { Fonts } from '../../../utils/Fonts';
+import { PasswordInput } from '../../../components/PasswordInput';
+import { CustomButton } from '../../../components/CustomButton';
+import { validatePassword } from '../../../utils/Validator';
 
 const checkPassword = password => {
     if (validatePassword(password)) {

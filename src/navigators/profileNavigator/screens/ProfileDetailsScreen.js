@@ -5,23 +5,23 @@ import {
     ScrollView,
     Dimensions,
 } from 'react-native';
-import { Colors } from '../utils/Colors';
-import { CustomTextInput } from '../components/CustomTextInput';
-import { CustomButton } from '../components/CustomButton';
-import { YesNoAlert } from '../components/YesNoAlert';
-import { OkAlert } from '../components/OkAlert';
-import { ProfilePicture } from '../components/ProfilePicture';
+import { Colors } from '../../../utils/Colors';
+import { CustomTextInput } from '../../../components/CustomTextInput';
+import { CustomButton } from '../../../components/CustomButton';
+import { YesNoAlert } from '../../../components/YesNoAlert';
+import { OkAlert } from '../../../components/OkAlert';
+import { ProfilePicture } from '../../../components/ProfilePicture';
 import { Snackbar } from 'react-native-paper';
-import { PickImageModal } from '../components/PickImageModal';
-import { updateUserAsync } from '../../service';
+import { PickImageModal } from '../../../components/PickImageModal';
+import { updateUserAsync } from '../../../../service';
 import {
     useAppSelector,
     useAppDispatch
-} from '../app/hooks';
+} from '../../../app/hooks';
 import {
     selectUserData,
     setUserDataAsync
-} from '../features/userData/userDataSlice';
+} from '../../../features/userData/userDataSlice';
 
 function validate(name, surname, username) {
     return name.length > 0 && surname.length > 0 && username.length > 0;
