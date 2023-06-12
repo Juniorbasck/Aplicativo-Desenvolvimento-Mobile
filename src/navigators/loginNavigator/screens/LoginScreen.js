@@ -160,9 +160,7 @@ const LoginScreen = ({route, navigation}) => {
                                 let valRes = validateData(email, password);
                                 if (valRes.header === 'Sucesso') {
                                     let logRes = await login(email, password);
-                                    if (!logRes) { // No error reports. 
-                                        // navigation.dispatch(StackActions.replace('AppNavigator'));
-                                    } else {
+                                    if (logRes) {
                                         setAlertTitle(logRes.header);
                                         setAlertDescription(logRes.body);
                                         setAlertVisible(true);

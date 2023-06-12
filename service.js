@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import expenses from './expenses.json';
-import { getAuth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { 
     doc,
     collection,
@@ -256,7 +256,7 @@ const deleteExpenseAsync = async expense => {
 };
 
 const signInGoogle = () => {
-    Alert.alert('Entrar com API do Google');
+    Alert.alert('Login com Google');
 }
 
 const getPaymentMethods = () => {
