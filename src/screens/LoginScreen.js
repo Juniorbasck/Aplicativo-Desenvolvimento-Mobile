@@ -42,6 +42,7 @@ function validateData(email, password){
 }
 
 const login = async (email, password) => {
+    let message = {};
     try {
         const auth = getAuth();
         const userCred = await signInWithEmailAndPassword(
@@ -50,8 +51,13 @@ const login = async (email, password) => {
             password
         );
         await auth.currentUser.reload();
+        let currentUser = auth.currentUser;
+        if (!currentUser.emailVerified) {
+            message.header = 'E-mail Não Verificado';
+            message.body = 'Clique no link enviado para este e-mail para verificar!';
+            return message;
+        }
     } catch (error) {
-        let message;
         switch (error.code) {
             case 'auth/user-not-found':
                 message.header = 'Usuário Não Encontrado';
@@ -127,7 +133,7 @@ const LoginScreen = ({route, navigation}) => {
                                 let valRes = validateData(email, password);
                                 if (valRes.header === 'Sucesso') {
                                     let logRes = await login(email, password);
-                                    if (!logRes) { // No error reports.
+                                    if (!logRes) { // No error reports. 
                                         navigation.dispatch(StackActions.replace('AppNavigator'));
                                     } else {
                                         setAlertTitle(logRes.header);

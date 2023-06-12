@@ -221,19 +221,7 @@ const CreateAccountScreen = ({navigation}) => {
                 setVisible={setSuccessOkAlertVisible}
                 title={successOkAlertTitle}
                 description={successOkAlertDescription}
-                onPressOk={() => {
-                        if (getAuth().currentUser.emailVerified) {
-                            navigation.goBack();
-                            navigation.dispatch(StackActions.replace('AppNavigator'));
-                        } else {
-                            setSuccessOkAlertTitle('E-mail Ainda Não Verificado');
-                            setSuccessOkAlertDescription('Clique no link enviado por e-mail para validar sua conta');
-                            setTimeout(() => {
-                                navigation.goBack();
-                            }, 2000);
-                        }
-                    }
-                }
+                onPressOk={() => navigation.goBack()}
             />
             <YesNoAlert
                 visible={yesNoAlertVisible}

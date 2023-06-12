@@ -79,7 +79,8 @@ const createNewUser = async (name, surname, username, email) => {
     // Create user expenses document.
     const expDocRef = doc(db, 'expenses', email);
     await setDoc(expDocRef, {
-        expenses: []
+        expenses: [],
+        nextId: 1
     });
 };
 
@@ -153,6 +154,7 @@ const createExpenseAsync = async (title, entity, date, price, paymentMethod, ima
         image: null,
         paid: paid
     };
+    // console.log(newExpense);
     const auth = getAuth();
     const currentUser = auth.currentUser;
     // Check if the new expense is not repeated.

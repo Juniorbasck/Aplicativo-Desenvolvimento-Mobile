@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         left: '10%',
         top: '35%',
         width: .8 * Dimensions.get('window').width,
-        height: .3 * Dimensions.get('window').height,
+        // height: .3 * Dimensions.get('window').height,
         backgroundColor: 'white',
         padding: 15
     },
