@@ -164,7 +164,7 @@ const CreateExpenseScreen = ({navigation}) => {
                 {
                     image && (
                         <Image
-                            source={{uri: image}}
+                            source={image}
                             resizeMode='contain'
                             style={styles.image}
                         />

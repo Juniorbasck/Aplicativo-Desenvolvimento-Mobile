@@ -28,7 +28,7 @@ function validate(title, entity, price) {
 }
 
 function dataChanged(item, title, entity, date, price, paymentMethod, image, paid) {
-    return item.title != title || item.entity != entity || item.date != date || item.price != price || item.paymentMethod != paymentMethod || item.paid != paid;
+    return item.title != title || item.entity != entity || item.date != date || item.price != price || item.paymentMethod != paymentMethod || item.paid != paid || item.image != image;
 }
 
 const EditExpenseScreen = ({route, navigation}) => {
@@ -38,7 +38,7 @@ const EditExpenseScreen = ({route, navigation}) => {
     const [date, setDate] = useState(item.date);
     const [price, setPrice] = useState(item.price.toString());
     const [paymentMethod, setPaymentMethod] = useState(item.paymentMethod);
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState(item.image);
     const [paid, setPaid] = useState(item.paid);
     
     const [action, setAction] = useState();
@@ -63,7 +63,7 @@ const EditExpenseScreen = ({route, navigation}) => {
                         date: date,
                         price: localPrice,
                         paymentMethod: paymentMethod,
-                        image: null,
+                        image: image,
                         paid: paid
                     };
                     await updateExpenseAsync(item, newExpense);

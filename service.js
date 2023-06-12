@@ -92,14 +92,6 @@ const createNewUser = async (name, surname, username, email) => {
         expenses: [],
         nextId: 1
     });
-    // Create user image storage.
-    // const imagesPath = 'users/' + email + '/images';
-    // const expenseImagesPath = imagesPath + '/expenses/dir.txt';
-    // const profileImagePath = imagesPath + '/profile/dir.txt';
-    // const expDirRef = ref(storage, expenseImagesPath);
-    // const profDirRef = ref(storage, profileImagePath);
-    // await uploadString(expDirRef, '');
-    // await uploadString(profDirRef, '');
 };
 
 const fetchExpensesAsync = async () => {
@@ -108,6 +100,15 @@ const fetchExpensesAsync = async () => {
     const docRef = doc(firestore, 'expenses', currentUser.email);
     const theDoc = await getDoc(docRef);
     let temp = theDoc.data();
+    temp.expenses.forEach(async e => {
+        if (e.image) { // If there's an image.
+            try {
+                await fetch(e.image.uri); // Try to fetch it from the local storage of the phone.
+            } catch (err) { // If not found, download from the cloud.
+                await getDownloadURL(ref(storage, 'users/' + currentUser.email + `/images/expenses/expense${e.id}/expense.jpeg`));
+            }
+        }
+    });
     return sort(temp.expenses);
 };
 
@@ -165,6 +166,21 @@ const updateExpenseAsync = async (oldExpense, updatedExpense) => {
     await updateDoc(docRef, {
         expenses: arrayUnion(updatedExpense)
      });
+    const imagePath = 'users/' + currentUser.email + `/images/expenses/expense${updatedExpense.id}/expense.jpeg`;
+    const imageRef = ref(storage, imagePath);
+    if (oldExpense.image) { // Delete from the cloud.
+        try {
+            await deleteObject(imageRef);
+        } catch(err) {
+            console.log('Error when trying to delete the profile image ------');
+            console.log(err.message);
+        }
+    }
+    if (updatedExpense.image) { // Upload to the cloud.
+        const imageResponse = await fetch(updatedExpense.image.uri);
+        const imageBlob = await imageResponse.blob();
+        await uploadBytes(imageRef, imageBlob);
+    }
 }
 
 const createExpenseAsync = async (title, entity, date, price, paymentMethod, image, paid) => {
@@ -175,10 +191,9 @@ const createExpenseAsync = async (title, entity, date, price, paymentMethod, ima
         date: date,
         price: parseFloat(price),
         paymentMethod: paymentMethod,
-        image: null,
+        image: image,
         paid: paid
     };
-    // console.log(newExpense);
     const auth = getAuth();
     const currentUser = auth.currentUser;
     // Check if the new expense is not repeated.
@@ -200,6 +215,13 @@ const createExpenseAsync = async (title, entity, date, price, paymentMethod, ima
     await updateDoc(docRef, {
         expenses: arrayUnion(newExpense)
     });
+    if (newExpense.image) { // If there's an image, save it to firebase storage.
+        const imagePath = 'users/' + currentUser.email + `/images/expenses/expense${newExpense.id}/expense.jpeg`;
+        const imageRef = ref(storage, imagePath);
+        const imageResponse = await fetch(newExpense.image.uri);
+        const imageBlob = await imageResponse.blob();
+        await uploadBytes(imageRef, imageBlob);
+    }
 }
 
 const currentUserExpenseNextIdAsync = async _ => {
@@ -362,20 +384,6 @@ const stringifyPaymentMethod = paymentMethod => {
     }
 };
 
-const checkValidationCode = (email, code) => {
-    // Validate on API.
-    return code == '1234';
-};  
-
-const generateValidationCode = email => {
-    // Generate validation code on API and bind it to `email`.
-    // It should be valid only for an amount of time.
-};
-
-const sendCodeEmail = (email) => {
-
-};
-
 const storeDataAsync = async (key, data) => {
     try {
         await AsyncStorage.setItem(key, JSON.stringify(data));
@@ -406,9 +414,6 @@ export {
     signInGoogle,
     stringifyOperation,
     stringifyPaymentMethod,
-    checkValidationCode,
-    generateValidationCode,
-    sendCodeEmail,
     storeDataAsync,
     getDataAsync,
     createNewUser
