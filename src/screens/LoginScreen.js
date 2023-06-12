@@ -1,10 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { 
     View,
     ScrollView,
     StyleSheet,
     Text,
-    Alert,
     Dimensions,
     Pressable,
     Image,
@@ -86,10 +85,30 @@ const LoginScreen = ({route, navigation}) => {
     const [alertTitle, setAlertTitle] = useState('');
     const [alertDescription, setAlertDescription] = useState('');
 
+    const [initializing, setInitializing] = useState(true);
+    const [user, setUser] = useState();
+
+    useEffect(() => {
+        const subscriber = getAuth().onAuthStateChanged(user => {
+            setUser(user);
+            if (initializing)
+                setInitializing(false);
+        });
+        return subscriber;
+    }, []);
+
+    useEffect(() => {
+        if (user)
+            navigation.dispatch(StackActions.replace('AppNavigator'));
+    }, [user]);
+
     function cleanInputs() {
         setEmail('');
         setPassword('');
     }
+
+    if (initializing)
+        return null;
 
     return (
         <View style={styles.outerContainer}>
