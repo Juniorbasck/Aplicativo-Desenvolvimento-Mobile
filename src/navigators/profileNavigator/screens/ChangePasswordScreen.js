@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import {
-    Alert,
     View,
     ScrollView,
     StyleSheet,
@@ -12,6 +11,8 @@ import { Fonts } from '../../../utils/Fonts';
 import { PasswordInput } from '../../../components/PasswordInput';
 import { CustomButton } from '../../../components/CustomButton';
 import { validatePassword } from '../../../utils/Validator';
+import { OkAlert } from '../../../components/OkAlert';
+import { YesNoAlert } from '../../../components/YesNoAlert';
 
 const checkPassword = password => {
     if (validatePassword(password)) {
@@ -33,24 +34,21 @@ const ChangePasswordScreen = ({navigation}) => {
     const [chances, setChances] = useState(3);
     const [editable, setEditable] = useState(true);
 
+    const [errorAlertVisible, setErrorAlertVisible] = useState(false);
+    const [errorAlertTitle, setErrorAlertTitle] = useState('');
+    const [errorAlertDescription, setErrorAlertDescription] = useState('');
+
+    const [successAlertVisible, setSuccessAlertVisible] = useState(false);
+
+    const [warningAlertVisible, setWarningAlertVisible] = useState(false);
+    const [action, setAction] = useState();
+
     useEffect(() => navigation.addListener('beforeRemove', e => {
         let action = e.data.action;
         if (action.type === 'POP' && showChangePassword) {
             e.preventDefault();
-            Alert.alert(
-                'Alterar Palavra-Passe',
-                'Não desejas finalizar a alteração?',
-                [
-                    {
-                        text: 'Sim',
-                        onPress: () =>  {}
-                    }, 
-                    {
-                        text: 'Não',
-                        onPress: () => navigation.dispatch(action)
-                    }
-                ]
-            );
+            setAction(action);
+            setWarningAlertVisible(true);
         } 
     }), [navigation, showChangePassword]);
 
@@ -80,11 +78,15 @@ const ChangePasswordScreen = ({navigation}) => {
                                 setEditable(false);
                             } else {
                                 if (!(chances - 1)) {
-                                    Alert.alert('Palavra-passe Inválida', 'Muitas tentativas foram feitas. Tente novamente mais tarde!');
+                                    setErrorAlertTitle('Palavra-passe Inválida');
+                                    setErrorAlertDescription('Muitas tentativas foram feitas. Tente novamente mais tarde!');
+                                    setErrorAlertVisible(true);
                                     setEditable(false);
                                 } else {
                                     setChances(chances - 1);
-                                    Alert.alert('Palavra-passe Inválida', `Você tem ${chances - 1} chance(s) restante(s)!`);
+                                    setErrorAlertTitle('Palavra-passe Inválida');
+                                    setErrorAlertDescription(`Você tem ${chances - 1} chance(s) restante(s)!`);
+                                    setErrorAlertVisible(true);
                                 }
                             }
                         }}
@@ -122,21 +124,17 @@ const ChangePasswordScreen = ({navigation}) => {
                                     onPress={() => {
                                         if (validatePassword(newPassword)) {
                                             if (newPassword == repeatPassword) {
-                                                Alert.alert(
-                                                    'Mudança de Palavra-Passe', 
-                                                    'Sua palavra-passe foi atualizada com sucesso. Lembre-se de anotá-la em algum lugar para não esquecer!',
-                                                    [
-                                                        {
-                                                            text: 'Ok',
-                                                            onPress: () => navigation.goBack()
-                                                        }
-                                                    ]
-                                                );
+                                                // Change password on API.
+                                                setSuccessAlertVisible(true);
                                             } else {
-                                                Alert.alert('Mudança de Palavra-Passe', 'Ambas as senhas devem ser iguais!');
+                                                setErrorAlertTitle('Mudança de Palavra-Passe');
+                                                setErrorAlertDescription( 'Ambas as senhas devem ser iguais!');
+                                                setErrorAlertVisible(true);
                                             }
                                         } else {
-                                            Alert.alert('Mudança de Palavra-Passe', 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!');
+                                            setErrorAlertTitle('Mudança de Palavra-Passe');
+                                            setErrorAlertDescription('A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!');
+                                            setErrorAlertVisible(true);
                                         }
                                     }}
                                     widthPercentage={50}
@@ -146,6 +144,26 @@ const ChangePasswordScreen = ({navigation}) => {
                     }
                 </View>
             </ScrollView>
+            <OkAlert
+                visible={errorAlertVisible}
+                setVisible={setErrorAlertVisible}
+                description={errorAlertDescription}
+                title={errorAlertTitle}
+            />
+            <OkAlert
+                visible={successAlertVisible}
+                setVisible={setSuccessAlertVisible}
+                description={'Sua palavra-passe foi atualizada com sucesso. Lembre-se de anotá-la em algum lugar para não esquecer!'}
+                title={'Mudança de Palavra-Passe'}
+                onPressOk={() => navigation.goBack()}
+            />
+            <YesNoAlert
+                visible={warningAlertVisible}
+                setVisible={setWarningAlertVisible}
+                description={'Não desejas finalizar a alteração?'}
+                title={'Alterar Palavra-Passe'}
+                onPressNo={() => navigation.dispatch(action)}
+            />
         </View>
     );
 }
