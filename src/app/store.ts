@@ -5,11 +5,13 @@ import {
 } from '@reduxjs/toolkit';
 import userDataReducer from '../features/userData/userDataSlice';
 import expensesReducer from '../features/expenses/expensesSlice';
+import historicReducer from '../features/historic/historicSlice';
 
 export const store = configureStore({
     reducer: {
         userData: userDataReducer,
-        expenses: expensesReducer
+        expenses: expensesReducer,
+        historic: historicReducer
     },
 });
 

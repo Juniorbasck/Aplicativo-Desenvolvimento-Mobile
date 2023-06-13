@@ -18,7 +18,7 @@ import {
 import { PasswordInput } from '../../../components/PasswordInput';
 import { StackActions } from '@react-navigation/native';
 import {
-    createNewUser,
+    createNewUserAsync,
     emailNotTaken,
     usernameNotTaken
 } from '../../../../service';
@@ -187,7 +187,7 @@ const CreateAccountScreen = ({navigation}) => {
                                         handleCodeInApp: true,
                                         url: 'https://meu-controlo-financeiro.firebaseapp.com'
                                     }).then(async _ => {
-                                        await createNewUser(name, surname, username, email);
+                                        await createNewUserAsync(name, surname, username, email);
                                         setSuccessOkAlertTitle(res.header);
                                         setSuccessOkAlertDescription(res.body);
                                         setSuccessOkAlertVisible(true);

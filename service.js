@@ -75,7 +75,7 @@ const usernameNotTaken = async username => {
     return answer;
 };
 
-const createNewUser = async (name, surname, username, email) => {
+const createNewUserAsync = async (name, surname, username, email) => {
     const docRef = doc(firestore, 'users', email);
     // Create user data document.
     await setDoc(docRef, {
@@ -91,6 +91,19 @@ const createNewUser = async (name, surname, username, email) => {
     await setDoc(expDocRef, {
         expenses: [],
         nextId: 1
+    });
+    // Create user historic.
+    const histDocRef = doc(firestore, 'historics', email);
+    await setDoc(histDocRef, {
+        historic: []
+    });
+};
+
+const saveHistoric = async data => {
+    const currentUser = getAuth().currentUser;
+    const histDocRef = doc(firestore, 'historics', currentUser.email);
+    await updateDoc(histDocRef, {
+        historic: arrayUnion(data)
     });
 };
 
@@ -122,10 +135,12 @@ const fetchUserDataAsync = async () => {
     const docRef = doc(firestore, 'users', currentUser.email);
     const theDoc = await getDoc(docRef);
     let data = theDoc.data();
-    try {
-        await fetch(data.image.uri);
-    } catch (err) {
-        await getDownloadURL(ref(storage, 'users/' + currentUser.email + '/images/profile/profile.jpeg'));
+    if (data.image) {
+        try {
+            await fetch(data.image.uri); // Check if the image is present locally.
+        } catch (err) { // If not, download it from the cloud.
+            await getDownloadURL(ref(storage, 'users/' + currentUser.email + '/images/profile/profile.jpeg'));
+        }
     }
     return data;
 };
@@ -181,6 +196,18 @@ const updateExpenseAsync = async (oldExpense, updatedExpense) => {
         const imageBlob = await imageResponse.blob();
         await uploadBytes(imageRef, imageBlob);
     }
+    // Save historic.
+    let historic = {
+        timestamp: new Date().toISOString(),
+        date: updatedExpense.date,
+        expenseTitle: updatedExpense.title,
+        entity: updatedExpense.entity,
+        paymentMethod: updatedExpense.paymentMethod,
+        price: updatedExpense.price,
+        paid: updatedExpense.paid,
+        operation: 2
+    };
+    await saveHistoric(historic);
 }
 
 const createExpenseAsync = async (title, entity, date, price, paymentMethod, image, paid) => {
@@ -222,6 +249,18 @@ const createExpenseAsync = async (title, entity, date, price, paymentMethod, ima
         const imageBlob = await imageResponse.blob();
         await uploadBytes(imageRef, imageBlob);
     }
+    // Save historic.
+    let historic = {
+        timestamp: new Date().toISOString(),
+        date: newExpense.date,
+        expenseTitle: newExpense.title,
+        entity: newExpense.entity,
+        paymentMethod: newExpense.paymentMethod,
+        price: newExpense.price,
+        paid: newExpense.paid,
+        operation: 1
+    };
+    await saveHistoric(historic);
 }
 
 const currentUserExpenseNextIdAsync = async _ => {
@@ -253,23 +292,36 @@ const deleteExpenseAsync = async expense => {
     await updateDoc(docRef, {
         expenses: arrayRemove(expense)
     });
+    // Try to remove the image of the expense.
+    const imageRef = ref(storage, 'users/' + currentUser.email + `/images/expenses/expense${expense.id}/expense.jpeg`);
+    try {
+        await deleteObject(imageRef);
+    } catch (err) {
+        console.log('Error when trying to delete objet at ' + imageRef.fullPath);
+        console.log(err.message);
+    }
+    // Save historic.
+    let historic = {
+        timestamp: new Date().toISOString(),
+        date: expense.date,
+        expenseTitle: expense.title,
+        entity: expense.entity,
+        paymentMethod: expense.paymentMethod,
+        price: expense.price,
+        paid: expense.paid,
+        operation: 3
+    };
+    await saveHistoric(historic);
 };
 
 const signInGoogle = () => {
     Alert.alert('Login com Google');
 }
 
-const getPaymentMethods = () => {
-    // In the final version, this method will fetch this data from the API
-    // where the available payment methods will be available.
-    return [
-        {label: 'Cartão de crédito', value: 1},
-        {label: 'Débito direto', value: 2},
-        {label: 'Transferência', value: 3},
-        {label: 'MBWay', value: 4},
-        {label: 'Cheque', value: 5},
-        {label: 'Monetário', value: 6},
-    ];
+const getPaymentMethods = async onGet => {
+    const docRef = doc(firestore, 'config', 'paymentMethods');
+    const theDoc = await getDoc(docRef);
+    onGet(theDoc.get('paymentMethods'));
 };
 
 const updateUserAsync = async newUserData => {
@@ -285,7 +337,7 @@ const updateUserAsync = async newUserData => {
             }
         }
     });
-    const profileImagePath = 'users/' + getAuth().currentUser.email + '/images/profile/profile.jpeg';
+    const profileImagePath = 'users/' + currentUser.email + '/images/profile/profile.jpeg';
     const profileRef = ref(storage, profileImagePath);
     if (newUserData.image) { // If there's an image, save it to firebase storage.
         const imageResponse = await fetch(newUserData.image.uri);
@@ -307,8 +359,14 @@ const updateUserAsync = async newUserData => {
     await updateDoc(docRef, newUserData);
 };
 
-const fetchHistoric = (email, onFetch) => {
-    let historic = [
+const fetchHistoricAsync = async () => {
+    const histDocRef = doc(firestore, 'historics', getAuth().currentUser.email);
+    const theDoc = await getDoc(histDocRef);
+    return theDoc.get('historic');
+};
+
+const fetchHistoricMock = () => {
+    return [
         {
             timestamp: '2022-10-20T16:30:00',
             date: '2023-01-02',
@@ -360,7 +418,6 @@ const fetchHistoric = (email, onFetch) => {
             operation: 3
         },
     ];
-    onFetch(historic);
 };
 
 const stringifyOperation = operation => {
@@ -410,11 +467,12 @@ export {
     getPaymentMethods,
     fetchUserDataAsync,
     fetchUserDataMock,
-    fetchHistoric,
+    fetchHistoricAsync,
+    fetchHistoricMock,
     signInGoogle,
     stringifyOperation,
     stringifyPaymentMethod,
     storeDataAsync,
     getDataAsync,
-    createNewUser
+    createNewUserAsync
 };

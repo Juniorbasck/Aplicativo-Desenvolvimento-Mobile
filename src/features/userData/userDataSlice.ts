@@ -42,7 +42,5 @@ export const userDataSlice = createSlice({
 });
 
 export const { setUserDataMock } = userDataSlice.actions;
-
 export const selectUserData = (state: RootState) => state.userData;
-
 export default userDataSlice.reducer;

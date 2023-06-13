@@ -22,6 +22,7 @@ import { useAppDispatch } from '../../../app/hooks';
 import { setExpensesAsync } from '../../../features/expenses/expensesSlice';
 import { OkAlert } from '../../../components/OkAlert';
 import { YesNoAlert } from '../../../components/YesNoAlert';
+import { setHistoricAsync } from '../../../features/historic/historicSlice';
 
 function validate(title, entity, price) {
     return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
@@ -41,6 +42,8 @@ const EditExpenseScreen = ({route, navigation}) => {
     const [image, setImage] = useState(item.image);
     const [paid, setPaid] = useState(item.paid);
     
+    const [paymentMethods, setPaymentMethods] = useState([]);
+
     const [action, setAction] = useState();
 
     const [snackBarVisible, setSnackBarVisible] = useState(false);
@@ -68,6 +71,7 @@ const EditExpenseScreen = ({route, navigation}) => {
                     };
                     await updateExpenseAsync(item, newExpense);
                     dispatch(setExpensesAsync());
+                    dispatch(setHistoricAsync());
                 } catch (err) {
                     setInvalidDataAlertMsg(err.message);
                     setInvalidDataAlertVisible(true);
@@ -93,6 +97,10 @@ const EditExpenseScreen = ({route, navigation}) => {
         });
     }, [navigation, title, entity, date, price, paymentMethod, image, paid]);
 
+    useEffect(() => {
+        getPaymentMethods(methods => setPaymentMethods(methods));
+    }, []);
+    
     return (
         <View style={styles.outerContainer}>
             <ScrollView 
@@ -144,7 +152,7 @@ const EditExpenseScreen = ({route, navigation}) => {
                     <CustomDropdown
                         state={paymentMethod}
                         setState={setPaymentMethod}
-                        options={getPaymentMethods()}
+                        options={paymentMethods}
                         widthPercentage={40}
                         marginBottomPercentage={3}
                     />

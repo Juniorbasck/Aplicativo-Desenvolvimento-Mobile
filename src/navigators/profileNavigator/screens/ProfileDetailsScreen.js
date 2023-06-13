@@ -96,7 +96,7 @@ const ProfileDetailsScreen = ({route, navigation}) => {
                 setUpdateDataAlertVisible(true);
             }
         });
-    }, [navigation, name, surname, username]);
+    }, [navigation, name, surname, username, image]);
 
     return (
         <View style={styles.outerContainer}>

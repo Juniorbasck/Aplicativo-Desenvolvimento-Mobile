@@ -24,6 +24,7 @@ import { OkAlert } from '../../../components/OkAlert';
 import { useAppDispatch } from '../../../app/hooks';
 import { setExpensesAsync } from '../../../features/expenses/expensesSlice';
 import { YesNoAlert } from '../../../components/YesNoAlert';
+import { setHistoricAsync } from '../../../features/historic/historicSlice';
 
 function validate(title, entity, price) {
     return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
@@ -47,6 +48,8 @@ const CreateExpenseScreen = ({navigation}) => {
     const [image, setImage] = useState(null);
     const [paid, setPaid] = useState(false);
 
+    const [paymentMethods, setPaymentMethods] = useState([]);
+
     const [titleInput, setTitleInput] = useState();
     const [entityInput, setEntityInput] = useState();
     const [priceInput, setPriceInput] = useState();
@@ -67,6 +70,7 @@ const CreateExpenseScreen = ({navigation}) => {
             try {
                 await createExpenseAsync(localTitle, localEntity, date, localPrice, paymentMethod, image, paid);
                 dispatch(setExpensesAsync());
+                dispatch(setHistoricAsync());
             } catch(err) {
                 setInvalidDataAlertMsg(err.message);
                 setInvalidDataAlertVisible(true);
@@ -89,6 +93,10 @@ const CreateExpenseScreen = ({navigation}) => {
             }
         });
     }, [navigation]);
+
+    useEffect(() => {
+        getPaymentMethods(setPaymentMethods);
+    }, []);
 
     return (
         <View style={styles.outerContainer}>
@@ -151,7 +159,7 @@ const CreateExpenseScreen = ({navigation}) => {
                     <CustomDropdown
                         state={paymentMethod}
                         setState={setPaymentMethod}
-                        options={getPaymentMethods()}
+                        options={paymentMethods}
                         widthPercentage={40}
                         marginBottomPercentage={3}
                     />

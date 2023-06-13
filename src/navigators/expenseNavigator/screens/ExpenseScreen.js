@@ -22,6 +22,7 @@ import {
     setExpensesAsync,
 } from '../../../features/expenses/expensesSlice';
 import { deleteExpenseAsync } from '../../../../service';
+import { setHistoricAsync } from '../../../features/historic/historicSlice';
 
 const ExpenseScreen = ({navigation}) => {
     const [searchText, setSearchText] = useState('');
@@ -62,6 +63,7 @@ const ExpenseScreen = ({navigation}) => {
     const handleLongPress = async expense => {
         await deleteExpenseAsync(expense);
         dispatch(setExpensesAsync());
+        dispatch(setHistoricAsync());
     }
 
     const getCurrentExpenseGroup = (useNext=true) => {

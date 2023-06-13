@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import {
     FlatList,
     View,
@@ -26,8 +26,7 @@ import {
     setExpensesAsync,
 } from '../../../features/expenses/expensesSlice';
 import { deleteExpenseAsync } from '../../../../service';
-import { getAuth } from 'firebase/auth';
-import { StackActions } from '@react-navigation/native';
+import { setHistoricAsync } from '../../../features/historic/historicSlice';
 
 const HomeScreen = ({route, navigation}) => {
     const userData = useAppSelector(selectUserData);
@@ -53,6 +52,7 @@ const HomeScreen = ({route, navigation}) => {
     const handleLongPress = async expense => {
         await deleteExpenseAsync(expense);
         dispatch(setExpensesAsync());
+        dispatch(setHistoricAsync());
     }
 
     function getFormattedName() {

@@ -44,6 +44,7 @@ const ProfileScreen = ({route, navigation}) => {
         return name + ' ' + surname;
     }
 
+    // console.log(userData.value.image);
     return status === 'loading' ? (
         <LoadingIndicator/>
     ) : (

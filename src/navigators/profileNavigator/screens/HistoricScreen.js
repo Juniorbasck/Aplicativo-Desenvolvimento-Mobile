@@ -1,29 +1,50 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
     View,
     StyleSheet,
-    FlatList
+    FlatList,
+    Text
 } from 'react-native';
 import { Colors } from '../../../utils/Colors';
-import { fetchHistoric } from '../../../../service';
 import { HistoricItem } from '../../../components/HistoricItem';
+import { Fonts } from '../../../utils/Fonts';
+import {
+    useAppSelector,
+    useAppDispatch
+} from '../../../app/hooks';
+import {
+    selectHistoric,
+    setHistoricAsync
+} from '../../../features/historic/historicSlice';
+import { LoadingIndicator } from '../../../components/LoadingIndicator';
 
 const HistoricScreen = () => {
-    const [historic, setHistoric] = useState([]);
+    const historic = useAppSelector(selectHistoric);
+    const historicStatus = useAppSelector(state => state.historic.status);
+
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
-        fetchHistoric('', setHistoric);
+        dispatch(setHistoricAsync());
     }, []);
 
     const renderItem = ({item}) => <HistoricItem data={item}/>
 
-    return (
+    return historicStatus === 'loading' ? (
+        <LoadingIndicator/>
+    ) : (
         <View style={styles.container}>
-            <FlatList
-                data={historic}
-                renderItem={renderItem}
-                keyExtractor={item => item.timestamp}
-            />
+            {
+                historic.value.length === 0 ? (
+                    <Text style={[Fonts.displaySmall, {color: 'white'}]}>Sem Histórico</Text>
+                ) : (
+                    <FlatList
+                        data={historic.value}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.timestamp}
+                    />
+                )
+            }
         </View>
     );
 }

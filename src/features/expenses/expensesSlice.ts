@@ -45,7 +45,5 @@ export const expensesSlice = createSlice({
 });
 
 export const { setExpensesMock } = expensesSlice.actions;
-
 export const selectExpenses = (state: RootState) => state.expenses;
-
 export default expensesSlice.reducer;
