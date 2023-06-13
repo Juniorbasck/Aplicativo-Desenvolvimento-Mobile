@@ -16,16 +16,16 @@ const ForgottenPasswordNavigator = () => {
                 component={ForgottenPasswordScreen}
                 options={{headerTitle: 'Esqueceu Palavra-Passe', headerTitleAlign: 'center'}}
             />
-            <Stack.Screen 
+            {/* <Stack.Screen 
                 name='ValidationCode' 
                 component={ForgottenPasswordValidationCodeScreen} 
                 options={{headerTitle: 'Validação de Código', headerTitleAlign: 'center'}}
-            />
-            <Stack.Screen 
+            /> */}
+            {/* <Stack.Screen 
                 name='RedefinePassword'
                 component={RedefinePasswordScreen}
                 options={{headerTitle: 'Redefinir Palavra-Passe', headerTitleAlign: 'center'}}
-            />
+            /> */}
         </Stack.Navigator>
     );
 };

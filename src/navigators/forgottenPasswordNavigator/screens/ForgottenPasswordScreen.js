@@ -5,7 +5,6 @@ import {
     Text,
     StyleSheet,
     Image,
-    Alert
 } from 'react-native';
 import { CustomButton } from '../../../components/CustomButton';
 import { CustomTextInput } from '../../../components/CustomTextInput';
@@ -13,11 +12,18 @@ import { Colors } from '../../../utils/Colors';
 import { Fonts } from '../../../utils/Fonts';
 import { ResponsiveDimensions } from '../../../utils/ResponsiveDimensions';
 import { validateEmail } from '../../../utils/Validator';
-import { generateValidationCode, sendCodeEmail } from '../../../../service';
+import { emailExistsOnApp } from '../../../../service';
 import { StackActions } from '@react-navigation/native';
+import { OkAlert } from '../../../components/OkAlert';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 const ForgottenPasswordScreen = ({navigation}) => {
     const [email, setEmail] = useState('');
+
+    const [errorAlertVisible, setErrorAlertVisible] = useState(false);
+    const [successAlertVisible, setSuccessAlertVisible] = useState(false);
+
+    const [emailInput, setEmailInput] = useState();
 
     return (
         <View style={styles.outerContainer}>
@@ -44,41 +50,57 @@ const ForgottenPasswordScreen = ({navigation}) => {
                     widthPercentage={90}
                     state={email}
                     setState={setEmail}
+                    setRef={setEmailInput}
+                    autofocus={true}
                 />
                 <View style={styles.marginPaddingDefault}>
                     <CustomButton
                         text={'Enviar'}
                         textColor={Colors.onPrimaryKeyColor}
-                        onPress={() => {
+                        onPress={async () => {
                             if (validateEmail(email)) {
-                                generateValidationCode(email);
-                                sendCodeEmail(email);
-                                setEmail('');
-                                Alert.alert(
-                                    'Recuperação de Palavra-Passe', 
-                                    `Um e-mail contendo um código de validação foi enviado com sucesso para ${email}`,
-                                    [
-                                        {
-                                            text: 'Ok',
-                                            onPress: () => navigation.dispatch(
-                                                StackActions.replace('ValidationCode', { 
-                                                        email: email 
-                                                    }
-                                                )
-                                            )
-                                        }
-                                    ]
-                                );
-                            } else {
-                                Alert.alert('E-mail', 'E-mail inválido!');
-                            }
-                            
+                                if (await emailExistsOnApp(email)) {
+                                    let actionCodeSettings = {
+                                        handleCodeInApp: true,
+                                        url: 'https://meu-controlo-financeiro.firebaseapp.com'
+                                    };
+                                    try {
+                                        await sendPasswordResetEmail(getAuth(), email, actionCodeSettings);
+                                        setSuccessAlertVisible(true);
+                                    } catch (err) {
+                                        console.log('Error when trying to send password reset email -----');
+                                        console.log(err.message);
+                                        setErrorAlertVisible(true);
+                                    }
+                                } else 
+                                    setErrorAlertVisible(true);
+                            } else
+                                setErrorAlertVisible(true);
                         }}
                         backgroundColor={Colors.tertiaryKeyColor}
                         widthPercentage={90}
                     />
                 </View>
             </ScrollView>
+            <OkAlert
+                visible={errorAlertVisible}
+                setVisible={setErrorAlertVisible}
+                title={'Recuperação de Palavra-Passe'}
+                description={'O e-mail digitado é inválido!'}
+                onPressOk={() => {
+                    setTimeout(() => {
+                        setEmail('');
+                        emailInput.focus();
+                    }, 100);
+                }}
+            />
+            <OkAlert
+                visible={successAlertVisible}
+                setVisible={setSuccessAlertVisible}
+                title={'Recuperação de Palavra-Passe'}
+                description={`Clique no link enviado para ${email} para redefinir a palavra-passe`}
+                onPressOk={() => navigation.goBack()}
+            />
         </View>
     );
 };

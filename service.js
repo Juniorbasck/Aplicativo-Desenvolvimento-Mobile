@@ -8,7 +8,8 @@ import {
     GoogleAuthProvider, 
     reauthenticateWithCredential,
     signInWithPopup,
-    updatePassword
+    updatePassword,
+    
 } from 'firebase/auth';
 import { 
     doc,
@@ -396,6 +397,17 @@ const fetchHistoricAsync = async () => {
     return theDoc.get('historic');
 };
 
+const emailExistsOnApp = async email => {
+    const collRef = collection(firestore, 'users');
+    const theDocs = await getDocs(collRef);
+    let res = false;
+    theDocs.forEach(theDoc => {
+        if (theDoc.id === email)
+            res = true;
+    });
+    return res;
+};
+
 const fetchHistoricMock = () => {
     return [
         {
@@ -507,5 +519,6 @@ export {
     getDataAsync,
     createNewUserAsync,
     reauthenticate,
-    updatePasswd
+    updatePasswd,
+    emailExistsOnApp
 };
