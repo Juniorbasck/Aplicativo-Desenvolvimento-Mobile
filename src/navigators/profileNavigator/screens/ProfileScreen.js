@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    Alert,
     View,
     Text,
     StyleSheet,
@@ -26,11 +25,14 @@ import {
     selectUserData,
     setUserDataAsync
 } from '../../../features/userData/userDataSlice';
+import { YesNoAlert } from '../../../components/YesNoAlert';
 
 const ProfileScreen = ({route, navigation}) => {
     const userData = useAppSelector(selectUserData);
     const status = useAppSelector(state => state.userData.status);
     const dispatch = useAppDispatch();
+
+    const [alertVisible, setAlertVisible] = useState(false);
 
     useEffect(() => {
         dispatch(setUserDataAsync());
@@ -44,7 +46,6 @@ const ProfileScreen = ({route, navigation}) => {
         return name + ' ' + surname;
     }
 
-    // console.log(userData.value.image);
     return status === 'loading' ? (
         <LoadingIndicator/>
     ) : (
@@ -91,34 +92,28 @@ const ProfileScreen = ({route, navigation}) => {
                         backgroundColor={Colors.cardRed}
                         textColor={'white'}
                         widthPercentage={88}
-                        onPress={() => {
-                                Alert.alert(
-                                    'Fazer logout',
-                                    'Desejas sair da conta?',
-                                    [
-                                        {
-                                            text: 'Sim',
-                                            onPress: async () => {
-                                                try {
-                                                    const auth = getAuth();
-                                                    await signOut(auth);
-                                                    navigation.dispatch(StackActions.replace('Login'));
-                                                } catch (error) {
-                                                    Alert.alert('Erro ao fazer log out\n', error.code + '\n' + error.message);
-                                                }
-                                            }
-                                        },
-                                        {
-                                            text: 'Não',
-                                        }
-                                    ]
-                                );
-                            }
-                        }
+                        onPress={() => setAlertVisible(true)}
                         size={'big'}
                     />
                 </View>
             </View> 
+            <YesNoAlert
+                visible={alertVisible}
+                setVisible={setAlertVisible}
+                title={'Fazer logout'}
+                description={'Desejas sair da conta?'}
+                onPressYes={async () => {
+                        try {
+                            const auth = getAuth();
+                            await signOut(auth);
+                            navigation.dispatch(StackActions.replace('Login'));
+                        } catch (err) {
+                            console.log('Error when trying to log out -----');
+                            console.log(err.message);
+                        }
+                    }
+                }
+            />
         </View> 
     );
 };
