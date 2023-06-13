@@ -13,12 +13,11 @@ import { CustomButton } from '../../../components/CustomButton';
 import { validatePassword } from '../../../utils/Validator';
 import { OkAlert } from '../../../components/OkAlert';
 import { YesNoAlert } from '../../../components/YesNoAlert';
+import { reauthenticate, updatePasswd } from '../../../../service';
 
-const checkPassword = password => {
-    if (validatePassword(password)) {
-        // Check password on API.
-        return true;
-    }
+const checkPassword = async password => {
+    if (validatePassword(password)) 
+        return await reauthenticate(password);
     return false;
 }
 
@@ -27,6 +26,7 @@ const ChangePasswordScreen = ({navigation}) => {
     const [newPassword, setNewPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
 
+    const [passwordInput, setPasswordInput] = useState();
     const [newPasswordInput, setNewPasswordInput] = useState();
     const [repeatPasswordInput, setRepeatPasswordInput] = useState();
 
@@ -67,13 +67,14 @@ const ChangePasswordScreen = ({navigation}) => {
                         marginBottomPercentage={2}
                         editable={editable}
                         autofocus={true}
+                        setRef={setPasswordInput}
                     />
                     <CustomButton
                         text={'Verificar'}
                         backgroundColor={editable ? Colors.tertiaryKeyColor : Colors.tertiaryKeyColorDisabled}
                         textColor={'white'}
-                        onPress={() => {
-                            if (checkPassword(password)) {
+                        onPress={async () => {
+                            if (await checkPassword(password)) {
                                 setShowChangePassword(true);
                                 setEditable(false);
                             } else {
@@ -121,10 +122,10 @@ const ChangePasswordScreen = ({navigation}) => {
                                     text={'Guardar'}
                                     backgroundColor={Colors.tertiaryKeyColor}
                                     textColor={'white'}
-                                    onPress={() => {
+                                    onPress={async () => {
                                         if (validatePassword(newPassword)) {
                                             if (newPassword == repeatPassword) {
-                                                // Change password on API.
+                                                await updatePasswd(newPassword);
                                                 setSuccessAlertVisible(true);
                                             } else {
                                                 setErrorAlertTitle('Mudança de Palavra-Passe');
@@ -149,6 +150,13 @@ const ChangePasswordScreen = ({navigation}) => {
                 setVisible={setErrorAlertVisible}
                 description={errorAlertDescription}
                 title={errorAlertTitle}
+                onPressOk={() => {
+                        setTimeout(() => {
+                            setPassword('');
+                            passwordInput.focus();
+                        }, 100);
+                    }
+                }
             />
             <OkAlert
                 visible={successAlertVisible}

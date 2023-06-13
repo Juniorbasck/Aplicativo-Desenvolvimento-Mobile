@@ -1,7 +1,15 @@
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import expenses from './expenses.json';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { 
+    AuthCredential, 
+    EmailAuthProvider, 
+    getAuth, 
+    GoogleAuthProvider, 
+    reauthenticateWithCredential,
+    signInWithPopup,
+    updatePassword
+} from 'firebase/auth';
 import { 
     doc,
     collection,
@@ -359,6 +367,29 @@ const updateUserAsync = async newUserData => {
     await updateDoc(docRef, newUserData);
 };
 
+const reauthenticate = async password => {
+    let auth = getAuth();
+    let currentUser = auth.currentUser;
+    let credential = EmailAuthProvider.credential(currentUser.email, password);
+    try {
+        await reauthenticateWithCredential(currentUser, credential);
+        return true;
+    } catch(err) {
+        return false;
+    }
+};
+
+const updatePasswd = async newPassword => {
+    let auth = getAuth();
+    const currentUser = auth.currentUser;
+    try {
+        await updatePassword(currentUser, newPassword);
+    } catch (err) {
+        console.log('Error when trying to update password -----');
+        console.log(err.message);
+    }
+};
+
 const fetchHistoricAsync = async () => {
     const histDocRef = doc(firestore, 'historics', getAuth().currentUser.email);
     const theDoc = await getDoc(histDocRef);
@@ -474,5 +505,7 @@ export {
     stringifyPaymentMethod,
     storeDataAsync,
     getDataAsync,
-    createNewUserAsync
+    createNewUserAsync,
+    reauthenticate,
+    updatePasswd
 };
