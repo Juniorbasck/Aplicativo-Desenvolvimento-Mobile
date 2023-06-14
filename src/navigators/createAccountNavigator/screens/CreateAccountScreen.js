@@ -19,7 +19,7 @@ import { PasswordInput } from '../../../components/PasswordInput';
 import { StackActions } from '@react-navigation/native';
 import {
     createNewUserAsync,
-    emailNotTaken,
+    emailExistsOnApp,
     usernameNotTaken
 } from '../../../../service';
 import { OkAlert } from '../../../components/OkAlert';
@@ -29,12 +29,13 @@ import {
     getAuth,
     sendEmailVerification
 } from 'firebase/auth';
+import { LoadingIndicator } from '../../../components/LoadingIndicator';
 
 async function validateData(name, surname, username, email, password, confirmPassword) {
     let message = {};
     if (validateTextField(name) && validateTextField(surname) && validateTextField(username)) {
         if (validateEmail(email)) {
-            if (await emailNotTaken(email)) {
+            if (!await emailExistsOnApp(email)) {
                 if (await usernameNotTaken(username)) {
                     if (validatePassword(password)) {
                         if (password === confirmPassword) {
@@ -50,7 +51,7 @@ async function validateData(name, surname, username, email, password, confirmPas
                     }
                 } else {
                     message.header = 'Nome de Utilizador Repetido';
-                    message.body = 'Nome de Utilizador já está em uso!';
+                    message.body = 'Nome de utilizador já está em uso!';
                 }
             } else {
                 message.header = 'E-mail Repetido';
@@ -89,12 +90,10 @@ const CreateAccountScreen = ({navigation}) => {
     const [errorOkAlertTitle, setErrorOkAlertTitle] = useState('');
     const [errorOkAlertDescription, setErrorOkAlertDescription] = useState('');
 
-    const [successOkAlertVisible, setSuccessOkAlertVisible] = useState(false);
-    const [successOkAlertTitle, setSuccessOkAlertTitle] = useState('');
-    const [successOkAlertDescription, setSuccessOkAlertDescription] = useState('');
-
     const [yesNoAlertVisible, setYesNoAlertVisible] = useState(false);
     const [action, setAction] = useState();
+
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => navigation.addListener('beforeRemove', e => {
         let action = e.data.action;
@@ -105,7 +104,9 @@ const CreateAccountScreen = ({navigation}) => {
         }
     }), [navigation, avoidUseEffect]);
 
-    return (
+    return loading ? (
+        <LoadingIndicator loadingMessage='Criando conta...'/>
+    ) : (
         <View style={styles.outerContainer}>
             <ScrollView 
                 keyboardDismissMode={'on-drag'}
@@ -179,6 +180,7 @@ const CreateAccountScreen = ({navigation}) => {
                             let res = await validateData(name, surname, username, email, password, confirmPassword);
                             if (res.header == 'Validação de E-mail') {
                                 setAvoidUseEffect(true);
+                                setLoading(true);
                                 let auth = getAuth();
                                 await createUserWithEmailAndPassword(auth, email, password)
                                 .then(_ => {
@@ -188,9 +190,10 @@ const CreateAccountScreen = ({navigation}) => {
                                         url: 'https://meu-controlo-financeiro.firebaseapp.com'
                                     }).then(async _ => {
                                         await createNewUserAsync(name, surname, username, email);
-                                        setSuccessOkAlertTitle(res.header);
-                                        setSuccessOkAlertDescription(res.body);
-                                        setSuccessOkAlertVisible(true);
+                                        setLoading(false);
+                                        navigation.navigate('Login', {
+                                            email: email
+                                        });
                                     });
                                 }).catch(err => {
                                     setErrorOkAlertTitle('Erro ao Tentar Criar Conta');
@@ -215,13 +218,6 @@ const CreateAccountScreen = ({navigation}) => {
                 setVisible={setErrorOkAlertVisible}
                 title={errorOkAlertTitle}
                 description={errorOkAlertDescription}
-            />
-            <OkAlert
-                visible={successOkAlertVisible}
-                setVisible={setSuccessOkAlertVisible}
-                title={successOkAlertTitle}
-                description={successOkAlertDescription}
-                onPressOk={() => navigation.goBack()}
             />
             <YesNoAlert
                 visible={yesNoAlertVisible}

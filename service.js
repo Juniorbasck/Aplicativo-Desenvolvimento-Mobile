@@ -60,16 +60,16 @@ const sortState = exps => {
     return notPaid.concat(paid);
 };
 
-const emailNotTaken = async email => {
-    const collecRef = collection(firestore, 'users');
-    const theDocs = await getDocs(collecRef);
-    let answer = true;
-    theDocs.forEach(doc => {
-        if (doc.id === email)
-            answer = false;
-    });
-    return answer;
-};
+// const emailNotTaken = async email => {
+//     const collecRef = collection(firestore, 'users');
+//     const theDocs = await getDocs(collecRef);
+//     let answer = true;
+//     theDocs.forEach(doc => {
+//         if (doc.id === email)
+//             answer = false;
+//     });
+//     return answer;
+// };
 
 const usernameNotTaken = async username => {
     const collecRef = collection(firestore, 'users');
@@ -327,10 +327,15 @@ const signInGoogle = () => {
     Alert.alert('Login com Google');
 }
 
-const getPaymentMethods = async onGet => {
-    const docRef = doc(firestore, 'config', 'paymentMethods');
-    const theDoc = await getDoc(docRef);
-    onGet(theDoc.get('paymentMethods'));
+const getPaymentMethods = _ => {
+    return [
+        {"value": 1, "label": "Cartão de crédito"},
+        {"value": 2, "label": "Débito direto"},
+        {"value": 3, "label": "Transferência"},
+        {"value": 4, "label": "MBWay"},
+        {"value": 5, "label": "Cheque"},
+        {"value": 6, "label": "Monetário"}
+    ];
 };
 
 const updateUserAsync = async newUserData => {
@@ -499,7 +504,7 @@ const getDataAsync = async (key, onGetData) => {
 export { 
     sort,
     sortState,
-    emailNotTaken,
+    // emailNotTaken,
     usernameNotTaken,
     fetchExpensesAsync,
     fetchExpensesMock,

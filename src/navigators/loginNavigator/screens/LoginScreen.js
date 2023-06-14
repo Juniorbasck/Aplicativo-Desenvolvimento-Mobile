@@ -25,6 +25,7 @@ import {
     signInWithEmailAndPassword
 } from 'firebase/auth';
 import { OkAlert } from '../../../components/OkAlert';
+import { LoadingIndicator } from '../../../components/LoadingIndicator';
 
 function validateData(email, password){
     let message = {};
@@ -55,7 +56,7 @@ const login = async (email, password) => {
         let currentUser = auth.currentUser;
         if (!currentUser.emailVerified) {
             message.header = 'E-mail Não Verificado';
-            message.body = 'Clique no link enviado para este e-mail para verificar!';
+            message.body = 'Clique no link enviado para este e-mail para verificá-lo!';
             await sendEmailVerification(
                 auth.currentUser, {
                 handleCodeInApp: true,
@@ -73,6 +74,10 @@ const login = async (email, password) => {
             case 'auth/wrong-password':
                 message.header = 'Credenciais Inválidas';
                 message.body = 'Suas credenciais não puderam ser validadas!';
+                break;
+            case 'auth/too-many-requests':
+                message.header = 'Ops, Muitas Tentativas...';
+                message.body = 'Tente novamente mais tarde!';
                 break;
             default:
                 message.header = error.code;
@@ -96,6 +101,11 @@ const LoginScreen = ({route, navigation}) => {
     const [initializing, setInitializing] = useState(true);
     const [user, setUser] = useState();
 
+    const [successOkAlertVisible, setSuccessOkAlertVisible] = useState(false);
+    const [createdAccountEmail, setCreatedAccountEmail] = useState();
+
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
         const subscriber = getAuth().onAuthStateChanged(user => {
             user && setUser(user.emailVerified ? user : null);
@@ -110,6 +120,13 @@ const LoginScreen = ({route, navigation}) => {
             navigation.dispatch(StackActions.replace('AppNavigator'));
     }, [user]);
 
+    useEffect(() => {
+        if (route.params?.email) {
+            setCreatedAccountEmail(route.params.email);
+            setSuccessOkAlertVisible(true);
+        }
+    }, [route.params]);
+
     function cleanInputs() {
         setEmail('');
         setPassword('');
@@ -118,7 +135,9 @@ const LoginScreen = ({route, navigation}) => {
     if (initializing)
         return null;
 
-    return (
+    return loading ? (
+        <LoadingIndicator loadingMessage='Validando credenciais...'/>
+    ) : (
         <View style={styles.outerContainer}>
             <ScrollView
                 contentContainerStyle={{width: Dimensions.get('window').width, height: Dimensions.get('window').height, alignItems: 'center', justifyContent: 'flex-start', marginTop: '20%'}}
@@ -157,15 +176,19 @@ const LoginScreen = ({route, navigation}) => {
                         textColor={'white'}
                         widthPercentage={88}
                         onPress={async () => {
+                                setLoading(true);
                                 let valRes = validateData(email, password);
                                 if (valRes.header === 'Sucesso') {
                                     let logRes = await login(email, password);
+                                    setLoading(false);
                                     if (logRes) {
                                         setAlertTitle(logRes.header);
                                         setAlertDescription(logRes.body);
                                         setAlertVisible(true);
-                                    }
+                                    } else
+                                        navigation.dispatch(StackActions.replace('AppNavigator'));
                                 } else {
+                                    setLoading(false);
                                     setAlertTitle(valRes.header);
                                     setAlertDescription(valRes.body);
                                     setAlertVisible(true);
@@ -195,10 +218,19 @@ const LoginScreen = ({route, navigation}) => {
                 title={alertTitle}
                 description={alertDescription}
                 onPressOk={() => {
-                        cleanInputs();
-                        emailInput.focus();
+                        setTimeout(() => {
+                            cleanInputs();
+                            emailInput.focus();
+                        }, 200);
                     }
                 }
+            />
+            <OkAlert
+                visible={successOkAlertVisible}
+                setVisible={setSuccessOkAlertVisible}
+                title={'Validação de E-mail'}
+                description={`Um e-mail contendo um link para validação foi enviado com sucesso para ${createdAccountEmail}`}
+                onPressOk={() => setCreatedAccountEmail('')}
             />
         </View>
     );

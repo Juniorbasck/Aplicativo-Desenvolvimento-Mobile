@@ -48,8 +48,6 @@ const CreateExpenseScreen = ({navigation}) => {
     const [image, setImage] = useState(null);
     const [paid, setPaid] = useState(false);
 
-    const [paymentMethods, setPaymentMethods] = useState([]);
-
     const [titleInput, setTitleInput] = useState();
     const [entityInput, setEntityInput] = useState();
     const [priceInput, setPriceInput] = useState();
@@ -93,10 +91,6 @@ const CreateExpenseScreen = ({navigation}) => {
             }
         });
     }, [navigation]);
-
-    useEffect(() => {
-        getPaymentMethods(setPaymentMethods);
-    }, []);
 
     return (
         <View style={styles.outerContainer}>
@@ -159,7 +153,7 @@ const CreateExpenseScreen = ({navigation}) => {
                     <CustomDropdown
                         state={paymentMethod}
                         setState={setPaymentMethod}
-                        options={paymentMethods}
+                        options={getPaymentMethods()}
                         widthPercentage={40}
                         marginBottomPercentage={3}
                     />

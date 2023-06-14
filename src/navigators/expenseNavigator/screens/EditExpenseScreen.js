@@ -42,8 +42,6 @@ const EditExpenseScreen = ({route, navigation}) => {
     const [image, setImage] = useState(item.image);
     const [paid, setPaid] = useState(item.paid);
     
-    const [paymentMethods, setPaymentMethods] = useState([]);
-
     const [action, setAction] = useState();
 
     const [snackBarVisible, setSnackBarVisible] = useState(false);
@@ -97,10 +95,6 @@ const EditExpenseScreen = ({route, navigation}) => {
         });
     }, [navigation, title, entity, date, price, paymentMethod, image, paid]);
 
-    useEffect(() => {
-        getPaymentMethods(methods => setPaymentMethods(methods));
-    }, []);
-    
     return (
         <View style={styles.outerContainer}>
             <ScrollView 
@@ -152,7 +146,7 @@ const EditExpenseScreen = ({route, navigation}) => {
                     <CustomDropdown
                         state={paymentMethod}
                         setState={setPaymentMethod}
-                        options={paymentMethods}
+                        options={getPaymentMethods()}
                         widthPercentage={40}
                         marginBottomPercentage={3}
                     />
