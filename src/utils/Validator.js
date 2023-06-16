@@ -1,9 +1,21 @@
+import { usernameNotTaken, emailExistsOnAppAsync } from "../../service";
+import { isValidBirthdayDate } from "./Date";
+
 const alphaLower = 'abcdefghijklmnopqrstuvwxyz';
 const alphaUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
 const digit = '0123456789';
-
 const special = '!`\'"@#$%^&*()_+{}|\?/.><,+*/-';
+
+function validateCity(city, cities) {
+    let filtered = cities.filter(c => c.label.toLowerCase() === city.toLowerCase());
+    if (filtered.length > 0)
+        return true;
+    return false;
+}
+
+function validatePostcode(postcode, type) {
+    return new RegExp(`^\\d{${type[0]}}-\\d{${type[1]}}$`).test(postcode);
+}
 
 function validateEmail(email) {
     // return new RegExp(
@@ -41,6 +53,80 @@ function validateTextField(text) {
     return text.trim().length > 0;
 }
 
+async function validateUserData(
+    name, 
+    surname, 
+    username, 
+    birthdayDate,
+    street,
+    city,
+    postcode,
+    email, 
+    password, 
+    confirmPassword, 
+    minAge,
+    cities,
+    postcodeType
+) {
+    let message = {};
+    if (validateTextField(name) && validateTextField(surname) && validateTextField(username)) {
+        if (await usernameNotTaken(username)) {
+            if (isValidBirthdayDate(birthdayDate, minAge)) {
+                if (validateTextField(street) && validateCity(city, cities) && validatePostcode(postcode, postcodeType)) {
+                    if (validateEmail(email)) {
+                        if (!await emailExistsOnAppAsync(email)) {
+                            if (validatePassword(password)) {
+                                if (password === confirmPassword) {
+                                    message.header = 'Validação de E-mail';
+                                    message.body = `Um e-mail contendo um link para validação foi enviado com sucesso para ${email}!`;
+                                } else {
+                                    message.header = 'Palavra-passe e Confirmação';
+                                    message.body = 'A palavra passe e confirmação da palavra-passe diferem!';
+                                }
+                            } else {
+                                message.header = 'Palavra-Passe';
+                                message.body = 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!';
+                            }
+                            
+                        } else {
+                            message.header = 'E-mail Repetido';
+                            message.body = 'O e-mail já está em uso!';
+                        }
+                    } else {
+                        message.header = 'Formato do E-mail';
+                        message.body = 'O e-mail possui formato inválido!';
+                    }
+                } else {
+                    message.header = 'Endereço Inválido';
+                    message.body = 'Digite valores válidos para logradouro, cidade e código postal';
+                }
+            } else {
+                message.header = 'Data de Nascimento';
+                message.body = `Apenas usuários com ${minAge} anos ou mais!`;
+            }
+        } else {
+            message.header = 'Nome de Utilizador Repetido';
+            message.body = 'O Nome de utilizador já está em uso!';
+        }
+    } else {
+        message.header = 'Valores de Identificação Inválidos';
+        message.body = 'Preencha os campos de nome, sobrenome e nome de utilizador corretamente!';
+    }
+    return message;
+}
 
+const capitalize = str => {
+    const split = str.split(' ');
+    let newStr = '';
+    split.forEach(s => newStr += s.charAt(0).toUpperCase() + s.slice(1) + ' ');
+    return newStr.trim();
+};
 
-export { validateEmail, validatePassword, validateTextField };
+export { 
+    validateEmail, 
+    validatePassword, 
+    validateTextField,
+    validatePostcode,
+    validateUserData,
+    capitalize
+};

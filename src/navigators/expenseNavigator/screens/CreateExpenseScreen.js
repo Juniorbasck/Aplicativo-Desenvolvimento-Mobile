@@ -17,26 +17,18 @@ import { CustomImagePicker } from '../../../components/CustomImagePicker';
 import { CustomCheckbox } from '../../../components/CustomCheckbox';
 import { 
     getPaymentMethods, 
-    createExpenseAsync
+    createNewExpenseAsync
 } from '../../../../service';
-import { Snackbar } from 'react-native-paper';
 import { OkAlert } from '../../../components/OkAlert';
 import { useAppDispatch } from '../../../app/hooks';
 import { setExpensesAsync } from '../../../features/expenses/expensesSlice';
 import { YesNoAlert } from '../../../components/YesNoAlert';
 import { setHistoricAsync } from '../../../features/historic/historicSlice';
+import { LoadingIndicator } from '../../../components/LoadingIndicator';
+import { getFormattedTodayDate } from '../../../utils/Date';
 
 function validate(title, entity, price) {
     return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
-}
-
-function getFormattedTodayDate() {
-    let date = new Date();
-    let month = (date.getMonth() + 1).toString();
-    if (month.length == 1) {
-        month = '0' + month;
-    }
-    return date.getFullYear() + '-' + month + '-' + date.getDate();
 }
 
 const CreateExpenseScreen = ({navigation}) => {
@@ -53,12 +45,13 @@ const CreateExpenseScreen = ({navigation}) => {
     const [priceInput, setPriceInput] = useState();
     const [modalOpenState, setModalOpenState] = useState(false);
 
-    const [snackBarVisible, setSnackBarVisible] = useState(false);
     const [invalidDataAlertVisible, setInvalidDataAlertVisible] = useState(false);
     const [invalidDataAlertMsg, setInvalidDataAlertMsg] = useState('');
     const [createExpenseAlertVisible, setCreateExpenseAlertVisible] = useState(false);
 
     const [action, setAction] = useState();
+
+    const [loading, setLoading] = useState(false);
 
     const dispatch = useAppDispatch();
 
@@ -66,7 +59,7 @@ const CreateExpenseScreen = ({navigation}) => {
         let localTitle = title.trim(), localEntity = entity.trim(), localPrice = price.trim();
         if (validate(localTitle, localEntity, localPrice)) {
             try {
-                await createExpenseAsync(localTitle, localEntity, date, localPrice, paymentMethod, image, paid);
+                await createNewExpenseAsync(localTitle, localEntity, date, localPrice, paymentMethod, image, paid);
                 dispatch(setExpensesAsync());
                 dispatch(setHistoricAsync());
             } catch(err) {
@@ -92,7 +85,9 @@ const CreateExpenseScreen = ({navigation}) => {
         });
     }, [navigation]);
 
-    return (
+    return loading ? (
+        <LoadingIndicator loadingMessage='Criando despesa...'/>
+    ) : (
         <View style={styles.outerContainer}>
             <ScrollView 
                 contentContainerStyle={
@@ -184,11 +179,11 @@ const CreateExpenseScreen = ({navigation}) => {
                 <CustomButton
                     text={'Criar'}
                     onPress={async () => {
+                            setLoading(true);
                             let created = await create();
-                            if (created) {
-                                setSnackBarVisible(true);
-                                setTimeout(() => navigation.goBack(), 500);
-                            }
+                            setLoading(false);
+                            if (created) 
+                                navigation.navigate('Expense', {created: true});
                         }
                     }
                     backgroundColor={Colors.primaryKeyColor}
@@ -196,27 +191,18 @@ const CreateExpenseScreen = ({navigation}) => {
                     widthPercentage={84}
                 />
             </ScrollView>
-            <Snackbar
-                visible={snackBarVisible}
-                onDismiss={() => setSnackBarVisible(false)}
-                duration={500}
-            >
-                Nova despesa criada!
-            </Snackbar>
             <YesNoAlert
                 title={'Criar Despesa'}
                 description={'Se saíres, perderás qualquer dado inserido. Proceder?'}
                 visible={createExpenseAlertVisible}
                 setVisible={setCreateExpenseAlertVisible}
                 onPressYes={() => navigation.dispatch(action)}
-                onPressNo={() => {}}
             />
             <OkAlert
                 title={'Dados Inválidos!'}
                 description={invalidDataAlertMsg}
                 visible={invalidDataAlertVisible}
                 setVisible={setInvalidDataAlertVisible}
-                onPressOk={() => {}}
             />
         </View>
     );

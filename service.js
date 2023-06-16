@@ -25,7 +25,6 @@ import {
 import {
     ref,
     uploadBytes,
-    uploadString,
     deleteObject,
     getDownloadURL
 } from 'firebase/storage';
@@ -60,17 +59,6 @@ const sortState = exps => {
     return notPaid.concat(paid);
 };
 
-// const emailNotTaken = async email => {
-//     const collecRef = collection(firestore, 'users');
-//     const theDocs = await getDocs(collecRef);
-//     let answer = true;
-//     theDocs.forEach(doc => {
-//         if (doc.id === email)
-//             answer = false;
-//     });
-//     return answer;
-// };
-
 const usernameNotTaken = async username => {
     const collecRef = collection(firestore, 'users');
     const theDocs = await getDocs(collecRef);
@@ -84,13 +72,26 @@ const usernameNotTaken = async username => {
     return answer;
 };
 
-const createNewUserAsync = async (name, surname, username, email) => {
+const createNewUserAsync = async (
+    name, 
+    surname, 
+    username, 
+    birthdayDate, 
+    street,
+    city,
+    postcode,
+    email
+) => {
     const docRef = doc(firestore, 'users', email);
     // Create user data document.
     await setDoc(docRef, {
         name: name,
         surname: surname,
         username: username,
+        birthdayDate: birthdayDate,
+        street: street,
+        city: city,
+        postcode: postcode,
         email: email,
         id: await nextUserIdAsync(),
         image: null
@@ -105,6 +106,10 @@ const createNewUserAsync = async (name, surname, username, email) => {
     const histDocRef = doc(firestore, 'historics', email);
     await setDoc(histDocRef, {
         historic: []
+    });
+    // Update nextUserId.
+    await updateDoc(doc(firestore, 'admin', 'config'), {
+        nextUserId: increment(1)
     });
 };
 
@@ -219,9 +224,9 @@ const updateExpenseAsync = async (oldExpense, updatedExpense) => {
     await saveHistoric(historic);
 }
 
-const createExpenseAsync = async (title, entity, date, price, paymentMethod, image, paid) => {
+const createNewExpenseAsync = async (title, entity, date, price, paymentMethod, image, paid) => {
     let newExpense = {
-        id: await currentUserExpenseNextIdAsync(),
+        id: await nextExpenseIdAsync(),
         title: title,
         entity: entity,
         date: date,
@@ -241,7 +246,7 @@ const createExpenseAsync = async (title, entity, date, price, paymentMethod, ima
             e.id !== newExpense.id, // The id is used to differentiate one expense from the others.
             e.title === title && 
             e.entity === entity && 
-            e.price === price &&
+            e.price === newExpense.price &&
             e.date === date &&
             e.paymentMethod === paymentMethod
         ) {
@@ -249,7 +254,8 @@ const createExpenseAsync = async (title, entity, date, price, paymentMethod, ima
         }
     });
     await updateDoc(docRef, {
-        expenses: arrayUnion(newExpense)
+        expenses: arrayUnion(newExpense),
+        nextId: increment(1)
     });
     if (newExpense.image) { // If there's an image, save it to firebase storage.
         const imagePath = 'users/' + currentUser.email + `/images/expenses/expense${newExpense.id}/expense.jpeg`;
@@ -272,26 +278,18 @@ const createExpenseAsync = async (title, entity, date, price, paymentMethod, ima
     await saveHistoric(historic);
 }
 
-const currentUserExpenseNextIdAsync = async _ => {
+const nextExpenseIdAsync = async _ => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
     const docRef = doc(firestore, 'expenses', currentUser.email);
     const theDoc = await getDoc(docRef);
-    let nextId = theDoc.get('nextId');
-    await updateDoc(docRef, {
-        nextId: increment(1)
-    });
-    return nextId;
+    return theDoc.get('nextExpenseId');
 };
 
 const nextUserIdAsync = async _ => {
-    const docRef = doc(firestore, 'config', 'nextUserId');
+    const docRef = doc(firestore, 'admin', 'config');
     const theDoc = await getDoc(docRef);
-    let nextUserId = theDoc.get('nextUserId');
-    await updateDoc(docRef, {
-        nextUserId: increment(1)
-    });
-    return nextUserId;
+    return theDoc.get('nextUserId');
 };
 
 const deleteExpenseAsync = async expense => {
@@ -306,7 +304,7 @@ const deleteExpenseAsync = async expense => {
     try {
         await deleteObject(imageRef);
     } catch (err) {
-        console.log('Error when trying to delete objet at ' + imageRef.fullPath);
+        console.log('Error when trying to delete object at ' + imageRef.fullPath);
         console.log(err.message);
     }
     // Save historic.
@@ -336,6 +334,11 @@ const getPaymentMethods = _ => {
         {"value": 5, "label": "Cheque"},
         {"value": 6, "label": "Monetário"}
     ];
+};
+
+const getPaymentMethodsAsync = async _ => {
+    const configDoc = await getConfigDoc();
+    return configDoc.get('paymentMethods');
 };
 
 const updateUserAsync = async newUserData => {
@@ -402,7 +405,7 @@ const fetchHistoricAsync = async () => {
     return theDoc.get('historic');
 };
 
-const emailExistsOnApp = async email => {
+const emailExistsOnAppAsync = async email => {
     const collRef = collection(firestore, 'users');
     const theDocs = await getDocs(collRef);
     let res = false;
@@ -411,6 +414,26 @@ const emailExistsOnApp = async email => {
             res = true;
     });
     return res;
+};
+
+const getConfigDocAsync = async _ => {
+    const docRef = doc(firestore, 'admin', 'config');
+    return await getDoc(docRef);
+};
+
+const getUserMinAgeAsync = async _ => {
+    const configDoc = await getConfigDocAsync();
+    return configDoc.get('userMinAge');
+};
+
+const getCitiesAsync = async _ => {
+    const configDoc = await getConfigDocAsync();
+    return configDoc.get('cities');
+};
+
+const getIssuersAsync = async _ => {
+    const configDoc = await getConfigDocAsync();
+    return configDoc.get('issuers');
 };
 
 const fetchHistoricMock = () => {
@@ -504,12 +527,11 @@ const getDataAsync = async (key, onGetData) => {
 export { 
     sort,
     sortState,
-    // emailNotTaken,
     usernameNotTaken,
     fetchExpensesAsync,
     fetchExpensesMock,
     updateExpenseAsync,
-    createExpenseAsync,
+    createNewExpenseAsync,
     deleteExpenseAsync,
     updateUserAsync,
     getPaymentMethods,
@@ -525,5 +547,8 @@ export {
     createNewUserAsync,
     reauthenticate,
     updatePasswd,
-    emailExistsOnApp
+    emailExistsOnAppAsync,
+    getUserMinAgeAsync,
+    getCitiesAsync,
+    getIssuersAsync,
 };

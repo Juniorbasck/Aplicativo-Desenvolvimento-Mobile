@@ -10,7 +10,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Fonts } from '../utils/Fonts';
 import { Colors } from '../utils/Colors';
-import { format } from '../utils/DateFormatter';
+import { format } from '../utils/Date';
 import DatePicker from 'react-native-modern-datepicker';
 
 const CustomDatePicker = (

@@ -157,6 +157,7 @@ const LoginScreen = ({route, navigation}) => {
                     keyboardType='email-address'
                     blurOnSubmit={false}
                     onSubmitEditing={() => passwordInput.focus()}
+                    maxLength={60}
                 />
                 <PasswordInput
                     state={password}

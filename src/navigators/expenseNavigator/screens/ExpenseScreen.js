@@ -6,7 +6,7 @@ import {
     StyleSheet,
     Pressable,
     Dimensions,
-    TextInput
+    TextInput,
 } from 'react-native';
 import { Colors } from '../../../utils/Colors';
 import { Fonts } from '../../../utils/Fonts';
@@ -23,8 +23,9 @@ import {
 } from '../../../features/expenses/expensesSlice';
 import { deleteExpenseAsync } from '../../../../service';
 import { setHistoricAsync } from '../../../features/historic/historicSlice';
+import { Snackbar } from 'react-native-paper';
 
-const ExpenseScreen = ({navigation}) => {
+const ExpenseScreen = ({route, navigation}) => {
     const [searchText, setSearchText] = useState('');
     const [icon, setIcon] = useState('reorder-three');
     const [closeFAB, setCloseFAB] = useState(false);
@@ -34,6 +35,8 @@ const ExpenseScreen = ({navigation}) => {
     const expensesStatus = useAppSelector(state => state.expenses.status);
 
     const [filteredExpenses, setFilteredExpenses] = useState(expenses.value);
+
+    const [snackBarVisible, setSnackBarVisible] = useState(false);
 
     const dispatch = useAppDispatch();
 
@@ -52,6 +55,11 @@ const ExpenseScreen = ({navigation}) => {
         }
         setTitle(text);
     }, [filteredExpenses]);
+
+    useEffect(() => {
+        if (route.params?.created)
+            setSnackBarVisible(true);
+    }, [route.params]);
 
     const handleOnPress = item => {
         navigation.navigate('EditExpense', {
@@ -177,6 +185,13 @@ const ExpenseScreen = ({navigation}) => {
                     )
                 }
             </View>
+            <Snackbar
+                visible={snackBarVisible}
+                onDismiss={() => setSnackBarVisible(false)}
+                duration={1000}
+            >
+                Nova despesa criada!
+            </Snackbar>
         </View>
     );
 };

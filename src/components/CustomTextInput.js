@@ -21,7 +21,8 @@ const CustomTextInput = (
         maxLength=30,
         onSubmitEditing=null,
         blurOnSubmit=true,
-        setRef=null
+        setRef=null,
+        pullBack=false
 }) => {
     return ( 
         <TextInput
@@ -38,13 +39,14 @@ const CustomTextInput = (
                         width: widthPercentage / 100 * Dimensions.get('window').width, 
                         marginTop: marginTopPercentage / 100 * Dimensions.get('window').height, 
                         marginBottom: marginBottomPercentage / 100 * Dimensions.get('window').height
-                    }
+                    },
+                    pullBack ? {zIndex: -10} : {}
                 ]
             }
             onChangeText={text => setState(text)}
             onSubmitEditing={onSubmitEditing}
             blurOnSubmit={blurOnSubmit}
-            ref={setRef == null ? null : input => setRef(input)}
+            ref={e => setRef && setRef(e)}
             autoFocus={autofocus}
             maxLength={maxLength}
         />
@@ -58,7 +60,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         padding: '2%',
-        marginHorizontal: '2%'
+        marginHorizontal: '2%',
     }
 });
 
