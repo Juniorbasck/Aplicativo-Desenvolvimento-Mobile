@@ -1,7 +1,8 @@
+import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { ForgottenPasswordScreen } from './screens/ForgottenPasswordScreen';
-import { ForgottenPasswordValidationCodeScreen } from './screens/ForgottenPasswordValidationCodeScreen';
-import { RedefinePasswordScreen } from './screens/RedefinePasswordScreen';
+import ForgottenPasswordScreen from './screens/ForgottenPasswordScreen';
+import ForgottenPasswordValidationCodeScreen from './screens/ForgottenPasswordValidationCodeScreen';
+import RedefinePasswordScreen from './screens/RedefinePasswordScreen';
 
 const Stack = createStackNavigator();
 
@@ -30,4 +31,4 @@ const ForgottenPasswordNavigator = () => {
     );
 };
 
-export { ForgottenPasswordNavigator };
+export default ForgottenPasswordNavigator;

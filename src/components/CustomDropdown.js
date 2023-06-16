@@ -1,3 +1,4 @@
+import React from 'react';
 import {
     View,
     StyleSheet,
@@ -5,16 +6,16 @@ import {
     Text
 } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import { Fonts } from '../utils/Fonts';
-import { Colors } from '../utils/Colors';
+import Fonts from '../utils/Fonts';
+import Colors from '../utils/Colors';
 
 const CustomDropdown = (
     {
         state, 
         setState, 
         options, 
-        widthPercentage=90, 
-        marginBottomPercentage=5
+        width=90, 
+        marginBottom=5
     }
 ) => {
 
@@ -32,13 +33,13 @@ const CustomDropdown = (
                 [
                     styles.container, 
                     {
-                        marginBottom: marginBottomPercentage / 100 * Dimensions.get('window').height,
+                        marginBottom: marginBottom / 100 * Dimensions.get('window').height,
                     }
                 ]
             }
         >
             <Dropdown
-                style={[styles.dropdown, {width: widthPercentage / 100 * Dimensions.get('window').width}]}
+                style={{width: width / 100 * Dimensions.get('window').width}}
                 data={options}
                 value={state}
                 placeholder='Pagamento'
@@ -68,9 +69,7 @@ const styles = StyleSheet.create({
     },
     placeholder: {
         color: Colors.secondaryKeyColor
-    },
-    dropdown: {
     }
 });
 
-export { CustomDropdown };
+export default CustomDropdown;

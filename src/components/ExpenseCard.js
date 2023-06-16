@@ -1,16 +1,16 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     Text,
     Pressable,
     StyleSheet
 } from 'react-native';
-import { Fonts } from '../utils/Fonts';
-import { Colors } from '../utils/Colors';
-import { YesNoAlert } from './YesNoAlert';
+import Fonts from '../utils/Fonts';
+import Colors from '../utils/Colors';
+import YesNoAlert from './YesNoAlert';
 
 const ExpenseCard = props => {
-    const { title, entity, price, paid, date } = props.data.item;
+    const { title, issuer, price, paid, date } = props.data.item;
     const { onPress, onLongPress } = props.data;
 
     let backgroundColor;
@@ -36,11 +36,11 @@ const ExpenseCard = props => {
                 onLongPress={() => setAlertVisible(true)}
             >
                 <View style={[styles.pressableContainer, {backgroundColor: backgroundColor}]}>
-                    <View style={{flex: 1, alignItems: 'flex-start'}}>
+                    <View style={styles.startView}>
                         <Text style={[Fonts.bodyLarge, styles.title]} numberOfLines={2}>{title}</Text>
-                        <Text style={[Fonts.bodyMedium, styles.entity]}>{entity}</Text>
+                        <Text style={[Fonts.bodyMedium, styles.entity]}>{issuer}</Text>
                     </View>
-                    <View style={{flex: 1, alignItems: 'flex-end'}}>
+                    <View style={styles.endView}>
                         <Text style={[Fonts.headlineSmall, styles.price]}>{price}€</Text>
                     </View>
                 </View>
@@ -80,7 +80,15 @@ const styles = StyleSheet.create({
     price: {
         color: Colors.onPrimaryKeyColor, 
         fontWeight: 'bold'
+    },
+    startView: {
+        flex: 1, 
+        alignItems: 'flex-start'
+    },
+    endView: {
+        flex: 1, 
+        alignItems: 'flex-end'
     }
 });
 
-export { ExpenseCard };
+export default ExpenseCard;

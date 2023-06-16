@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
     FlatList,
     View,
@@ -6,13 +6,13 @@ import {
     StyleSheet,
     Dimensions,
 } from 'react-native';
-import { Colors } from '../../../utils/Colors';
-import { Fonts } from '../../../utils/Fonts';
+import Colors from '../../../utils/Colors';
+import Fonts from '../../../utils/Fonts';
+import ProfilePicture from '../../../components/ProfilePicture';
+import ExpenseStatus from '../../../components/ExpenseStatus';
+import ExpenseCard from '../../../components/ExpenseCard';
+import LoadingIndicator from '../../../components/LoadingIndicator';
 import { ResponsiveDimensions } from '../../../utils/ResponsiveDimensions';
-import { ProfilePicture } from '../../../components/ProfilePicture';
-import { ExpenseStatus } from '../../../components/ExpenseStatus';
-import { ExpenseCard } from '../../../components/ExpenseCard';
-import { LoadingIndicator } from '../../../components/LoadingIndicator';
 import {
     useAppSelector,
     useAppDispatch
@@ -187,4 +187,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { HomeScreen };
+export default HomeScreen;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     StyleSheet,
@@ -6,15 +6,15 @@ import {
     Dimensions,
     Pressable
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../utils/Colors';
+import Colors from '../utils/Colors';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const PasswordInput = ({
         state, 
         setState, 
-        widthPercentage=90, 
-        marginTopPercentage=0, 
-        marginBottomPercentage=0,
+        width=90, 
+        marginTop=2, 
+        marginBottom=2,
         editable=true,
         placeholder='Palavra-passe',
         autofocus=false,
@@ -29,9 +29,9 @@ const PasswordInput = ({
         <View style={[
             styles.container,
             {
-                width: widthPercentage / 100 * Dimensions.get('window').width,
-                marginTop: marginTopPercentage / 100 * Dimensions.get('window').height,
-                marginBottom: marginBottomPercentage / 100 * Dimensions.get('window').height
+                width: width / 100 * Dimensions.get('window').width,
+                marginTop: marginTop / 100 * Dimensions.get('window').height,
+                marginBottom: marginBottom / 100 * Dimensions.get('window').height
             },
             pullBack ? {zIndex: -10} : {}
         ]}>
@@ -69,4 +69,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { PasswordInput };
+export default PasswordInput;

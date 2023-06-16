@@ -6,17 +6,18 @@ import {
     Dimensions,
     Pressable
 } from 'react-native';
-import { Colors } from '../../../utils/Colors';
-import { Fonts } from '../../../utils/Fonts';
-import { ProfilePicture } from '../../../components/ProfilePicture';
-import { CustomButton } from '../../../components/CustomButton';
+import Colors from '../../../utils/Colors';
+import Fonts from '../../../utils/Fonts';
+import ProfilePicture from '../../../components/ProfilePicture';
+import CustomButton from '../../../components/CustomButton';
+import YesNoAlert from '../../../components/YesNoAlert';
+import LoadingIndicator from '../../../components/LoadingIndicator';
 import { StackActions } from '@react-navigation/native';
 import {
     getAuth,
     signOut
 } from 'firebase/auth';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { LoadingIndicator } from '../../../components/LoadingIndicator';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import {
     useAppSelector,
     useAppDispatch
@@ -25,7 +26,6 @@ import {
     selectUserData,
     setUserDataAsync
 } from '../../../features/userData/userDataSlice';
-import { YesNoAlert } from '../../../components/YesNoAlert';
 
 const ProfileScreen = ({route, navigation}) => {
     const userData = useAppSelector(selectUserData);
@@ -161,4 +161,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { ProfileScreen };
+export default ProfileScreen;

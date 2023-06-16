@@ -22,4 +22,4 @@ const ProfilePicture = ({onPress, size='small', src=null}) => {
     );
 };
 
-export { ProfilePicture };
+export default ProfilePicture;

@@ -5,14 +5,14 @@ import {
     ScrollView,
     Dimensions,
 } from 'react-native';
-import { Colors } from '../../../utils/Colors';
-import { CustomTextInput } from '../../../components/CustomTextInput';
-import { CustomButton } from '../../../components/CustomButton';
-import { YesNoAlert } from '../../../components/YesNoAlert';
-import { OkAlert } from '../../../components/OkAlert';
-import { ProfilePicture } from '../../../components/ProfilePicture';
+import Colors from '../../../utils/Colors';
+import CustomTextInput from '../../../components/CustomTextInput';
+import CustomButton from '../../../components/CustomButton';
+import YesNoAlert from '../../../components/YesNoAlert';
+import OkAlert from '../../../components/OkAlert';
+import ProfilePicture from '../../../components/ProfilePicture';
+import PickImageModal from '../../../components/PickImageModal';
 import { Snackbar } from 'react-native-paper';
-import { PickImageModal } from '../../../components/PickImageModal';
 import { updateUserAsync } from '../../../../service';
 import {
     useAppSelector,
@@ -238,4 +238,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { ProfileDetailsScreen };
+export default ProfileDetailsScreen;

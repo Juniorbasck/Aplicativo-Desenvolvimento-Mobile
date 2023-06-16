@@ -4,16 +4,16 @@ import {
     StyleSheet, 
     Dimensions
 } from 'react-native';
-import { Colors } from '../utils/Colors';
+import Colors from '../utils/Colors';
 
 const CustomTextInput = (
     {
         state, 
         setState, 
         placeholder='', 
-        widthPercentage=43, 
-        marginTopPercentage=2, 
-        marginBottomPercentage=2, 
+        width=90, 
+        marginTop=2, 
+        marginBottom=2, 
         keyboardType='ascii-capable', 
         hide=false, 
         autofocus=false,
@@ -36,9 +36,9 @@ const CustomTextInput = (
                 [
                     styles.textInput, 
                     {
-                        width: widthPercentage / 100 * Dimensions.get('window').width, 
-                        marginTop: marginTopPercentage / 100 * Dimensions.get('window').height, 
-                        marginBottom: marginBottomPercentage / 100 * Dimensions.get('window').height
+                        width: width / 100 * Dimensions.get('window').width, 
+                        marginTop: marginTop / 100 * Dimensions.get('window').height, 
+                        marginBottom: marginBottom / 100 * Dimensions.get('window').height
                     },
                     pullBack ? {zIndex: -10} : {}
                 ]
@@ -64,4 +64,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { CustomTextInput };
+export default CustomTextInput;

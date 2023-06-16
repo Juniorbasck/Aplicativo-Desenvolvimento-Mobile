@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Colors } from '../../utils/Colors';
-import { HomeNavigator } from '../homeNavigator/HomeNavigator';
-import { ProfileNavigator } from '../profileNavigator/ProfileNavigator';
-import { ExpenseNavigator } from '../expenseNavigator/ExpenseNavigator';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Colors from '../../utils/Colors';
+import HomeNavigator from '../homeNavigator/HomeNavigator';
+import ProfileNavigator from '../profileNavigator/ProfileNavigator';
+import ExpenseNavigator from '../expenseNavigator/ExpenseNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -48,4 +48,4 @@ const AppNavigator = ({route}) => {
     );
 };
 
-export { AppNavigator };
+export default AppNavigator;

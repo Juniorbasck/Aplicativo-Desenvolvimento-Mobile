@@ -1,13 +1,14 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
     View,
     StyleSheet,
     FlatList,
     Text
 } from 'react-native';
-import { Colors } from '../../../utils/Colors';
-import { HistoricItem } from '../../../components/HistoricItem';
-import { Fonts } from '../../../utils/Fonts';
+import Colors from '../../../utils/Colors';
+import HistoricItem from '../../../components/HistoricItem';
+import Fonts from '../../../utils/Fonts';
+import LoadingIndicator from '../../../components/LoadingIndicator';
 import {
     useAppSelector,
     useAppDispatch
@@ -16,7 +17,6 @@ import {
     selectHistoric,
     setHistoricAsync
 } from '../../../features/historic/historicSlice';
-import { LoadingIndicator } from '../../../components/LoadingIndicator';
 
 const HistoricScreen = () => {
     const historic = useAppSelector(selectHistoric);
@@ -58,4 +58,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { HistoricScreen };
+export default HistoricScreen;

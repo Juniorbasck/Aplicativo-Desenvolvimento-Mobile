@@ -6,30 +6,28 @@ import {
     Text,
     Dimensions
 } from 'react-native';
-import { Colors } from '../../../utils/Colors';
-import { CustomTextInput } from '../../../components/CustomTextInput';
-import { TermsAndConditions } from '../../../components/TermsAndConditions'; 
-import { CustomButton } from '../../../components/CustomButton';
-import { validateUserData } from '../../../utils/Validator';
-import { PasswordInput } from '../../../components/PasswordInput';
-import { createNewUserAsync } from '../../../../service';
-import { OkAlert } from '../../../components/OkAlert';
-import { YesNoAlert } from '../../../components/YesNoAlert';
+import Colors from '../../../utils/Colors';
+import CustomTextInput from '../../../components/CustomTextInput';
+import TermsAndConditions from '../../../components/TermsAndConditions'; 
+import CustomButton from '../../../components/CustomButton';
+import validateUserData from '../../../utils/Validator';
+import PasswordInput from '../../../components/PasswordInput';
+import createNewUserAsync from '../../../../service';
+import OkAlert from '../../../components/OkAlert';
+import YesNoAlert from '../../../components/YesNoAlert';
+import LoadingIndicator from '../../../components/LoadingIndicator';
+import CustomDatePicker  from '../../../components/CustomDatePicker';
+import SearchDropdown from '../../../components/SearchDropdown';
+import PostalCodeInput from '../../../components/PostalCodeInput';
 import {
     createUserWithEmailAndPassword, 
     getAuth,
     sendEmailVerification
 } from 'firebase/auth';
-import { LoadingIndicator } from '../../../components/LoadingIndicator';
-import { CustomDatePicker } from '../../../components/CustomDatePicker';
-import { isValidBirthdayDate, getValidBirthdayDate } from '../../../utils/Date';
+import { getValidBirthdayDate } from '../../../utils/Date';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectCities, setCitiesAsync } from '../../../features/cities/citiesSlice';
 import { selectUserMinAge, setUserMinAgeAsync } from '../../../features/userMinAge/userMinAgeSlice';
-import SearchDropdown from '../../../components/SearchDropdown';
-import PostalCodeInput from '../../../components/PostalCodeInput';
-
-
 
 const CreateAccountScreen = ({navigation}) => {
     const [name, setName] = useState('');
@@ -111,7 +109,9 @@ const CreateAccountScreen = ({navigation}) => {
                         <Text style={styles.topLabel}>Nome</Text>
                         <CustomTextInput
                             placeholder={'Nome'}
-                            marginTopPercentage={0}
+                            width={43}
+                            marginTop={0}
+                            marginBottom={2}
                             state={name}
                             setState={setName}
                             autofocus={true}
@@ -124,7 +124,9 @@ const CreateAccountScreen = ({navigation}) => {
                         <Text style={styles.topLabel}>Apelido</Text>
                         <CustomTextInput
                             placeholder='Apelido'
-                            marginTopPercentage={0}
+                            width={43}
+                            marginTop={0}
+                            marginBottom={2}
                             state={surname}
                             setState={setSurname}
                             setRef={setSurnameInput}
@@ -136,8 +138,9 @@ const CreateAccountScreen = ({navigation}) => {
                 <Text style={styles.topLabel}>Nome de Utilizador</Text>
                 <CustomTextInput
                     placeholder={'Nome de utilizador'}
-                    marginTopPercentage={0}
-                    widthPercentage={90}
+                    width={90}
+                    marginTop={0}
+                    marginBottom={3}
                     state={username}
                     setState={setUsername}
                     marginBottomPercentage={4}
@@ -147,8 +150,8 @@ const CreateAccountScreen = ({navigation}) => {
                 <CustomDatePicker
                     state={date}
                     setState={setDate}
-                    widthPercentage={90}
-                    marginBottomPercentage={3}
+                    width={90}
+                    marginBottom={3}
                     modalOpenState={modalOpenState}
                     setModalOpenState={setModalOpenState}
                 />
@@ -159,10 +162,11 @@ const CreateAccountScreen = ({navigation}) => {
                             <Text style={styles.topLabel}>Logradouro</Text>
                             <CustomTextInput
                                 placeholder='Logradouro'
-                                marginTopPercentage={0}
+                                width={43}
+                                marginTop={0}
+                                marginBottom={3}
                                 state={street}
                                 setState={setStreet}
-                                marginBottomPercentage={4}
                                 maxLength={100}
                                 onSubmitEditing={() => cityInput.focus()}
                                 blurOnSubmit={false}
@@ -175,6 +179,7 @@ const CreateAccountScreen = ({navigation}) => {
                                 setState={setCity}
                                 placeholder={'Cidade'}
                                 marginTop={0}
+                                marginBottom={3}
                                 options={cities.value}
                                 onFocus={() => setPullBack(true)}
                                 onChosen={() => {
@@ -196,7 +201,7 @@ const CreateAccountScreen = ({navigation}) => {
                                     setRef: setPostalCodeInput,
                                     width: 43, 
                                     marginTop: 0, 
-                                    marginBottom: 4,
+                                    marginBottom: 3,
                                     type: postcodeType,  // xxxx-xxx
                                     placeholder: 'Código Postal',
                                 }
@@ -207,12 +212,12 @@ const CreateAccountScreen = ({navigation}) => {
                 <Text style={styles.topLabel}>E-mail</Text>
                 <CustomTextInput
                     placeholder={'E-mail'}
-                    widthPercentage={90}
-                    marginTopPercentage={0}
+                    width={90}
+                    marginTop={0}
+                    marginBottom={3}
                     state={email}
                     setState={setEmail}
                     keyboardType={'email-address'}
-                    marginBottomPercentage={4}
                     setRef={setEmailInput}
                     onSubmitEditing={() => passwordInput.focus()}
                     blurOnSubmit={false}
@@ -223,9 +228,9 @@ const CreateAccountScreen = ({navigation}) => {
                 <PasswordInput
                     state={password}
                     setState={setPassword}
-                    widthPercentage={90}
-                    marginBottomPercentage={4}
-                    marginTopPercentage={0}
+                    width={90}
+                    marginBottom={3}
+                    marginTop={0}
                     setRef={setPasswordInput}
                     onSubmitEditing={() => confirmPasswordInput.focus()}
                     blurOnSubmit={false}
@@ -235,9 +240,9 @@ const CreateAccountScreen = ({navigation}) => {
                 <PasswordInput
                     state={confirmPassword}
                     setState={setConfirmPassword}
-                    widthPercentage={90}
-                    marginBottomPercentage={4}
-                    marginTopPercentage={0}
+                    width={90}
+                    marginBottom={3}
+                    marginTop={0}
                     placeholder='Confirmar palavra-passe'
                     setRef={setConfirmPasswordInput}
                     pullBack={pullBack}
@@ -368,7 +373,7 @@ const styles = StyleSheet.create({
         marginBottom: '2%'
     },
     superTopLabel: {
-        marginLeft: '3%', 
+        marginLeft: '2%', 
         alignSelf: 'flex-start', 
         fontWeight: 'bold', 
         marginBottom: '2%'
@@ -379,7 +384,6 @@ const styles = StyleSheet.create({
     },
     addressRowView: {
         flexDirection: 'row',
-        marginLeft: '1%'
     },
     postalCode: {
         marginLeft: '2%', 
@@ -387,4 +391,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { CreateAccountScreen };
+export default CreateAccountScreen ;

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
     Alert,
     View,
@@ -6,8 +6,8 @@ import {
     StyleSheet,
     Dimensions,
 } from 'react-native';
-import { Colors } from '../../../utils/Colors';
-import { ValidationCodeForm } from '../../../components/ValidationCodeForm';
+import Colors from '../../../utils/Colors';
+import ValidationCodeForm from '../../../components/ValidationCodeForm';
 import { StackActions } from '@react-navigation/native';
 
 const ForgottenPasswordValidationCodeScreen = ({route, navigation}) => {
@@ -69,4 +69,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { ForgottenPasswordValidationCodeScreen };
+export default ForgottenPasswordValidationCodeScreen;

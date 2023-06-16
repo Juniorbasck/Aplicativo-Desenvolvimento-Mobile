@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Alert,
     View,
@@ -7,10 +7,10 @@ import {
     Text,
     Dimensions
 } from 'react-native';
-import { Colors } from '../../../utils/Colors';
-import { Fonts } from '../../../utils/Fonts';
-import { PasswordInput } from '../../../components/PasswordInput';
-import { CustomButton } from '../../../components/CustomButton';
+import Colors from '../../../utils/Colors';
+import Fonts from '../../../utils/Fonts';
+import PasswordInput from '../../../components/PasswordInput';
+import CustomButton from '../../../components/CustomButton';
 import { validatePassword } from '../../../utils/Validator';
 
 const RedefinePasswordScreen = ({navigation}) => {
@@ -149,4 +149,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { RedefinePasswordScreen };
+export default RedefinePasswordScreen;

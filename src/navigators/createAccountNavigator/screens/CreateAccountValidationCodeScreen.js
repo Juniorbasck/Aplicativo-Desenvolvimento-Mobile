@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
     Alert,
     View,
@@ -6,8 +6,8 @@ import {
     StyleSheet,
     Dimensions,
 } from 'react-native';
-import { Colors } from '../../../utils/Colors';
-import { ValidationCodeForm } from '../../../components/ValidationCodeForm';
+import Colors from '../../../utils/Colors';
+import ValidationCodeForm from '../../../components/ValidationCodeForm';
 
 const CreateAccountValidationCodeScreen = ({route, navigation}) => {
     const { email } = route.params;
@@ -74,4 +74,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { CreateAccountValidationCodeScreen };
+export default CreateAccountValidationCodeScreen;

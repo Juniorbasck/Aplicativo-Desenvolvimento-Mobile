@@ -1,3 +1,4 @@
+import React from 'react';
 import {
     Pressable,
     Text,
@@ -5,7 +6,7 @@ import {
     View,
     StyleSheet
 } from 'react-native';
-import { Fonts } from '../utils/Fonts';
+import Fonts from '../utils/Fonts';
 import * as ImagePicker from 'expo-image-picker';
 
 const PickImageModal = ({state, setState, image, setImage}) => {
@@ -95,4 +96,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { PickImageModal };
+export default PickImageModal;

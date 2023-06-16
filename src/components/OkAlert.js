@@ -7,7 +7,7 @@ import {
     Modal,
     Dimensions
 } from 'react-native';
-import { Fonts } from '../utils/Fonts';
+import Fonts from '../utils/Fonts';
 
 const OkAlert = ({visible, setVisible, title, description, onPressOk}) => {
     return (
@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
         left: '10%',
         top: '35%',
         width: .8 * Dimensions.get('window').width,
-        // height: .35 * Dimensions.get('window').height,
         backgroundColor: 'white',
         padding: '5%'
     },
@@ -76,4 +75,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { OkAlert };
+export default OkAlert;

@@ -7,7 +7,7 @@ import {
     StyleSheet,
     Dimensions,
 } from 'react-native';
-import { Colors } from '../utils/Colors';
+import Colors from '../utils/Colors';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const SearchDropdown = (
@@ -22,7 +22,11 @@ const SearchDropdown = (
         maxLength=60,
         setRef=null,
         onFocus=null,
-        onChosen=null
+        onChosen=null,
+        nameProp='label',
+        valProp='value',
+        top=50,
+        wide=true
     }
 ) => {
     const [elements, setElements] = useState([]);
@@ -31,21 +35,30 @@ const SearchDropdown = (
         return (
             <TouchableOpacity
                 onPress={() => {
-                        onChosen && onChosen();
-                        setState(item.label);
+                        setState(item[nameProp]);
                         setElements([]);
+                        onChosen && onChosen(item[nameProp]);
                     }
                 }
-                style={styles.itemContainer}
-                key={item.value}
+                style={
+                    [
+                        styles.itemContainer,
+                        wide ? {
+                            paddingVertical: '4%'
+                        } : {
+                            paddingVertical: '2%'
+                        }
+                    ]
+                }
+                key={item[nameProp] + '' + item[valProp]}
             >
-                <Text>{item.label}</Text>
+                <Text>{item[nameProp]}</Text>
             </TouchableOpacity>
         );
     }
 
     return (
-        <View style={[styles.container]}>
+        <View style={styles.container}>
             <View 
                 style={
                     [
@@ -55,6 +68,11 @@ const SearchDropdown = (
                             width: width / 100 * Dimensions.get('window').width, 
                             marginBottom: marginBottom / 100 * Dimensions.get('window').height,
                             marginTop: marginTop / 100 * Dimensions.get('window').height, 
+                        },
+                        wide ? {
+                            paddingVertical: '4%'
+                        } : {
+                            paddingVertical: '2%'
                         }
                     ]
                 }
@@ -68,7 +86,7 @@ const SearchDropdown = (
                     onChangeText={text => {
                             setState(text);
                             if (text) {
-                                let filtered = options.filter(v => v.label.toLowerCase().includes(text.toLowerCase()));
+                                let filtered = options.filter(v => v[nameProp].toLowerCase().includes(text.toLowerCase()));
                                 setElements(filtered.slice(0, 5));
                             } else 
                                 setElements([]);
@@ -78,9 +96,9 @@ const SearchDropdown = (
                     style={{flex: 1}}
                     onFocus={onFocus}
                     onSubmitEditing={() => {
-                            let filtered = elements.filter(e => e.label.toLowerCase() === state.toLowerCase());
+                            let filtered = elements.filter(e => e[nameProp].toLowerCase() === state.toLowerCase());
                             if (filtered.length > 0) {
-                                setState(filtered[0].label);
+                                setState(filtered[0][nameProp]);
                                 onChosen && onChosen();
                             } else 
                                 setState('');
@@ -94,7 +112,8 @@ const SearchDropdown = (
                     [
                         styles.viewList, 
                         {
-                            width: width / 100 * Dimensions.get('window').width
+                            width: width / 100 * Dimensions.get('window').width,
+                            top: top
                         },
                         elements.length > 0 ? {
                             padding: '2%',
@@ -124,14 +143,13 @@ const styles = StyleSheet.create({
         borderColor: Colors.onSecondaryKeyColor,
         borderWidth: 1,
         borderRadius: 5,
-        paddingVertical: '4%',
         paddingHorizontal: '2%',
         margin: '2%',
         flexDirection: 'row',
     },
     itemContainer: {
-        margin: '2%',
-        padding: '2%',
+        // marginHorizontal: '2%',
+        paddingHorizontal: '2%',
         alignItems: 'flex-start',
         justifyContent: 'center',
         backgroundColor: Colors.secondaryKeyColor,
@@ -140,8 +158,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.secondaryKeyColor,
         borderRadius: 5,
         borderColors: 'black',
-        position: 'absolute',
-        top: 50,
+        position: 'absolute'
     }
 });
 

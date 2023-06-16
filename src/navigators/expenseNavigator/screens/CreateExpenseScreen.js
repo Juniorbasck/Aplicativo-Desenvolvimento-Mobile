@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     StyleSheet,
@@ -7,41 +7,44 @@ import {
     Dimensions,
     Image
 } from 'react-native';
-import { Colors } from '../../../utils/Colors';
-import { Fonts } from '../../../utils/Fonts';
-import { CustomTextInput } from '../../../components/CustomTextInput';
-import { CustomButton } from '../../../components/CustomButton';
-import { CustomDatePicker } from '../../../components/CustomDatePicker';
-import { CustomDropdown } from '../../../components/CustomDropdown';
-import { CustomImagePicker } from '../../../components/CustomImagePicker';
-import { CustomCheckbox } from '../../../components/CustomCheckbox';
+import Colors from '../../../utils/Colors';
+import Fonts from '../../../utils/Fonts';
+import CustomTextInput from '../../../components/CustomTextInput';
+import CustomButton from '../../../components/CustomButton';
+import CustomDatePicker from '../../../components/CustomDatePicker';
+import CustomDropdown from '../../../components/CustomDropdown';
+import CustomImagePicker from '../../../components/CustomImagePicker';
+import CustomCheckbox from '../../../components/CustomCheckbox';
+import YesNoAlert  from '../../../components/YesNoAlert';
+import OkAlert from '../../../components/OkAlert';
+import LoadingIndicator from '../../../components/LoadingIndicator';
 import { 
-    getPaymentMethods, 
-    createNewExpenseAsync
+    getPaymentMethodsAsync, 
+    createNewExpenseAsync,
+    getDefaultPaymentMethodOfAsync
 } from '../../../../service';
-import { OkAlert } from '../../../components/OkAlert';
 import { useAppDispatch } from '../../../app/hooks';
 import { setExpensesAsync } from '../../../features/expenses/expensesSlice';
-import { YesNoAlert } from '../../../components/YesNoAlert';
 import { setHistoricAsync } from '../../../features/historic/historicSlice';
-import { LoadingIndicator } from '../../../components/LoadingIndicator';
 import { getFormattedTodayDate } from '../../../utils/Date';
-
-function validate(title, entity, price) {
-    return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
-}
+import { validateExpenseData } from '../../../utils/Validator';
+import IssuerInput from '../../../components/IssuerInput';
 
 const CreateExpenseScreen = ({navigation}) => {
     const [title, setTitle] = useState('');
-    const [entity, setEntity] = useState('');
+    const [issuer, setIssuer] = useState('');
     const [date, setDate] = useState(getFormattedTodayDate());
     const [price, setPrice] = useState('');
     const [paymentMethod, setPaymentMethod] = useState(1);
     const [image, setImage] = useState(null);
     const [paid, setPaid] = useState(false);
 
+    const [pullBack, setPullBack] = useState(false);
+
+    const [paymentMethods, setPaymentMethods] = useState([]);
+
     const [titleInput, setTitleInput] = useState();
-    const [entityInput, setEntityInput] = useState();
+    const [issuerInput, setIssuerInput] = useState();
     const [priceInput, setPriceInput] = useState();
     const [modalOpenState, setModalOpenState] = useState(false);
 
@@ -56,10 +59,10 @@ const CreateExpenseScreen = ({navigation}) => {
     const dispatch = useAppDispatch();
 
     const create = async () => {
-        let localTitle = title.trim(), localEntity = entity.trim(), localPrice = price.trim();
-        if (validate(localTitle, localEntity, localPrice)) {
+        let localTitle = title.trim(), localIssuer = issuer.trim(), localPrice = price.trim();
+        if (validateExpenseData(localTitle, localIssuer, localPrice)) {
             try {
-                await createNewExpenseAsync(localTitle, localEntity, date, localPrice, paymentMethod, image, paid);
+                await createNewExpenseAsync(localTitle, localIssuer, date, localPrice, paymentMethod, image, paid);
                 dispatch(setExpensesAsync());
                 dispatch(setHistoricAsync());
             } catch(err) {
@@ -69,7 +72,7 @@ const CreateExpenseScreen = ({navigation}) => {
             }
             return true;
         } else {
-            setInvalidDataAlertMsg('Preencha os campos de título, entidade e preço corretamente');
+            setInvalidDataAlertMsg('Preencha os campos de título, emissor e preço corretamente');
             setInvalidDataAlertVisible(true);
             return false;
         }
@@ -84,6 +87,10 @@ const CreateExpenseScreen = ({navigation}) => {
             }
         });
     }, [navigation]);
+
+    useEffect(() => {
+        getPaymentMethodsAsync(methods => setPaymentMethods(methods));
+    }, []);
 
     return loading ? (
         <LoadingIndicator loadingMessage='Criando despesa...'/>
@@ -102,41 +109,62 @@ const CreateExpenseScreen = ({navigation}) => {
                 }
                 keyboardDismissMode='on-drag'
             >   
+                <Text style={styles.topLabel}>Título</Text>
                 <CustomTextInput
                     state={title}
                     setState={setTitle}
                     placeholder='Título'
-                    widthPercentage={90}
-                    marginTopPercentage={5}
+                    width={90}
+                    marginTop={0}
+                    marginBottom={3}
                     autofocus={true}
                     setRef={setTitleInput}
-                    onSubmitEditing={() => entityInput.focus()}
+                    onSubmitEditing={() => issuerInput.focus()}
                     blurOnSubmit={false}
                 />
-                <CustomTextInput
-                    state={entity}
-                    setState={setEntity}
-                    placeholder='Entidade'
-                    widthPercentage={90}
-                    setRef={setEntityInput}
-                    onSubmitEditing={() => priceInput.focus()}
-                    blurOnSubmit={false}
+                <Text style={styles.topLabel}>Emissor</Text>
+                <IssuerInput
+                    state={issuer}
+                    setState={setIssuer}
+                    width={90}
+                    marginTop={0}
+                    marginBottom={3}
+                    onTextInputSubmitEditing={() => priceInput.focus()}
+                    onFocusSearchDropdown={() => setPullBack(true)}
+                    onChosenSearchDropDown={async newIssuer => {
+                            setPullBack(false);
+                            try {
+                                setPaymentMethod(await getDefaultPaymentMethodOfAsync(newIssuer));
+                            } catch (err) {
+                                console.log('Error when trying to invoke getDefaultPaymentMethodOfAsync -----');
+                                console.log(err.message);
+                                setPaymentMethod(1);
+                            }
+                            priceInput.focus();
+                        }
+                    }
+                    setRef={setIssuerInput}
                 />
+                <Text style={[styles.topLabel, pullBack ? {zIndex: -10} : {}]}>Preço</Text>
                 <CustomTextInput
                     state={price}
                     setState={setPrice}
                     keyboardType='numeric'
                     placeholder='Preço'
-                    widthPercentage={90}
-                    marginBottomPercentage={4}
+                    width={90}
+                    marginTop={0}
+                    marginBottom={4}
                     setRef={setPriceInput}
                     onSubmitEditing={() => setModalOpenState(true)}
+                    pullBack={pullBack}
                 />
+                <Text style={styles.topLabel}>Data de Vencimento</Text>
                 <CustomDatePicker
                     state={date}
                     setState={setDate}
-                    widthPercentage={90}
-                    marginBottomPercentage={3}
+                    width={90}
+                    marginTop={0}
+                    marginBottom={3}
                     modalOpenState={modalOpenState}
                     setModalOpenState={setModalOpenState}
                 />
@@ -148,9 +176,9 @@ const CreateExpenseScreen = ({navigation}) => {
                     <CustomDropdown
                         state={paymentMethod}
                         setState={setPaymentMethod}
-                        options={getPaymentMethods()}
-                        widthPercentage={40}
-                        marginBottomPercentage={3}
+                        options={paymentMethods}
+                        width={40}
+                        marginBottom={3}
                     />
                 </View>
                 <CustomImagePicker
@@ -170,8 +198,8 @@ const CreateExpenseScreen = ({navigation}) => {
                 <CustomCheckbox
                     state={paid}
                     setState={setPaid}
-                    marginTopPercentage={0}
-                    marginBottomPercentage={2}
+                    marginTop={0}
+                    marginBottom={2}
                     text={'Pago'}
                     size={28}
                     round={true}
@@ -221,7 +249,8 @@ const styles = StyleSheet.create({
         marginTop: '5%',
         borderTopLeftRadius: 60,
         borderTopRightRadius: 60,
-        backgroundColor: Colors.secondaryKeyColor
+        backgroundColor: Colors.secondaryKeyColor,
+        paddingVertical: '8%'
     },
     rowContainer: {
         flexDirection: 'row'
@@ -238,7 +267,12 @@ const styles = StyleSheet.create({
     paymentMethodContainer: {
         flex: 1, 
         alignItems: 'center'
+    },
+    topLabel: {
+        alignSelf: 'flex-start',
+        marginLeft: '5%',
+        marginBottom: '2%'
     }
 });
 
-export { CreateExpenseScreen };
+export default CreateExpenseScreen;

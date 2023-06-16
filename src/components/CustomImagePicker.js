@@ -6,10 +6,10 @@ import {
     View,
     Dimensions,
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Fonts } from '../utils/Fonts';
-import { Colors } from '../utils/Colors';
-import { PickImageModal } from './PickImageModal';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Fonts from '../utils/Fonts';
+import Colors from '../utils/Colors';
+import PickImageModal from './PickImageModal';
 
 const CustomImagePicker = ({state, setState, text, widthPercentage=90, marginBottomPercentage=5}) => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -72,4 +72,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { CustomImagePicker };
+export default CustomImagePicker;

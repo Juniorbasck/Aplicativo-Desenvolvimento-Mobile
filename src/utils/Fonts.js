@@ -2,33 +2,33 @@ import { StyleSheet } from 'react-native';
 
 const Fonts = StyleSheet.create({
     displaySmall: {
-        fontFamily: 'Roboto',
+        // fontFamily: 'Roboto',
         fontSize: 36
     },
     headlineLarge: {
-        fontFamily: 'Roboto',
+        // fontFamily: 'Roboto',
         fontSize: 32
     },
     headlineMedium: {
-        fontFamily: 'Roboto',
+        // fontFamily: 'Roboto',
         fontSize: 28
     },
     headlineSmall: {
-        fontFamily: 'Roboto',
+        // fontFamily: 'Roboto',
         fontSize: 24
     },
     bodyLarge: {
-        fontFamily: 'Roboto',
+        // fontFamily: 'Roboto',
         fontSize: 16
     },
     bodyMedium: {
-        fontFamily: 'Roboto',
+        // fontFamily: 'Roboto',
         fontSize: 14,
     },
     bodySmall: {
-        fontFamily: 'Roboto',
+        // fontFamily: 'Roboto',
         fontSize: 12
     }
 });
 
-export { Fonts };
+export default Fonts;

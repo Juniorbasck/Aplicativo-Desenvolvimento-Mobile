@@ -1,26 +1,22 @@
+import React from 'react';
 import {
     View,
     Text,
     StyleSheet,
     Dimensions
 } from 'react-native';
-import { 
-    stringifyOperation, 
-    stringifyPaymentMethod 
-} from '../../service';
-import { Fonts } from '../utils/Fonts';
+import Fonts from '../utils/Fonts';
 
 const HistoricItem = props => {
-    const { timestamp, date, expenseTitle, entity, paymentMethod, price, paid, operation }  = props.data;
+    const { timestamp, date, expenseTitle, issuer, paymentMethod, price, paid, operation }  = props.data;
 
-    let strOperation = stringifyOperation(operation), strPayMeth = stringifyPaymentMethod(paymentMethod);
     let splitTimestamp = timestamp.split('T');
     let preparedTimestamp = splitTimestamp[0] + ' às ' + splitTimestamp[1];
 
     return (
         <View style={styles.container}>
             <View style={[styles.box, {borderBottomWidth: 1}]}>
-                <Text style={[styles.left, Fonts.bodyMedium, {fontWeight: 'bold'}]}>{strOperation}</Text>
+                <Text style={[styles.left, Fonts.bodyMedium, {fontWeight: 'bold'}]}>{operation}</Text>
                 <Text style={[styles.right, Fonts.bodyMedium, {fontWeight: 'bold'}]}>{preparedTimestamp}</Text>
             </View>
             <View style={styles.box}>
@@ -32,8 +28,8 @@ const HistoricItem = props => {
                 <Text style={[styles.right, Fonts.bodySmall]}>{expenseTitle}</Text>
             </View>
              <View style={styles.box}>
-                <Text style={[styles.left, Fonts.bodySmall]}>Entidade:</Text>
-                <Text style={[styles.right, Fonts.bodySmall]}>{entity}</Text>
+                <Text style={[styles.left, Fonts.bodySmall]}>Emissor:</Text>
+                <Text style={[styles.right, Fonts.bodySmall]}>{issuer}</Text>
             </View>
             <View style={styles.box}>
                 <Text style={[styles.left, Fonts.bodySmall]}>Preço:</Text>
@@ -41,7 +37,7 @@ const HistoricItem = props => {
             </View>
             <View style={styles.box}>
                 <Text style={[styles.left, Fonts.bodySmall]}>Método de pagamento:</Text>
-                <Text style={[styles.right, Fonts.bodySmall]}>{strPayMeth}</Text>
+                <Text style={[styles.right, Fonts.bodySmall]}>{paymentMethod}</Text>
             </View> 
             <View style={styles.box}>
                 <Text style={[styles.left, Fonts.bodySmall]}>Pago:</Text>
@@ -75,4 +71,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { HistoricItem };
+export default HistoricItem;

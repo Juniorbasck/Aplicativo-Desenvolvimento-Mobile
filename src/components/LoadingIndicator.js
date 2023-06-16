@@ -1,10 +1,11 @@
+import React from 'react';
 import {
     ActivityIndicator,
     View,
     Text,
     StyleSheet
 } from 'react-native';
-import { Fonts } from '../utils/Fonts';
+import Fonts from '../utils/Fonts';
 
 const LoadingIndicator = ({loadingMessage=''}) => {
     return (
@@ -23,4 +24,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { LoadingIndicator };
+export default LoadingIndicator;

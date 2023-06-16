@@ -7,18 +7,19 @@ import {
     Modal,
     Dimensions
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Fonts } from '../utils/Fonts';
-import { Colors } from '../utils/Colors';
-import { format } from '../utils/Date';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Fonts from '../utils/Fonts';
+import Colors from '../utils/Colors';
 import DatePicker from 'react-native-modern-datepicker';
+import { format } from '../utils/Date';
 
 const CustomDatePicker = (
     {
         state, 
         setState, 
-        widthPercentage=90, 
-        marginBottomPercentage=5
+        width=90, 
+        marginTop=2,
+        marginBottom=2
     }
 ) => {
     const [modalOpenState, setModalOpenState] = useState(false);
@@ -27,7 +28,16 @@ const CustomDatePicker = (
         <View>
             <Pressable
                 onPress={() => setModalOpenState(!modalOpenState)}
-                style={[styles.pressableContainer, {width: widthPercentage / 100 * Dimensions.get('window').width, marginBottom: marginBottomPercentage / 100 * Dimensions.get('window').height}]}
+                style={
+                    [
+                        styles.pressableContainer, 
+                        {
+                            width: width / 100 * Dimensions.get('window').width, 
+                            marginTop: marginTop / 100 * Dimensions.get('window').height,
+                            marginBottom: marginBottom / 100 * Dimensions.get('window').height
+                        }
+                    ]
+                }
             >   
                 <View style={[styles.sideView, {alignItems: 'flex-start'}]}>
                     <Text style={Fonts.bodyMedium}>{format(state, '/', '-')}</Text>
@@ -53,9 +63,10 @@ const CustomDatePicker = (
                             current={state}
                             selected={state}
                             onDateChange={date => {
-                                setState(format(date, '-', '/'))
-                                setModalOpenState(!modalOpenState);
-                            }}
+                                    setState(format(date, '-', '/'))
+                                    setModalOpenState(!modalOpenState);
+                                }
+                            }
                         />
                     </View>
                 </Pressable>
@@ -91,4 +102,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { CustomDatePicker };
+export default CustomDatePicker;

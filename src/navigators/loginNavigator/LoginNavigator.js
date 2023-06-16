@@ -1,10 +1,10 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { LoginScreen } from './screens/LoginScreen';
-import { AppNavigator } from '../appNavigator/AppNavigator';
-import { CreateAccountNavigator } from '../createAccountNavigator/CreateAccountNavigator';
-import { ForgottenPasswordNavigator } from '../forgottenPasswordNavigator/ForgottenPasswordNavigator';
+import LoginScreen from './screens/LoginScreen';
+import AppNavigator from '../appNavigator/AppNavigator';
+import CreateAccountNavigator from '../createAccountNavigator/CreateAccountNavigator';
+import ForgottenPasswordNavigator from '../forgottenPasswordNavigator/ForgottenPasswordNavigator';
 
 const Stack = createStackNavigator();
 
@@ -49,4 +49,4 @@ const LoginNavigator = () => {
     );
 }
 
-export { LoginNavigator };
+export default LoginNavigator;

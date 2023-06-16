@@ -11,4 +11,4 @@ const Colors = {
     cardGreen: '#28961E'
 };
 
-export { Colors };
+export default Colors;

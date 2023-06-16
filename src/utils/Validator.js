@@ -115,6 +115,10 @@ async function validateUserData(
     return message;
 }
 
+function validateExpenseData(title, issuer, price) {
+    return title.length > 0 && issuer.length > 0 && price?.toString().length > 0;
+}
+
 const capitalize = str => {
     const split = str.split(' ');
     let newStr = '';
@@ -128,5 +132,6 @@ export {
     validateTextField,
     validatePostcode,
     validateUserData,
+    validateExpenseData,
     capitalize
 };

@@ -8,11 +8,11 @@ import {
     Dimensions,
     TextInput,
 } from 'react-native';
-import { Colors } from '../../../utils/Colors';
-import { Fonts } from '../../../utils/Fonts';
-import { ExpenseCard } from '../../../components/ExpenseCard';
+import Colors from '../../../utils/Colors';
+import Fonts from '../../../utils/Fonts';
+import ExpenseCard from '../../../components/ExpenseCard';
+import LoadingIndicator from '../../../components/LoadingIndicator';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { LoadingIndicator } from '../../../components/LoadingIndicator';
 import {
     useAppSelector,
     useAppDispatch
@@ -256,4 +256,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { ExpenseScreen };
+export default ExpenseScreen;

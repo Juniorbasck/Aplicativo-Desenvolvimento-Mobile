@@ -1,11 +1,12 @@
+import React from 'react';
 import {
     View,
     Text,
     StyleSheet
 } from 'react-native';
-import { Fonts } from '../utils/Fonts';
-import { Colors } from '../utils/Colors';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Fonts from '../utils/Fonts';
+import Colors from '../utils/Colors';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 
 const ExpenseStatus = ({total=0, toPay=0, paid=0}) => {
@@ -98,4 +99,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { ExpenseStatus };
+export default ExpenseStatus;

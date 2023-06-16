@@ -6,15 +6,14 @@ import {
     StyleSheet,
     Image,
 } from 'react-native';
-import { CustomButton } from '../../../components/CustomButton';
-import { CustomTextInput } from '../../../components/CustomTextInput';
-import { Colors } from '../../../utils/Colors';
-import { Fonts } from '../../../utils/Fonts';
+import CustomButton from '../../../components/CustomButton';
+import CustomTextInput from '../../../components/CustomTextInput';
+import OkAlert from '../../../components/OkAlert';
+import Colors from '../../../utils/Colors';
+import Fonts from '../../../utils/Fonts';
 import { ResponsiveDimensions } from '../../../utils/ResponsiveDimensions';
 import { validateEmail } from '../../../utils/Validator';
 import { emailExistsOnApp } from '../../../../service';
-import { StackActions } from '@react-navigation/native';
-import { OkAlert } from '../../../components/OkAlert';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 const ForgottenPasswordScreen = ({navigation}) => {
@@ -133,4 +132,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { ForgottenPasswordScreen };
+export default ForgottenPasswordScreen;

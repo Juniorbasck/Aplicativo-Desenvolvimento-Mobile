@@ -1,3 +1,4 @@
+import React from 'react';
 import {
     TouchableOpacity,
     Text,
@@ -5,17 +6,42 @@ import {
     Dimensions
 } from 'react-native';
 import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
-import { Fonts } from '../utils/Fonts';
+import Fonts from '../utils/Fonts';
 
-const CustomButton = ({text, onPress, backgroundColor, textColor='white', widthPercentage=88, disabled=false}) => {
+const CustomButton = (
+    {
+        text, 
+        onPress, 
+        backgroundColor, 
+        textColor='white', 
+        width=88, 
+        disabled=false
+    }
+) => {
 
     return (
         <TouchableOpacity
-            style={[styles.button, {backgroundColor: backgroundColor, width: widthPercentage / 100 * Dimensions.get('window').width}]}
+            style={
+                [
+                    styles.button, 
+                    {
+                        backgroundColor: backgroundColor, 
+                        width: width / 100 * Dimensions.get('window').width
+                    }
+                ]
+            }
             onPress={onPress}
             disabled={disabled}
         >
-            <Text style={[Fonts.headlineSmall, {color: textColor}, styles.text]}>{text}</Text>
+            <Text style={
+                [
+                    Fonts.headlineSmall, 
+                    {
+                        color: textColor
+                    }, 
+                    styles.text
+                ]
+            }>{text}</Text>
         </TouchableOpacity>
     );
 }
@@ -31,4 +57,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { CustomButton };
+export default CustomButton;

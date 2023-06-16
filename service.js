@@ -224,14 +224,14 @@ const updateExpenseAsync = async (oldExpense, updatedExpense) => {
     await saveHistoric(historic);
 }
 
-const createNewExpenseAsync = async (title, entity, date, price, paymentMethod, image, paid) => {
+const createNewExpenseAsync = async (title, issuer, date, price, paymentMethod, image, paid) => {
     let newExpense = {
         id: await nextExpenseIdAsync(),
         title: title,
-        entity: entity,
+        issuer: issuer,
         date: date,
         price: parseFloat(price),
-        paymentMethod: paymentMethod,
+        paymentMethod: await stringifyPaymentMethodAsync(paymentMethod),
         image: image,
         paid: paid
     };
@@ -245,7 +245,7 @@ const createNewExpenseAsync = async (title, entity, date, price, paymentMethod, 
         if (
             e.id !== newExpense.id, // The id is used to differentiate one expense from the others.
             e.title === title && 
-            e.entity === entity && 
+            e.issuer === issuer && 
             e.price === newExpense.price &&
             e.date === date &&
             e.paymentMethod === paymentMethod
@@ -269,11 +269,11 @@ const createNewExpenseAsync = async (title, entity, date, price, paymentMethod, 
         timestamp: new Date().toISOString(),
         date: newExpense.date,
         expenseTitle: newExpense.title,
-        entity: newExpense.entity,
+        issuer: newExpense.issuer,
         paymentMethod: newExpense.paymentMethod,
         price: newExpense.price,
         paid: newExpense.paid,
-        operation: 1
+        operation: 'Criação'
     };
     await saveHistoric(historic);
 }
@@ -283,7 +283,7 @@ const nextExpenseIdAsync = async _ => {
     const currentUser = auth.currentUser;
     const docRef = doc(firestore, 'expenses', currentUser.email);
     const theDoc = await getDoc(docRef);
-    return theDoc.get('nextExpenseId');
+    return theDoc.get('nextId');
 };
 
 const nextUserIdAsync = async _ => {
@@ -312,11 +312,11 @@ const deleteExpenseAsync = async expense => {
         timestamp: new Date().toISOString(),
         date: expense.date,
         expenseTitle: expense.title,
-        entity: expense.entity,
+        issuer: expense.issuer,
         paymentMethod: expense.paymentMethod,
         price: expense.price,
         paid: expense.paid,
-        operation: 3
+        operation: 'Deleção'
     };
     await saveHistoric(historic);
 };
@@ -336,9 +336,9 @@ const getPaymentMethods = _ => {
     ];
 };
 
-const getPaymentMethodsAsync = async _ => {
-    const configDoc = await getConfigDoc();
-    return configDoc.get('paymentMethods');
+const getPaymentMethodsAsync = async onGet => {
+    const configDoc = await getConfigDocAsync();
+    onGet(configDoc.get('paymentMethods'));
 };
 
 const updateUserAsync = async newUserData => {
@@ -500,7 +500,20 @@ const stringifyOperation = operation => {
     }
 };
 
-const stringifyPaymentMethod = paymentMethod => {
+const stringifyPaymentMethodAsync = async paymentMethod => {
+    const configDoc = await getConfigDocAsync();
+    const methods = configDoc.get('paymentMethods');
+    let str;
+    methods.forEach(m => {
+        if (m.value === paymentMethod)
+            str = m.label;
+    });
+    if (!str)
+        throw new Error(`Método de pagamento não encontrado para valor ${paymentMethod}`);
+    return str;
+};
+
+const stringifyPaymentMethod = async paymentMethod => {
     switch (paymentMethod) {
         default:
         case 1: return 'Cartão de crédito';
@@ -524,6 +537,19 @@ const getDataAsync = async (key, onGetData) => {
     } catch (e) {} 
 };
 
+const getDefaultPaymentMethodOfAsync = async issuer => {
+    const configDoc = await getConfigDocAsync();
+    const issuers = configDoc.get('issuers');
+    let result;
+    issuers.forEach(i => {
+        if (i.name.toLowerCase() === issuer.toLowerCase())
+            result = i.defaultPaymentMethod;
+    });
+    if (!result)
+        throw new Error('Método de pagamento padrão não encontrado para ' + issuer);
+    return result;
+};
+
 export { 
     sort,
     sortState,
@@ -535,6 +561,7 @@ export {
     deleteExpenseAsync,
     updateUserAsync,
     getPaymentMethods,
+    getPaymentMethodsAsync,
     fetchUserDataAsync,
     fetchUserDataMock,
     fetchHistoricAsync,
@@ -551,4 +578,5 @@ export {
     getUserMinAgeAsync,
     getCitiesAsync,
     getIssuersAsync,
+    getDefaultPaymentMethodOfAsync
 };

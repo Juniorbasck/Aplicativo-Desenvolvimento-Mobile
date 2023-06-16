@@ -4,7 +4,7 @@ import {
     StyleSheet,
     Dimensions
 } from 'react-native';
-import { Colors } from '../utils/Colors';
+import Colors from '../utils/Colors';
 
 class PostalCodeInput extends React.Component {
     constructor(props) {

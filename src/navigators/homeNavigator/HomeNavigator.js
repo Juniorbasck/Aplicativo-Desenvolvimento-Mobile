@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { HomeScreen } from './screens/HomeScreen';
-import { EditExpenseScreen } from '../expenseNavigator/screens/EditExpenseScreen';
+import HomeScreen from './screens/HomeScreen';
+import EditExpenseScreen from '../expenseNavigator/screens/EditExpenseScreen';
 
 const Stack = createStackNavigator();
 
@@ -24,4 +24,4 @@ const HomeNavigator = ({route}) => {
     );
 }
 
-export { HomeNavigator };
+export default HomeNavigator;

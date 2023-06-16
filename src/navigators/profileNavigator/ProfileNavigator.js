@@ -1,9 +1,9 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { ProfileScreen } from './screens/ProfileScreen';
-import { ProfileDetailsScreen } from './screens/ProfileDetailsScreen';
-import { HistoricScreen } from './screens/HistoricScreen';
-import { ChangePasswordScreen } from './screens/ChangePasswordScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import ProfileDetailsScreen from './screens/ProfileDetailsScreen';
+import HistoricScreen from './screens/HistoricScreen';
+import ChangePasswordScreen from './screens/ChangePasswordScreen';
 
 const Stack = createStackNavigator();
 
@@ -37,4 +37,4 @@ const ProfileNavigator = ({route}) => {
     );
 }
 
-export { ProfileNavigator };
+export default ProfileNavigator;

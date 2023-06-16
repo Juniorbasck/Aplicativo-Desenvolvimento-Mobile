@@ -7,11 +7,11 @@ import {
     ScrollView,
     Modal
 } from 'react-native';
-import { Colors } from '../utils/Colors';
-import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
-import { Fonts } from '../utils/Fonts';
-import { CustomButton } from './CustomButton';
+import Colors from '../utils/Colors';
+import Fonts from '../utils/Fonts';
+import CustomButton from './CustomButton';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { ResponsiveDimensions } from '../utils/ResponsiveDimensions';
 
 const TermsAndConditions = ({state, setState}) => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -334,6 +334,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { TermsAndConditions };
-
-            
+export default TermsAndConditions;

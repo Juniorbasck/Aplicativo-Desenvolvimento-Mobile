@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
     View,
     ScrollView,
@@ -8,24 +8,22 @@ import {
     Pressable,
     Image,
 } from 'react-native';
-import { CustomButton } from '../../../components/CustomButton';
-import { CustomTextInput } from '../../../components/CustomTextInput';
+import CustomButton from '../../../components/CustomButton';
+import CustomTextInput from '../../../components/CustomTextInput';
+import OkAlert from '../../../components/OkAlert';
+import LoadingIndicator from '../../../components/LoadingIndicator';
+import PasswordInput from '../../../components/PasswordInput';
+import Colors from '../../../utils/Colors';
+import Fonts from '../../../utils/Fonts';
 import { StackActions } from '@react-navigation/native';
 import { validateEmail, validatePassword } from '../../../utils/Validator';
-import { 
-    signInGoogle,
-} from '../../../../service';
-import { Colors } from '../../../utils/Colors';
-import { Fonts } from '../../../utils/Fonts';
-import { PasswordInput } from '../../../components/PasswordInput';
+import { signInGoogle } from '../../../../service';
 import { 
     getAuth,
     signOut,
     sendEmailVerification,
     signInWithEmailAndPassword
 } from 'firebase/auth';
-import { OkAlert } from '../../../components/OkAlert';
-import { LoadingIndicator } from '../../../components/LoadingIndicator';
 
 function validateData(email, password){
     let message = {};
@@ -175,7 +173,7 @@ const LoginScreen = ({route, navigation}) => {
                         text={'Entrar'}
                         backgroundColor={'#486D31'}
                         textColor={'white'}
-                        widthPercentage={88}
+                        width={88}
                         onPress={async () => {
                                 setLoading(true);
                                 let valRes = validateData(email, password);
@@ -327,4 +325,4 @@ const styles = StyleSheet.create({
     }
 });
         
-export { LoginScreen };
+export default LoginScreen;

@@ -6,23 +6,31 @@ import {
     StyleSheet,
     Text,
 } from 'react-native';
-import { Fonts } from '../utils/Fonts';
+import Fonts from '../utils/Fonts';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-const CustomCheckbox = ({state, setState, text, size=10, round=false, marginBottomPercentage=5, marginTopPercentage=5}) => {
+const CustomCheckbox = (
+    {
+        state, 
+        setState, 
+        text, 
+        size=10, 
+        round=false, 
+        marginBottom=5, 
+        marginTop=5
+    }
+) => {
     return (
         <Pressable style={
                 [
-                    styles.pressableContainer, {
-                        marginBottom: marginBottomPercentage / 100 * Dimensions.get('window').height, 
-                        marginTop: marginTopPercentage / 100 * Dimensions.get('window').height
+                    styles.pressableContainer, 
+                    {
+                        marginBottom: marginBottom / 100 * Dimensions.get('window').height, 
+                        marginTop: marginTop / 100 * Dimensions.get('window').height
                     }
                 ]
             }
-            onPress={() => {
-                    setState(!state);
-                }
-            }
+            onPress={() => setState(!state)}
         > 
             <View
                 style={
@@ -60,4 +68,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { CustomCheckbox };
+export default CustomCheckbox;

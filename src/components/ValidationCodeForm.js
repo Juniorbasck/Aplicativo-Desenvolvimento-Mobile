@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
     Alert,
     View,
@@ -8,9 +8,9 @@ import {
     Dimensions,
     Text
 } from 'react-native';
-import { CustomButton } from './CustomButton';
-import { Fonts } from '../utils/Fonts';
-import { Colors } from '../utils/Colors';
+import CustomButton from './CustomButton';
+import Fonts from '../utils/Fonts';
+import Colors from '../utils/Colors';
 import { 
     checkValidationCode,
     generateValidationCode,
@@ -190,5 +190,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { ValidationCodeForm };
-
+export default ValidationCodeForm;

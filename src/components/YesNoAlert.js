@@ -7,7 +7,7 @@ import {
     Modal,
     Dimensions
 } from 'react-native';
-import { Fonts } from '../utils/Fonts';
+import Fonts from '../utils/Fonts';
 
 const YesNoAlert = ({visible, setVisible, title, description, onPressYes, onPressNo}) => {
     return (
@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
         left: '10%',
         top: '35%',
         width: .8 * Dimensions.get('window').width,
-        // height: .3 * Dimensions.get('window').height,
         backgroundColor: 'white',
         padding: 15
     },
@@ -86,4 +85,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { YesNoAlert };
+export default YesNoAlert;

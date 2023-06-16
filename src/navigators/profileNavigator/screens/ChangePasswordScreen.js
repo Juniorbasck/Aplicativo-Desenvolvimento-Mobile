@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     ScrollView,
@@ -6,13 +6,13 @@ import {
     Text,
     Dimensions
 } from 'react-native';
-import { Colors } from '../../../utils/Colors';
-import { Fonts } from '../../../utils/Fonts';
-import { PasswordInput } from '../../../components/PasswordInput';
-import { CustomButton } from '../../../components/CustomButton';
+import Colors from '../../../utils/Colors';
+import Fonts from '../../../utils/Fonts';
+import PasswordInput from '../../../components/PasswordInput';
+import CustomButton from '../../../components/CustomButton';
+import OkAlert from '../../../components/OkAlert';
+import YesNoAlert from '../../../components/YesNoAlert';
 import { validatePassword } from '../../../utils/Validator';
-import { OkAlert } from '../../../components/OkAlert';
-import { YesNoAlert } from '../../../components/YesNoAlert';
 import { reauthenticate, updatePasswd } from '../../../../service';
 
 const checkPassword = async password => {
@@ -203,4 +203,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export { ChangePasswordScreen };
+export default ChangePasswordScreen;
