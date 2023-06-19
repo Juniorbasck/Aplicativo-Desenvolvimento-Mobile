@@ -13,7 +13,7 @@ import Colors from '../../../utils/Colors';
 import Fonts from '../../../utils/Fonts';
 import { ResponsiveDimensions } from '../../../utils/ResponsiveDimensions';
 import { validateEmail } from '../../../utils/Validator';
-import { emailExistsOnApp } from '../../../../service';
+import { emailNotExistsOnAppAsync } from '../../../../service';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 const ForgottenPasswordScreen = ({navigation}) => {
@@ -58,7 +58,7 @@ const ForgottenPasswordScreen = ({navigation}) => {
                         textColor={Colors.onPrimaryKeyColor}
                         onPress={async () => {
                             if (validateEmail(email)) {
-                                if (await emailExistsOnApp(email)) {
+                                if (!await emailNotExistsOnAppAsync(email)) {
                                     let actionCodeSettings = {
                                         handleCodeInApp: true,
                                         url: 'https://meu-controlo-financeiro.firebaseapp.com'
@@ -87,11 +87,12 @@ const ForgottenPasswordScreen = ({navigation}) => {
                 title={'Recuperação de Palavra-Passe'}
                 description={'O e-mail digitado é inválido!'}
                 onPressOk={() => {
-                    setTimeout(() => {
-                        setEmail('');
-                        emailInput.focus();
-                    }, 100);
-                }}
+                        setTimeout(() => {
+                            setEmail('');
+                            emailInput.focus();
+                        }, 100);
+                    }
+                }
             />
             <OkAlert
                 visible={successAlertVisible}

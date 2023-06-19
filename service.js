@@ -59,15 +59,13 @@ const sortState = exps => {
     return notPaid.concat(paid);
 };
 
-const usernameNotTaken = async username => {
-    const collecRef = collection(firestore, 'users');
-    const theDocs = await getDocs(collecRef);
-    let docData;
+const usernameNotTakenAsync = async (username, id) => {
+    const theDocs = await getDocs(collection(firestore, 'users'));
     let answer = true;
     theDocs.forEach(doc => {
-        docData = doc.data();
-        if (docData.username === username)
-            answer = false;
+        if (doc.get('id') !== id)
+            if (doc.get('username') === username)
+                answer = false;
     });
     return answer;
 };
@@ -85,6 +83,7 @@ const createNewUserAsync = async (
     const docRef = doc(firestore, 'users', email);
     // Create user data document.
     await setDoc(docRef, {
+        id: await nextUserIdAsync(),
         name: name,
         surname: surname,
         username: username,
@@ -93,21 +92,11 @@ const createNewUserAsync = async (
         city: city,
         postcode: postcode,
         email: email,
-        id: await nextUserIdAsync(),
-        image: null
-    });
-    // Create user expenses document.
-    const expDocRef = doc(firestore, 'expenses', email);
-    await setDoc(expDocRef, {
+        image: null,
+        nextExpenseId: 1,
         expenses: [],
-        nextId: 1
-    });
-    // Create user historic.
-    const histDocRef = doc(firestore, 'historics', email);
-    await setDoc(histDocRef, {
         historic: []
     });
-    // Update nextUserId.
     await updateDoc(doc(firestore, 'admin', 'config'), {
         nextUserId: increment(1)
     });
@@ -115,8 +104,8 @@ const createNewUserAsync = async (
 
 const saveHistoric = async data => {
     const currentUser = getAuth().currentUser;
-    const histDocRef = doc(firestore, 'historics', currentUser.email);
-    await updateDoc(histDocRef, {
+    const docRef = doc(firestore, 'users', currentUser.email);
+    await updateDoc(docRef, {
         historic: arrayUnion(data)
     });
 };
@@ -124,19 +113,20 @@ const saveHistoric = async data => {
 const fetchExpensesAsync = async () => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    const docRef = doc(firestore, 'expenses', currentUser.email);
+    const docRef = doc(firestore, 'users', currentUser.email);
     const theDoc = await getDoc(docRef);
-    let temp = theDoc.data();
-    temp.expenses.forEach(async e => {
+    let expenses = theDoc.get('expenses');
+    expenses.forEach(async e => {
         if (e.image) { // If there's an image.
             try {
                 await fetch(e.image.uri); // Try to fetch it from the local storage of the phone.
             } catch (err) { // If not found, download from the cloud.
-                await getDownloadURL(ref(storage, 'users/' + currentUser.email + `/images/expenses/expense${e.id}/expense.jpeg`));
+                let url = await getDownloadURL(ref(storage, 'users/' + currentUser.email + `/images/expenses/expense${e.id}/expense.jpeg`));
+                await fetch(url);
             }
         }
     });
-    return sort(temp.expenses);
+    return sort(expenses);
 };
 
 const fetchExpensesMock = () => {
@@ -148,14 +138,25 @@ const fetchUserDataAsync = async () => {
     const currentUser = auth.currentUser;
     const docRef = doc(firestore, 'users', currentUser.email);
     const theDoc = await getDoc(docRef);
-    let data = theDoc.data();
-    if (data.image) {
-        try {
-            await fetch(data.image.uri); // Check if the image is present locally.
-        } catch (err) { // If not, download it from the cloud.
-            await getDownloadURL(ref(storage, 'users/' + currentUser.email + '/images/profile/profile.jpeg'));
-        }
-    }
+    let data = {
+        id: theDoc.get('id'),
+        image: theDoc.get('image'),
+        birthdayDate: theDoc.get('birthdayDate'),
+        city: theDoc.get('city'),
+        street: theDoc.get('street'),
+        postcode: theDoc.get('postcode'),
+        email: theDoc.get('email'),
+        name: theDoc.get('name'),
+        surname: theDoc.get('surname'),
+        username: theDoc.get('username'),
+    };
+    // if (data.image) {
+    //     try {
+    //         await fetch(data.image.uri); // Check if the image is present locally.
+    //     } catch (err) { // If not, download it from the cloud.
+    //         await getDownloadURL(ref(storage, 'users/' + currentUser.email + '/images/profile/profile.jpeg'));
+    //     }
+    // }
     return data;
 };
 
@@ -172,29 +173,23 @@ const updateExpenseAsync = async (oldExpense, updatedExpense) => {
     updatedExpense.price = parseFloat(updatedExpense.price);
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    const docRef = doc(firestore, 'expenses', currentUser.email);
+    const docRef = doc(firestore, 'users', currentUser.email);
     const theDoc = await getDoc(docRef);
     let expenses = theDoc.get('expenses');
     expenses.forEach(e => {
         if (
             e.id !== updatedExpense.id &&
             e.title === updatedExpense.title && 
-            e.entity === updatedExpense.entity && 
+            e.issuer === updatedExpense.issuer && 
             e.price === updatedExpense.price &&
-            e.date === updatedExpense.date &&
-            e.paymentMethod === updatedExpense.paymentMethod
-        ) {
+            e.date === updatedExpense.date
+        )
             throw new Error('Já existe uma despesa com esses mesmos dados. Tente novamente mudando os valores dos campos');
-        }
     });
     // Remove former expense from database.
     await updateDoc(docRef, {
         expenses: arrayRemove(oldExpense)
     });
-    // Add the new one.
-    await updateDoc(docRef, {
-        expenses: arrayUnion(updatedExpense)
-     });
     const imagePath = 'users/' + currentUser.email + `/images/expenses/expense${updatedExpense.id}/expense.jpeg`;
     const imageRef = ref(storage, imagePath);
     if (oldExpense.image) { // Delete from the cloud.
@@ -205,70 +200,90 @@ const updateExpenseAsync = async (oldExpense, updatedExpense) => {
             console.log(err.message);
         }
     }
-    if (updatedExpense.image) { // Upload to the cloud.
+    if (updatedExpense.image) {
         const imageResponse = await fetch(updatedExpense.image.uri);
         const imageBlob = await imageResponse.blob();
         await uploadBytes(imageRef, imageBlob);
+        getDownloadURL(imageRef)
+        .then(url => {
+            updatedExpense.image = {uri: url};
+        });
     }
+    // Add the new one.
+    await updateDoc(docRef, {
+        expenses: arrayUnion(updatedExpense)
+     });
     // Save historic.
     let historic = {
         timestamp: new Date().toISOString(),
         date: updatedExpense.date,
-        expenseTitle: updatedExpense.title,
-        entity: updatedExpense.entity,
+        title: updatedExpense.title,
+        issuer: updatedExpense.issuer,
         paymentMethod: updatedExpense.paymentMethod,
         price: updatedExpense.price,
         paid: updatedExpense.paid,
-        operation: 2
+        operation: 'Edição'
     };
     await saveHistoric(historic);
 }
 
-const createNewExpenseAsync = async (title, issuer, date, price, paymentMethod, image, paid) => {
+const createNewExpenseAsync = async (
+    title, 
+    issuer, 
+    date, 
+    price, 
+    paymentMethod, 
+    image, 
+    paid, 
+    issuerPerson
+) => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    // Check if the new expense is not repeated.
+    const docRef = doc(firestore, 'users', currentUser.email);
+    const theDoc = await getDoc(docRef);
+    let expenses = theDoc.get('expenses');
+    parsedPrice = parseFloat(price);
+    expenses.forEach(e => {
+        if (
+            e.title === title && 
+            e.issuer === issuer && 
+            e.price === parsedPrice &&
+            e.date === date
+        )
+            throw new Error('Já existe uma despesa com esses mesmos dados. Tente novamente mudando os valores dos campos');
+    });
     let newExpense = {
         id: await nextExpenseIdAsync(),
         title: title,
         issuer: issuer,
         date: date,
-        price: parseFloat(price),
-        paymentMethod: await stringifyPaymentMethodAsync(paymentMethod),
+        price: parsedPrice,
+        paymentMethod: paymentMethod,
         image: image,
-        paid: paid
+        paid: paid,
+        issuerPerson: issuerPerson
     };
-    const auth = getAuth();
-    const currentUser = auth.currentUser;
-    // Check if the new expense is not repeated.
-    const docRef = doc(firestore, 'expenses', currentUser.email);
-    const theDoc = await getDoc(docRef);
-    let expenses = theDoc.get('expenses');
-    expenses.forEach(e => {
-        if (
-            e.id !== newExpense.id, // The id is used to differentiate one expense from the others.
-            e.title === title && 
-            e.issuer === issuer && 
-            e.price === newExpense.price &&
-            e.date === date &&
-            e.paymentMethod === paymentMethod
-        ) {
-            throw new Error('Já existe uma despesa com esses mesmos dados. Tente novamente mudando os valores dos campos');
-        }
-    });
-    await updateDoc(docRef, {
-        expenses: arrayUnion(newExpense),
-        nextId: increment(1)
-    });
     if (newExpense.image) { // If there's an image, save it to firebase storage.
         const imagePath = 'users/' + currentUser.email + `/images/expenses/expense${newExpense.id}/expense.jpeg`;
         const imageRef = ref(storage, imagePath);
         const imageResponse = await fetch(newExpense.image.uri);
         const imageBlob = await imageResponse.blob();
         await uploadBytes(imageRef, imageBlob);
+        getDownloadURL(imageRef)
+        .then(url => {
+            newExpense.image = {uri: url};
+        })
     }
+    await updateDoc(docRef, {
+        expenses: arrayUnion(newExpense),
+        nextExpenseId: increment(1)
+    });
     // Save historic.
     let historic = {
         timestamp: new Date().toISOString(),
         date: newExpense.date,
-        expenseTitle: newExpense.title,
+        title: newExpense.title,
         issuer: newExpense.issuer,
         paymentMethod: newExpense.paymentMethod,
         price: newExpense.price,
@@ -281,9 +296,9 @@ const createNewExpenseAsync = async (title, issuer, date, price, paymentMethod, 
 const nextExpenseIdAsync = async _ => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    const docRef = doc(firestore, 'expenses', currentUser.email);
+    const docRef = doc(firestore, 'users', currentUser.email);
     const theDoc = await getDoc(docRef);
-    return theDoc.get('nextId');
+    return theDoc.get('nextExpenseId');
 };
 
 const nextUserIdAsync = async _ => {
@@ -295,7 +310,7 @@ const nextUserIdAsync = async _ => {
 const deleteExpenseAsync = async expense => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    const docRef = doc(firestore, 'expenses', currentUser.email);
+    const docRef = doc(firestore, 'users', currentUser.email);
     await updateDoc(docRef, {
         expenses: arrayRemove(expense)
     });
@@ -311,7 +326,7 @@ const deleteExpenseAsync = async expense => {
     let historic = {
         timestamp: new Date().toISOString(),
         date: expense.date,
-        expenseTitle: expense.title,
+        title: expense.title,
         issuer: expense.issuer,
         paymentMethod: expense.paymentMethod,
         price: expense.price,
@@ -344,16 +359,6 @@ const getPaymentMethodsAsync = async onGet => {
 const updateUserAsync = async newUserData => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    // Check if username is not already taken.
-    const users = collection(firestore, 'users');
-    const querySnapshot = await getDocs(users);
-    querySnapshot.forEach(doc => {
-        if (doc.id != currentUser.email) {
-            if (doc.get('username') === newUserData.username) {
-                throw new Error(`O nome de utilizador '${newUserData.username}' já está sendo usado`);
-            }
-        }
-    });
     const profileImagePath = 'users/' + currentUser.email + '/images/profile/profile.jpeg';
     const profileRef = ref(storage, profileImagePath);
     if (newUserData.image) { // If there's an image, save it to firebase storage.
@@ -400,18 +405,19 @@ const updatePasswd = async newPassword => {
 };
 
 const fetchHistoricAsync = async () => {
-    const histDocRef = doc(firestore, 'historics', getAuth().currentUser.email);
+    const histDocRef = doc(firestore, 'users', getAuth().currentUser.email);
     const theDoc = await getDoc(histDocRef);
     return theDoc.get('historic');
 };
 
-const emailExistsOnAppAsync = async email => {
+const emailNotExistsOnAppAsync = async (email, id) => {
     const collRef = collection(firestore, 'users');
     const theDocs = await getDocs(collRef);
-    let res = false;
+    let res = true;
     theDocs.forEach(theDoc => {
-        if (theDoc.id === email)
-            res = true;
+        if (theDoc.get('id') !== id)
+            if (theDoc.id === email)
+                res = false;
     });
     return res;
 };
@@ -553,7 +559,7 @@ const getDefaultPaymentMethodOfAsync = async issuer => {
 export { 
     sort,
     sortState,
-    usernameNotTaken,
+    usernameNotTakenAsync,
     fetchExpensesAsync,
     fetchExpensesMock,
     updateExpenseAsync,
@@ -567,14 +573,13 @@ export {
     fetchHistoricAsync,
     fetchHistoricMock,
     signInGoogle,
-    stringifyOperation,
-    stringifyPaymentMethod,
+    stringifyPaymentMethodAsync,
     storeDataAsync,
     getDataAsync,
     createNewUserAsync,
     reauthenticate,
     updatePasswd,
-    emailExistsOnAppAsync,
+    emailNotExistsOnAppAsync,
     getUserMinAgeAsync,
     getCitiesAsync,
     getIssuersAsync,

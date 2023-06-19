@@ -10,15 +10,15 @@ import Colors from '../../../utils/Colors';
 import CustomTextInput from '../../../components/CustomTextInput';
 import TermsAndConditions from '../../../components/TermsAndConditions'; 
 import CustomButton from '../../../components/CustomButton';
-import validateUserData from '../../../utils/Validator';
 import PasswordInput from '../../../components/PasswordInput';
-import createNewUserAsync from '../../../../service';
 import OkAlert from '../../../components/OkAlert';
 import YesNoAlert from '../../../components/YesNoAlert';
 import LoadingIndicator from '../../../components/LoadingIndicator';
 import CustomDatePicker  from '../../../components/CustomDatePicker';
 import SearchDropdown from '../../../components/SearchDropdown';
 import PostalCodeInput from '../../../components/PostalCodeInput';
+import { createNewUserAsync } from '../../../../service';
+import { validateUserData, validatePassword } from '../../../utils/Validator';
 import {
     createUserWithEmailAndPassword, 
     getAuth,
@@ -95,18 +95,41 @@ const CreateAccountScreen = ({navigation}) => {
         }
     }), [navigation, avoidUseEffect]);
 
+    const getTrimmed = () => {
+        return {
+            name: name?.trim(),
+            username: username?.trim(),
+            surname: surname?.trim(),
+            street: street?.trim(),
+            city: city?.trim(),
+            postcode: postalCode?.trim(),
+            email: email?.trim(),
+            password: password?.trim(),
+            confirmPassword: confirmPassword?.trim()
+        };
+    };
+
+    const {
+        outerContainer,
+        scrollView,
+        nameSurnameContainer,
+        softView,
+        topLabel,
+        superTopLabel,
+        addressRowView
+    } = styles;
 
     return loading || citiesStatus === 'loading' || userMinAgeStatus === 'loading' ? (
         <LoadingIndicator loadingMessage={loadingMsg}/>
     ) : (
-        <View style={styles.outerContainer}>
+        <View style={outerContainer}>
             <ScrollView 
                 keyboardDismissMode={'on-drag'}
-                contentContainerStyle={styles.scrollView}
+                contentContainerStyle={scrollView}
             >
-                <View style={styles.nameSurnameContainer}>
-                    <View style={styles.softView}>
-                        <Text style={styles.topLabel}>Nome</Text>
+                <View style={nameSurnameContainer}>
+                    <View style={softView}>
+                        <Text style={topLabel}>Nome</Text>
                         <CustomTextInput
                             placeholder={'Nome'}
                             width={43}
@@ -116,12 +139,12 @@ const CreateAccountScreen = ({navigation}) => {
                             setState={setName}
                             autofocus={true}
                             setRef={setNameInput}
-                            onSubmitEditing={() => surnameInput.focus()}
+                            onSubmitEditing={() => surnameInput?.focus()}
                             blurOnSubmit={false}
                         />
                     </View>
-                    <View style={styles.softView}>
-                        <Text style={styles.topLabel}>Apelido</Text>
+                    <View style={softView}>
+                        <Text style={topLabel}>Apelido</Text>
                         <CustomTextInput
                             placeholder='Apelido'
                             width={43}
@@ -130,12 +153,12 @@ const CreateAccountScreen = ({navigation}) => {
                             state={surname}
                             setState={setSurname}
                             setRef={setSurnameInput}
-                            onSubmitEditing={() => usernameInput.focus()}
+                            onSubmitEditing={() => usernameInput?.focus()}
                             blurOnSubmit={false}
                         />                   
                     </View> 
                 </View>
-                <Text style={styles.topLabel}>Nome de Utilizador</Text>
+                <Text style={topLabel}>Nome de Utilizador</Text>
                 <CustomTextInput
                     placeholder={'Nome de utilizador'}
                     width={90}
@@ -146,20 +169,21 @@ const CreateAccountScreen = ({navigation}) => {
                     marginBottomPercentage={4}
                     setRef={setUsernameInput}
                 />
-                <Text style={styles.topLabel}>Data de Nascimento</Text>
+                <Text style={topLabel}>Data de Nascimento</Text>
                 <CustomDatePicker
                     state={date}
                     setState={setDate}
                     width={90}
+                    marginTop={0}
                     marginBottom={3}
                     modalOpenState={modalOpenState}
                     setModalOpenState={setModalOpenState}
                 />
-                <View style={styles.softView}>
-                    <Text style={styles.superTopLabel}>Endereço</Text>
-                    <View style={styles.addressRowView}>
-                        <View style={styles.softView}>
-                            <Text style={styles.topLabel}>Logradouro</Text>
+                <View style={softView}>
+                    <Text style={[superTopLabel, {fontWeight: 'bold'}]}>Endereço</Text>
+                    <View style={addressRowView}>
+                        <View style={softView}>
+                            <Text style={topLabel}>Logradouro</Text>
                             <CustomTextInput
                                 placeholder='Logradouro'
                                 width={43}
@@ -172,8 +196,8 @@ const CreateAccountScreen = ({navigation}) => {
                                 blurOnSubmit={false}
                             />
                         </View>
-                        <View style={styles.softView}>
-                            <Text style={styles.topLabel}>Cidade</Text>
+                        <View style={softView}>
+                            <Text style={topLabel}>Cidade</Text>
                             <SearchDropdown
                                 state={city}
                                 setState={setCity}
@@ -184,7 +208,7 @@ const CreateAccountScreen = ({navigation}) => {
                                 onFocus={() => setPullBack(true)}
                                 onChosen={() => {
                                         setPullBack(false);
-                                        postalCodeInput.focus();
+                                        postalCodeInput?.focus();
                                     }
                                 }
                                 setRef={setCityInput}
@@ -192,24 +216,22 @@ const CreateAccountScreen = ({navigation}) => {
                         </View>
                     </View>
                     <View style={{alignSelf: 'flex-start'}}>
-                        <Text style={styles.postalCode}>Código Postal</Text>
+                        <Text style={superTopLabel}>Código Postal</Text>
                         <PostalCodeInput
-                            data={
-                                {
-                                    code: postalCode, 
-                                    setCode: setPostalCode,
-                                    setRef: setPostalCodeInput,
-                                    width: 43, 
-                                    marginTop: 0, 
-                                    marginBottom: 3,
-                                    type: postcodeType,  // xxxx-xxx
-                                    placeholder: 'Código Postal',
-                                }
-                            }
+                            code={postalCode}
+                            setCode={setPostalCode}
+                            setRef={setPostalCodeInput}
+                            width={43}
+                            marginTop={0}
+                            marginBottom={3}
+                            type={postcodeType}  // xxxx-xxx
+                            placeholder={'Código Postal'}
+                            onSubmitEditing={() => emailInput?.focus()}
+                            blurOnSubmit={false}
                         />
                     </View>
                 </View>
-                <Text style={styles.topLabel}>E-mail</Text>
+                <Text style={topLabel}>E-mail</Text>
                 <CustomTextInput
                     placeholder={'E-mail'}
                     width={90}
@@ -224,7 +246,7 @@ const CreateAccountScreen = ({navigation}) => {
                     maxLength={60}
                     pullBack={pullBack}
                 />
-                <Text style={styles.topLabel}>Palavra-Passe</Text>
+                <Text style={topLabel}>Palavra-Passe</Text>
                 <PasswordInput
                     state={password}
                     setState={setPassword}
@@ -236,7 +258,7 @@ const CreateAccountScreen = ({navigation}) => {
                     blurOnSubmit={false}
                     pullBack={pullBack}
                 />
-                <Text style={styles.topLabel}>Repita Palavra-Passe</Text>
+                <Text style={topLabel}>Repita Palavra-Passe</Text>
                 <PasswordInput
                     state={confirmPassword}
                     setState={setConfirmPassword}
@@ -255,73 +277,76 @@ const CreateAccountScreen = ({navigation}) => {
                     <CustomButton
                         text={'Criar'}
                         onPress={async () => {
-                            let localName = name.trim(), 
-                                localSurname = surname.trim(), 
-                                localUsername = username.trim(),
-                                localStreet = street.trim(),
-                                localCity = city.trim(),
-                                localPostcode = postalCode.trim(),
-                                localEmail = email.trim(),
-                                localPassword = password.trim(),
-                                localConfirmPassword = confirmPassword.trim();
-                            let res = await validateUserData(
-                                localName, 
-                                localSurname, 
-                                localUsername, 
-                                date, 
-                                localStreet,
-                                localCity,
-                                localPostcode,
-                                localEmail, 
-                                localPassword, 
-                                localConfirmPassword,
-                                userMinAge.value,
-                                cities.value,
-                                postcodeType
-                            );
-                            if (res.header == 'Validação de E-mail') {
-                                setAvoidUseEffect(true);
-                                setLoadingMsg('Criando conta...');
-                                setLoading(true);
-                                let auth = getAuth();
-                                await createUserWithEmailAndPassword(auth, localEmail, localPassword)
-                                .then(_ => {
-                                    sendEmailVerification(
-                                        auth.currentUser, {
-                                        handleCodeInApp: true,
-                                        url: 'https://meu-controlo-financeiro.firebaseapp.com'
-                                    }).then(async _ => {
-                                        await createNewUserAsync(
-                                            localName, 
-                                            localSurname, 
-                                            localUsername, 
-                                            date, 
-                                            localStreet,
-                                            localCity,
-                                            localPostcode,
-                                            localEmail
-                                        );
-                                        setLoading(false);
-                                        setLoadingMsg('');
-                                        navigation.navigate('Login', {
-                                            email: email
-                                        });
-                                    }).catch(err => {
-                                        setErrorOkAlertTitle('Erro ao Tentar Criar Conta');
-                                        setErrorOkAlertDescription(err.message);
+                                let trimmedData = getTrimmed();
+                                let res = await validateUserData(
+                                    trimmedData?.name, 
+                                    trimmedData?.surname, 
+                                    trimmedData?.username, 
+                                    date, 
+                                    trimmedData?.street,
+                                    trimmedData?.city,
+                                    trimmedData?.postcode,
+                                    trimmedData?.email, 
+                                    userMinAge.value,
+                                    cities.value,
+                                    postcodeType
+                                );
+                                if (res.header === 'ok') {
+                                    if (validatePassword(trimmedData.password)) {
+                                        if (trimmedData.password === trimmedData.confirmPassword) {
+                                            setAvoidUseEffect(true);
+                                            setLoadingMsg('Criando conta...');
+                                            setLoading(true);
+                                            let auth = getAuth();
+                                            await createUserWithEmailAndPassword(auth, trimmedData?.email, trimmedData?.password)
+                                            .then(_ => {
+                                                sendEmailVerification(
+                                                    auth.currentUser, {
+                                                    handleCodeInApp: true,
+                                                    url: 'https://meu-controlo-financeiro.firebaseapp.com'
+                                                }).then(async _ => {
+                                                    await createNewUserAsync(
+                                                        trimmedData?.name, 
+                                                        trimmedData?.surname, 
+                                                        trimmedData?.username, 
+                                                        date, 
+                                                        trimmedData?.street,
+                                                        trimmedData?.city,
+                                                        trimmedData?.postcode,
+                                                        trimmedData?.email
+                                                    );
+                                                    setLoading(false);
+                                                    setLoadingMsg('');
+                                                    navigation.navigate('Login', {
+                                                        email: trimmedData.email
+                                                    });
+                                                }).catch(err => {
+                                                    setErrorOkAlertTitle('Erro ao Tentar Criar Conta');
+                                                    setErrorOkAlertDescription(err.message);
+                                                    setErrorOkAlertVisible(true);
+                                                });
+                                            }).catch(err => {
+                                                setErrorOkAlertTitle('Erro ao Tentar Criar Conta');
+                                                setErrorOkAlertDescription(err.message);
+                                                setErrorOkAlertVisible(true);
+                                            });
+                                        } else {
+                                            setErrorOkAlertTitle('Palavra-Passe e Confirmação');
+                                            setErrorOkAlertDescription('A palavra passe e confirmação da palavra-passe diferem!');
+                                            setErrorOkAlertVisible(true);
+                                        }
+                                    } else {
+                                        setErrorOkAlertTitle('Palavra-Passe');
+                                        setErrorOkAlertDescription('A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!');
                                         setErrorOkAlertVisible(true);
-                                    });
-                                }).catch(err => {
-                                    setErrorOkAlertTitle('Erro ao Tentar Criar Conta');
-                                    setErrorOkAlertDescription(err.message);
+                                    }
+                                } else {
+                                    setErrorOkAlertTitle(res.header);
+                                    setErrorOkAlertDescription(res.body);
                                     setErrorOkAlertVisible(true);
-                                });
-                            } else {
-                                setErrorOkAlertTitle(res.header);
-                                setErrorOkAlertDescription(res.body);
-                                setErrorOkAlertVisible(true);
+                                }
                             }
-                        }}
+                        }
                         backgroundColor={checked ? Colors.tertiaryKeyColor : Colors.tertiaryKeyColorDisabled}
                         textColor={Colors.onPrimaryKeyColor}
                         widthPercentage={95}
@@ -375,7 +400,6 @@ const styles = StyleSheet.create({
     superTopLabel: {
         marginLeft: '2%', 
         alignSelf: 'flex-start', 
-        fontWeight: 'bold', 
         marginBottom: '2%'
     },
     softView: {

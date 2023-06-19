@@ -29,7 +29,9 @@ const ExpenseScreen = ({route, navigation}) => {
     const [searchText, setSearchText] = useState('');
     const [icon, setIcon] = useState('reorder-three');
     const [closeFAB, setCloseFAB] = useState(false);
-    const [title, setTitle] = useState('');
+    const [title, setTitle] = useState('Todas as Despesas');
+    const [total, setTotal] = useState(0);
+    const [qtd, setQtd] =  useState(0);
 
     const expenses = useAppSelector(selectExpenses);
     const expensesStatus = useAppSelector(state => state.expenses.status);
@@ -49,11 +51,7 @@ const ExpenseScreen = ({route, navigation}) => {
     }, [expenses]);
 
     useEffect(() => {
-        let text = 'Todas as Despesas';
-        if (!filteredExpenses.length) {
-            text = 'Sem Despesas';
-        }
-        setTitle(text);
+        updateExpensesInfoLabels();
     }, [filteredExpenses]);
 
     useEffect(() => {
@@ -66,6 +64,11 @@ const ExpenseScreen = ({route, navigation}) => {
             item: item,
             parentRoute: 'Expense'
         });
+    };
+
+    const updateExpensesInfoLabels = () => {
+        setTotal(filteredExpenses.reduce((acc, e) => parseFloat(e.price) + acc, 0));
+        setQtd(filteredExpenses.length);
     };
 
     const handleLongPress = async expense => {
@@ -87,7 +90,7 @@ const ExpenseScreen = ({route, navigation}) => {
         }
     }
 
-    const getNextIcon = () => {
+    const getNextIcon = _ => {
         switch (icon) {
             case 'reorder-three':
                 return 'cash';
@@ -98,35 +101,60 @@ const ExpenseScreen = ({route, navigation}) => {
                 return 'reorder-three';
         }
     }
-    
-    return expensesStatus === 'loading' ? (
-        <LoadingIndicator/>
-    ) : (
-        <View style={styles.outerContainer}>
-            <View style={styles.titleContainer}>
-                <Text style={[Fonts.displaySmall, styles.greetingText]}>{title}</Text> 
-            </View>
-            {
-                expenses.value.length == 0 && (
-                    <Pressable
-                        style={{marginVertical: '5%'}}
-                        onPress={() => navigation.navigate('CreateExpense')}
-                    >
-                        <Text style={styles.addNewExpenseText}>Adicione uma nova despesa</Text>
-                    </Pressable>
-                )
-            }
-            <View 
-                style={
-                    [
-                        styles.expenseBoard,
-                        expenses.value.length == 0 ? {opacity: 0} : {flex: 5}
-                    ]
-                }
-            >
-                <View 
-                    style={styles.searchBar}
+
+    const getNextTitle = _ => {
+        switch (icon) {
+            case 'reorder-three':
+                return 'Apenas a Pagar';
+            case 'cash':
+                return 'Apenas Pagas';
+            default:
+            case 'checkmark-done':
+                return 'Todas as Despesas';
+        }
+    };
+
+    const {
+        outerContainer,
+        titleContainer,
+        greetingText,
+        addNewExpenseText,
+        expenseBoard,
+        searchBar,
+        textInput,
+        expenseInfoLabel,
+        rowContainer
+    } = styles;
+
+    const {
+        displaySmall
+    } = Fonts;
+
+    if (expensesStatus === 'loading')
+        return <LoadingIndicator/>;
+
+    if (expenses?.value?.length == 0)
+        return (
+            <View style={outerContainer}>
+                <View style={titleContainer}>
+                    <Text style={[displaySmall, greetingText]}>Sem Despesas</Text> 
+                </View>
+                <Pressable
+                    style={{marginVertical: '5%'}}
+                    onPress={() => navigation.navigate('CreateExpense')}
                 >
+                    <Text style={addNewExpenseText}>Adicione uma nova despesa</Text>
+                </Pressable>
+            </View>
+        )
+
+    return (
+        <View style={outerContainer}>
+            <View style={titleContainer}>
+                <Text style={[displaySmall, greetingText]}>{title}</Text> 
+            </View>
+            <View style={expenseBoard}>
+                <View style={searchBar}>
                     <Pressable
                         onPress={() => {
                                 setSearchText('');
@@ -137,7 +165,7 @@ const ExpenseScreen = ({route, navigation}) => {
                         <Ionicons name='search' size={20} color={'grey'}/>
                     </Pressable>
                     <TextInput
-                        style={styles.textInput}
+                        style={textInput}
                         placeholder='Pesquisar'
                         defaultValue={searchText}
                         onChangeText={text => {
@@ -156,18 +184,22 @@ const ExpenseScreen = ({route, navigation}) => {
                     <Pressable
                         onPress={() => {
                                 setIcon(getNextIcon());
-                                if (!searchText.length) {
+                                setTitle(getNextTitle());
+                                if (!searchText.length)
                                     setFilteredExpenses(getCurrentExpenseGroup());
-                                } else {
+                                else 
                                     setFilteredExpenses(
                                         getCurrentExpenseGroup().filter(ele => ele.title.toLowerCase().includes(searchText.toLowerCase()))
                                     );
-                                }
                             }
                         }
                     >
                         <Ionicons name={icon} size={25} color={'grey'}/>
                     </Pressable>
+                </View>
+                <View style={rowContainer}>
+                    <Text style={expenseInfoLabel}>Total: {total}€</Text>
+                    <Text style={expenseInfoLabel}>Despesas: {qtd}</Text>
                 </View>
                 <FlatList
                     data={filteredExpenses}
@@ -217,6 +249,7 @@ const styles = StyleSheet.create({
         color: Colors.onPrimaryKeyColor
     },
     expenseBoard: {
+        flex: 5,
         borderTopRightRadius: 60,
         borderTopLeftRadius: 60,
         paddingHorizontal: '2%',
@@ -253,6 +286,17 @@ const styles = StyleSheet.create({
     plus: {
         color: Colors.primaryKeyColor,
         fontSize: 30,
+    },
+    expenseInfoLabel: {
+        fontWeight: 'bold',
+        ...Fonts.bodyLarge
+    },
+    rowContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginHorizontal: '5%', 
+        marginBottom: '5%',
+        marginTop: '3%'
     }
 });
 

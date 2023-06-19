@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -6,9 +6,27 @@ import {
     Dimensions
 } from 'react-native';
 import Fonts from '../utils/Fonts';
+import { stringifyPaymentMethodAsync } from '../../service';
 
 const HistoricItem = props => {
-    const { timestamp, date, expenseTitle, issuer, paymentMethod, price, paid, operation }  = props.data;
+    const { 
+        timestamp, 
+        date, 
+        title, 
+        issuer, 
+        paymentMethod, 
+        price, 
+        paid, 
+        operation 
+    }  = props.data;
+
+    const [payMet, setPayMet] = useState('');
+
+    useEffect(() => {
+        (async () => {
+            setPayMet(await stringifyPaymentMethodAsync(paymentMethod));
+        })();
+    }, []);
 
     let splitTimestamp = timestamp.split('T');
     let preparedTimestamp = splitTimestamp[0] + ' às ' + splitTimestamp[1];
@@ -25,7 +43,7 @@ const HistoricItem = props => {
             </View>
             <View style={styles.box}>
                 <Text style={[styles.left, Fonts.bodySmall]}>Título:</Text>
-                <Text style={[styles.right, Fonts.bodySmall]}>{expenseTitle}</Text>
+                <Text style={[styles.right, Fonts.bodySmall]}>{title}</Text>
             </View>
              <View style={styles.box}>
                 <Text style={[styles.left, Fonts.bodySmall]}>Emissor:</Text>
@@ -37,7 +55,7 @@ const HistoricItem = props => {
             </View>
             <View style={styles.box}>
                 <Text style={[styles.left, Fonts.bodySmall]}>Método de pagamento:</Text>
-                <Text style={[styles.right, Fonts.bodySmall]}>{paymentMethod}</Text>
+                <Text style={[styles.right, Fonts.bodySmall]}>{payMet}</Text>
             </View> 
             <View style={styles.box}>
                 <Text style={[styles.left, Fonts.bodySmall]}>Pago:</Text>

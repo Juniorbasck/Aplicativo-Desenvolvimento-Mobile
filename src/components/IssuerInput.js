@@ -21,11 +21,13 @@ const IssuerInput = (
         onFocusSearchDropdown=null,
         onChosenSearchDropDown=null,
         setRef=null,
-        onTextInputSubmitEditing=null
+        onTextInputSubmitEditing=null,
+        person=true,
+        onPress=null
     }
 ) => {
-    const [colorLeft, setColorLeft] = useState('black');
-    const [colorRight, setColorRight] = useState('white');
+    const [colorLeft, setColorLeft] = useState(person ? 'black' : 'white');
+    const [colorRight, setColorRight] = useState(person ? 'white' : 'black');
 
     const issuers = useAppSelector(selectIssuers);
     const issuersState = useAppSelector(state => state.issuers.status);
@@ -63,6 +65,7 @@ const IssuerInput = (
                         let auxLeft = colorLeft;
                         setColorLeft(colorRight);
                         setColorRight(auxLeft);
+                        onPress && onPress();
                     }
                 }
             >

@@ -30,13 +30,22 @@ const HistoricScreen = () => {
 
     const renderItem = ({item}) => <HistoricItem data={item}/>
 
-    return historicStatus === 'loading' ? (
-        <LoadingIndicator/>
-    ) : (
-        <View style={styles.container}>
+    const {
+        container,
+    } = styles;
+
+    const {
+        displaySmall
+    } = Fonts;
+
+    if (historicStatus === 'loading')
+        return <LoadingIndicator/>
+
+    return (
+        <View style={container}>
             {
-                historic.value.length === 0 ? (
-                    <Text style={[Fonts.displaySmall, {color: 'white'}]}>Sem Histórico</Text>
+                historic?.value?.length === 0 ? (
+                    <Text style={[displaySmall, {color: 'white'}]}>Sem Histórico</Text>
                 ) : (
                     <FlatList
                         data={historic.value}

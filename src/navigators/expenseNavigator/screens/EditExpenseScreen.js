@@ -17,31 +17,39 @@ import CustomImagePicker from '../../../components/CustomImagePicker';
 import CustomCheckbox from '../../../components/CustomCheckbox';
 import OkAlert from '../../../components/OkAlert';
 import YesNoAlert from '../../../components/YesNoAlert';
-import { getPaymentMethods } from '../../../../service';
+import IssuerInput from '../../../components/IssuerInput';
+import { getPaymentMethodsAsync, getDefaultPaymentMethodOfAsync } from '../../../../service';
 import { Snackbar } from 'react-native-paper';
 import { updateExpenseAsync } from '../../../../service';
 import { useAppDispatch } from '../../../app/hooks';
 import { setExpensesAsync } from '../../../features/expenses/expensesSlice';
 import { setHistoricAsync } from '../../../features/historic/historicSlice';
 
-function validate(title, entity, price) {
-    return title.length > 0 && entity.length > 0 && price?.toString().length > 0;
+function validate(title, issuer, price) {
+    return title.length > 0 && issuer.length > 0 && price?.toString().length > 0;
 }
 
-function dataChanged(item, title, entity, date, price, paymentMethod, image, paid) {
-    return item.title != title || item.entity != entity || item.date != date || item.price != price || item.paymentMethod != paymentMethod || item.paid != paid || item.image != image;
+function dataChanged(item, title, issuer, date, price, paymentMethod, image, paid) {
+    return item.title != title || item.issuer != issuer || item.date != date || item.price != price || item.paymentMethod != paymentMethod || item.paid != paid || item.image != image;
 }
 
 const EditExpenseScreen = ({route, navigation}) => {
-    const { item, parentRoute } = route.params;
-    const [title, setTitle] = useState(item.title);
-    const [entity, setEntity] = useState(item.entity);
-    const [date, setDate] = useState(item.date);
-    const [price, setPrice] = useState(item.price.toString());
-    const [paymentMethod, setPaymentMethod] = useState(item.paymentMethod);
-    const [image, setImage] = useState(item.image);
-    const [paid, setPaid] = useState(item.paid);
+    const { item, parentRoute } = route?.params;
+    const [title, setTitle] = useState(item?.title);
+    const [issuer, setIssuer] = useState(item?.issuer);
+    const [issuerPerson, setIssuerPerson] = useState(item?.issuerPerson);
+    const [date, setDate] = useState(item?.date);
+    const [price, setPrice] = useState(item?.price?.toString());
+    const [paymentMethod, setPaymentMethod] = useState(item?.paymentMethod);
+    const [image, setImage] = useState(item?.image);
+    const [paid, setPaid] = useState(item?.paid);
     
+    const [paymentMethods, setPaymentMethods] = useState([]);
+
+    const [titleInput, setTitleInput] = useState();
+    const [issuerInput, setIssuerInput] = useState();
+    const [priceInput, setPriceInput] = useState();
+
     const [action, setAction] = useState();
 
     const [snackBarVisible, setSnackBarVisible] = useState(false);
@@ -52,15 +60,17 @@ const EditExpenseScreen = ({route, navigation}) => {
 
     const dispatch = useAppDispatch();
     
+    const [pullBack, setPullBack] = useState(false);
+
     const edit = async () => {
-        let localTitle = title.trim(), localEntity = entity.trim(), localPrice = price.trim();
-        if (validate(localTitle, localEntity, price)) {
-            if (dataChanged(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid)) {
+        let localTitle = title.trim(), localIssuer = issuer.trim(), localPrice = price.trim();
+        if (validate(localTitle, localIssuer, price)) {
+            if (dataChanged(item, localTitle, localIssuer, date, localPrice, paymentMethod, image, paid)) {
                 try {
                     let newExpense = {
                         id: item.id,
                         title: localTitle,
-                        entity: localEntity,
+                        issuer: localIssuer,
                         date: date,
                         price: localPrice,
                         paymentMethod: paymentMethod,
@@ -86,23 +96,36 @@ const EditExpenseScreen = ({route, navigation}) => {
 
     useEffect(() => {
         navigation.addListener('beforeRemove', e => {
-            let localTitle = title.trim(), localEntity = entity.trim(), localPrice = price.trim();
-            if (e.data.action.type === 'POP' && dataChanged(item, localTitle, localEntity, date, localPrice, paymentMethod, image, paid)) {
+            let localTitle = title.trim(), localIssuer = issuer.trim(), localPrice = price.trim();
+            if (e.data.action.type === 'POP' && dataChanged(item, localTitle, localIssuer, date, localPrice, paymentMethod, image, paid)) {
                 e.preventDefault();
                 setAction(e.data.action);
                 setUpdateDataAlertVisible(true);
             }
         });
-    }, [navigation, title, entity, date, price, paymentMethod, image, paid]);
+    }, [navigation, title, issuer, date, price, paymentMethod, image, paid]);
+
+    useEffect(() => {
+        getPaymentMethodsAsync(methods => setPaymentMethods(methods));
+    }, []);
+
+    const {
+        outerContainer,
+        scrollView,
+        rowContainer,
+        imageStyle,
+        paymentMethodsStyle,
+        topLabel
+    } = styles;
 
     return (
-        <View style={styles.outerContainer}>
+        <View style={outerContainer}>
             <ScrollView 
                 contentContainerStyle={
                     [
-                        styles.scrollView, 
+                        scrollView, 
                         image ? {
-                            height: 1.3 * Dimensions.get('window').height
+                            height: 1.4 * Dimensions.get('window').height
                         } : {
                             height: Dimensions.get('window').height
                         }
@@ -110,45 +133,74 @@ const EditExpenseScreen = ({route, navigation}) => {
                 }
                 keyboardDismissMode='on-drag'
             >   
+                <Text style={topLabel}>Título</Text>
                 <CustomTextInput
                     state={title}
                     setState={setTitle}
                     placeholder='Título'
-                    widthPercentage={90}
-                    marginTopPercentage={5}
+                    width={90}
+                    marginTop={0}
+                    marginBottom={3}
                     autofocus={true}
+                    setRef={setTitleInput}
+                    onSubmitEditing={() => issuerInput?.focus()}
                 />
-                <CustomTextInput
-                    state={entity}
-                    setState={setEntity}
-                    placeholder='Entidade'
-                    widthPercentage={90}
+                <Text style={topLabel}>Emissor</Text>
+                <IssuerInput
+                    state={issuer}
+                    setState={setIssuer}
+                    width={90}
+                    marginTop={0}
+                    marginBottom={3}
+                    onTextInputSubmitEditing={() => priceInput.focus()}
+                    onFocusSearchDropdown={() => setPullBack(true)}
+                    onChosenSearchDropDown={async newIssuer => {
+                            setPullBack(false);
+                            try {
+                                setPaymentMethod(await getDefaultPaymentMethodOfAsync(newIssuer));
+                            } catch (err) {
+                                console.log('Error when trying to invoke getDefaultPaymentMethodOfAsync -----');
+                                console.log(err.message);
+                                setPaymentMethod(1);
+                            }
+                            priceInput.focus();
+                        }
+                    }
+                    setRef={setIssuerInput}
+                    person={item?.issuerPerson}
+                    onPress={() => setIssuerPerson(!issuerPerson)}
                 />
+                <Text style={[topLabel, pullBack ? {zIndex: -10} : {}]}>Preço</Text>
                 <CustomTextInput
                     state={price}
                     setState={setPrice}
                     keyboardType='numeric'
                     placeholder='Preço'
-                    widthPercentage={90}
-                    marginBottomPercentage={4}
+                    width={90}
+                    marginTop={0}
+                    marginBottom={4}
+                    setRef={setPriceInput}
+                    pullBack={pullBack}
                 />
+                <Text style={topLabel}>Data de Vencimento</Text>
                 <CustomDatePicker
                     state={date}
                     setState={setDate}
-                    widthPercentage={90}
-                    marginBottomPercentage={3}
+                    width={90}
+                    marginTop={0}
+                    marginBottom={3}
                 />
-                <View style={styles.rowContainer}>
-                    <View style={{flex: 1, alignItems: 'center'}}>
+                <View style={rowContainer}>
+                    <View style={paymentMethodsStyle}>
                         <Text style={Fonts.bodyLarge}>Método de</Text>
                         <Text style={Fonts.bodyLarge}>Pagamento</Text>
                     </View>
                     <CustomDropdown
                         state={paymentMethod}
                         setState={setPaymentMethod}
-                        options={getPaymentMethods()}
-                        widthPercentage={40}
-                        marginBottomPercentage={3}
+                        options={paymentMethods}
+                        width={40}
+                        marginBottom={3}
                     />
                 </View>
                 <CustomImagePicker
@@ -161,15 +213,15 @@ const EditExpenseScreen = ({route, navigation}) => {
                         <Image
                             source={image}
                             resizeMode='contain'
-                            style={styles.image}
+                            style={imageStyle}
                         />
                     )
                 }
                 <CustomCheckbox
                     state={paid}
                     setState={setPaid}
-                    marginTopPercentage={0}
-                    marginBottomPercentage={2}
+                    marginTop={0}
+                    marginBottom={2}
                     text={'Pago'}
                     size={28}
                     round={true}
@@ -217,7 +269,6 @@ const EditExpenseScreen = ({route, navigation}) => {
                 description={invalidDataAlertMsg}
                 visible={invalidDataAlertVisible}
                 setVisible={setInvalidDataAlertVisible}
-                onPressOk={() => {}}
             />
         </View>
     );
@@ -234,6 +285,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
         alignItems: 'center',
         marginTop: '5%',
+        paddingVertical: '8%',
         borderTopLeftRadius: 60,
         borderTopRightRadius: 60,
         backgroundColor: Colors.secondaryKeyColor
@@ -244,11 +296,20 @@ const styles = StyleSheet.create({
     paymentMethod: {
         textAlign: 'center',
     },
-    image: {
+    paymentMethodsStyle: {
+        flex: 1, 
+        alignItems: 'center'
+    },
+    imageStyle: {
         alignSelf: 'center',
         width: .9 * Dimensions.get('window').width,
         height: .3 * Dimensions.get('window').height,
         marginBottom: '8%'
+    },
+    topLabel: {
+        alignSelf: 'flex-start',
+        marginLeft: '5%',
+        marginBottom: '2%'
     }
 });
 

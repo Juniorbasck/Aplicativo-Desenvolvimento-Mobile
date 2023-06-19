@@ -33,6 +33,7 @@ import IssuerInput from '../../../components/IssuerInput';
 const CreateExpenseScreen = ({navigation}) => {
     const [title, setTitle] = useState('');
     const [issuer, setIssuer] = useState('');
+    const [issuerPerson, setIssuerPerson] = useState(true);
     const [date, setDate] = useState(getFormattedTodayDate());
     const [price, setPrice] = useState('');
     const [paymentMethod, setPaymentMethod] = useState(1);
@@ -62,7 +63,16 @@ const CreateExpenseScreen = ({navigation}) => {
         let localTitle = title.trim(), localIssuer = issuer.trim(), localPrice = price.trim();
         if (validateExpenseData(localTitle, localIssuer, localPrice)) {
             try {
-                await createNewExpenseAsync(localTitle, localIssuer, date, localPrice, paymentMethod, image, paid);
+                await createNewExpenseAsync(
+                    localTitle, 
+                    localIssuer, 
+                    date, 
+                    localPrice, 
+                    paymentMethod, 
+                    image, 
+                    paid,
+                    issuerPerson
+                );
                 dispatch(setExpensesAsync());
                 dispatch(setHistoricAsync());
             } catch(err) {
@@ -92,16 +102,26 @@ const CreateExpenseScreen = ({navigation}) => {
         getPaymentMethodsAsync(methods => setPaymentMethods(methods));
     }, []);
 
-    return loading ? (
-        <LoadingIndicator loadingMessage='Criando despesa...'/>
-    ) : (
-        <View style={styles.outerContainer}>
+    const {
+        outerContainer,
+        scrollView,
+        topLabel,
+        rowContainer,
+        paymentMethodContainer,
+        imageStyle
+    } = styles;
+
+    if (loading)
+        return <LoadingIndicator loadingMessage='Criando despesa...'/>;
+
+    return (
+        <View style={outerContainer}>
             <ScrollView 
                 contentContainerStyle={
                     [
-                        styles.scrollView, 
+                        scrollView, 
                         image ? {
-                            height: 1.3 * Dimensions.get('window').height
+                            height: 1.4 * Dimensions.get('window').height
                         } : {
                             height: Dimensions.get('window').height
                         }
@@ -109,7 +129,7 @@ const CreateExpenseScreen = ({navigation}) => {
                 }
                 keyboardDismissMode='on-drag'
             >   
-                <Text style={styles.topLabel}>Título</Text>
+                <Text style={topLabel}>Título</Text>
                 <CustomTextInput
                     state={title}
                     setState={setTitle}
@@ -122,7 +142,7 @@ const CreateExpenseScreen = ({navigation}) => {
                     onSubmitEditing={() => issuerInput.focus()}
                     blurOnSubmit={false}
                 />
-                <Text style={styles.topLabel}>Emissor</Text>
+                <Text style={topLabel}>Emissor</Text>
                 <IssuerInput
                     state={issuer}
                     setState={setIssuer}
@@ -144,8 +164,9 @@ const CreateExpenseScreen = ({navigation}) => {
                         }
                     }
                     setRef={setIssuerInput}
+                    onPress={() => setIssuerPerson(!issuerPerson)}
                 />
-                <Text style={[styles.topLabel, pullBack ? {zIndex: -10} : {}]}>Preço</Text>
+                <Text style={[topLabel, pullBack ? {zIndex: -10} : {}]}>Preço</Text>
                 <CustomTextInput
                     state={price}
                     setState={setPrice}
@@ -158,7 +179,7 @@ const CreateExpenseScreen = ({navigation}) => {
                     onSubmitEditing={() => setModalOpenState(true)}
                     pullBack={pullBack}
                 />
-                <Text style={styles.topLabel}>Data de Vencimento</Text>
+                <Text style={topLabel}>Data de Vencimento</Text>
                 <CustomDatePicker
                     state={date}
                     setState={setDate}
@@ -168,8 +189,8 @@ const CreateExpenseScreen = ({navigation}) => {
                     modalOpenState={modalOpenState}
                     setModalOpenState={setModalOpenState}
                 />
-                <View style={styles.rowContainer}>
-                    <View style={styles.paymentMethodContainer}>
+                <View style={rowContainer}>
+                    <View style={paymentMethodContainer}>
                         <Text style={Fonts.bodyLarge}>Método de</Text>
                         <Text style={Fonts.bodyLarge}>Pagamento</Text>
                     </View>
@@ -191,7 +212,7 @@ const CreateExpenseScreen = ({navigation}) => {
                         <Image
                             source={image}
                             resizeMode='contain'
-                            style={styles.image}
+                            style={imageStyle}
                         />
                     )
                 }
@@ -258,7 +279,7 @@ const styles = StyleSheet.create({
     paymentMethod: {
         textAlign: 'center',
     },
-    image: {
+    imageStyle: {
         alignSelf: 'center',
         width: .9 * Dimensions.get('window').width,
         height: .3 * Dimensions.get('window').height,

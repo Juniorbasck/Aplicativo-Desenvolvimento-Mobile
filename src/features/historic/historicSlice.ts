@@ -4,7 +4,6 @@ import {
 } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { fetchHistoricAsync, fetchHistoricMock } from '../../../service';
-import expensesSlice from '../expenses/expensesSlice';
 
 interface HistoricState {
     value: object;

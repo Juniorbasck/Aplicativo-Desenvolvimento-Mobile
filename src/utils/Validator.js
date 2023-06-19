@@ -1,4 +1,7 @@
-import { usernameNotTaken, emailExistsOnAppAsync } from "../../service";
+import { 
+    emailNotExistsOnAppAsync,
+    usernameNotTakenAsync
+} from "../../service";
 import { isValidBirthdayDate } from "./Date";
 
 const alphaLower = 'abcdefghijklmnopqrstuvwxyz';
@@ -62,32 +65,20 @@ async function validateUserData(
     city,
     postcode,
     email, 
-    password, 
-    confirmPassword, 
     minAge,
     cities,
-    postcodeType
+    postcodeType,
+    id
 ) {
     let message = {};
     if (validateTextField(name) && validateTextField(surname) && validateTextField(username)) {
-        if (await usernameNotTaken(username)) {
+        if (await usernameNotTakenAsync(username, id)) {
             if (isValidBirthdayDate(birthdayDate, minAge)) {
                 if (validateTextField(street) && validateCity(city, cities) && validatePostcode(postcode, postcodeType)) {
                     if (validateEmail(email)) {
-                        if (!await emailExistsOnAppAsync(email)) {
-                            if (validatePassword(password)) {
-                                if (password === confirmPassword) {
-                                    message.header = 'Validação de E-mail';
-                                    message.body = `Um e-mail contendo um link para validação foi enviado com sucesso para ${email}!`;
-                                } else {
-                                    message.header = 'Palavra-passe e Confirmação';
-                                    message.body = 'A palavra passe e confirmação da palavra-passe diferem!';
-                                }
-                            } else {
-                                message.header = 'Palavra-Passe';
-                                message.body = 'A palavra-passe deve ter no mínimo 6 caracteres, 1 letra maiúscula, 1 letra minúscula e 1 caracter especial!';
-                            }
-                            
+                        if (await emailNotExistsOnAppAsync(email, id)) {
+                            message.header = 'ok'; 
+                            message.body = 'ok';                           
                         } else {
                             message.header = 'E-mail Repetido';
                             message.body = 'O e-mail já está em uso!';

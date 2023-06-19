@@ -46,7 +46,7 @@ const CustomTextInput = (
             onChangeText={text => setState(text)}
             onSubmitEditing={onSubmitEditing}
             blurOnSubmit={blurOnSubmit}
-            ref={e => setRef && setRef(e)}
+            ref={setRef ? e => setRef(e) : null}
             autoFocus={autofocus}
             maxLength={maxLength}
         />

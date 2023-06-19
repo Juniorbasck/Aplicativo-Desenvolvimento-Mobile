@@ -6,6 +6,7 @@ import {
     Dimensions,
     Pressable
 } from 'react-native';
+import { Snackbar } from 'react-native-paper';
 import Colors from '../../../utils/Colors';
 import Fonts from '../../../utils/Fonts';
 import ProfilePicture from '../../../components/ProfilePicture';
@@ -33,10 +34,16 @@ const ProfileScreen = ({route, navigation}) => {
     const dispatch = useAppDispatch();
 
     const [alertVisible, setAlertVisible] = useState(false);
+    const [snackBarVisible, setSnackBarVisible] = useState(false);
 
     useEffect(() => {
         dispatch(setUserDataAsync());
     }, []);
+
+    useEffect(() => {
+        if (route?.params?.changed)
+            setSnackBarVisible(true);
+    }, [route?.params]);
 
     function getFormattedName() {
         const splitName = userData.value.name.split(' ');
@@ -114,6 +121,13 @@ const ProfileScreen = ({route, navigation}) => {
                     }
                 }
             />
+            <Snackbar
+                visible={snackBarVisible}
+                onDismiss={() => setSnackBarVisible(false)}
+                duration={1000}
+            >
+                Dados guardados com sucesso!
+            </Snackbar>
         </View> 
     );
 };
