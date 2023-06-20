@@ -556,7 +556,46 @@ const getDefaultPaymentMethodOfAsync = async issuer => {
     return result;
 };
 
+const getAppGatewayAsync = async  _ => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    if (!currentUser || !currentUser.emailVerified)
+        return 'Login';
+    const docRef = doc(firestore, 'users', currentUser.email);
+    const theDoc = await getDoc(docRef);
+    if (theDoc.get('admin'))
+        return 'AdminNavigator';
+    return 'AppNavigator';
+};
+
+/** Admin methods */
+
+const getUsersAsync = async _ => {
+    const users = await getDocs(collection(firestore, 'users'));
+    const data = [];
+    users.forEach(user => {
+        if (!user.get('admin'))
+            data.push(
+                {
+                    id: user.get('id'),
+                    name: user.get('name'),
+                    surname: user.get('surname'),
+                    username: user.get('username'),
+                    email: user.get('email'),
+                    image: user.get('image'),
+                    birthdayDate: user.get('birthdayDate'),
+                    city: user.get('city'),
+                    street: user.get('street'),
+                    postcode: user.get('postcode'),
+
+                }
+            );
+    });
+    return data;
+};
+
 export { 
+    getAppGatewayAsync,
     sort,
     sortState,
     usernameNotTakenAsync,
@@ -583,5 +622,6 @@ export {
     getUserMinAgeAsync,
     getCitiesAsync,
     getIssuersAsync,
-    getDefaultPaymentMethodOfAsync
+    getDefaultPaymentMethodOfAsync,
+    getUsersAsync
 };

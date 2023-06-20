@@ -17,7 +17,7 @@ import Colors from '../../../utils/Colors';
 import Fonts from '../../../utils/Fonts';
 import { StackActions } from '@react-navigation/native';
 import { validateEmail, validatePassword } from '../../../utils/Validator';
-import { signInGoogle } from '../../../../service';
+import { signInGoogle, getAppGatewayAsync } from '../../../../service';
 import { 
     getAuth,
     signOut,
@@ -114,8 +114,11 @@ const LoginScreen = ({route, navigation}) => {
     }, []);
 
     useEffect(() => {
-        if (user)
-            navigation.dispatch(StackActions.replace('AppNavigator'));
+        (async () => {
+            if (!loading)
+                if (user)
+                    navigation.dispatch(StackActions.replace(await getAppGatewayAsync()));
+        })();
     }, [user]);
 
     useEffect(() => {
@@ -130,22 +133,36 @@ const LoginScreen = ({route, navigation}) => {
         setPassword('');
     }
 
-    if (initializing)
-        return null;
+    const {
+        scrollView,
+        title,
+        subtitle,
+        dollar,
+        forgottenPasswordContainer,
+        forgottenPasswordText,
+        googleSignInContainer,
+        googleLogo,
+        accessGoogle,
+        createAccount
+    } = styles;
 
-    return loading ? (
-        <LoadingIndicator loadingMessage='Validando credenciais...'/>
-    ) : (
+    if (initializing)
+        return <LoadingIndicator/>;
+
+    if (loading)
+        return <LoadingIndicator loadingMessage='Validando credenciais...'/>;
+
+    return (
         <View style={styles.outerContainer}>
             <ScrollView
-                contentContainerStyle={{width: Dimensions.get('window').width, height: Dimensions.get('window').height, alignItems: 'center', justifyContent: 'flex-start', marginTop: '20%'}}
+                contentContainerStyle={scrollView}
                 keyboardDismissMode='on-drag'
             >
                 <View>
-                    <Text style={styles.title}>Meu Controlo</Text>
-                    <Text style={styles.subtitle}>financeiro</Text>
+                    <Text style={title}>Meu Controlo</Text>
+                    <Text style={subtitle}>financeiro</Text>
                 </View>
-                <Text style={styles.cifrao}>$</Text>
+                <Text style={dollar}>$</Text>
                 <CustomTextInput
                     state={email}
                     setState={setEmail}
@@ -162,14 +179,14 @@ const LoginScreen = ({route, navigation}) => {
                     setState={setPassword}
                     setRef={setPasswordInput}
                 />
-                <View style={styles.forgottenPasswordContainer}>
+                <View style={forgottenPasswordContainer}>
                     <Text 
-                        style={styles.forgottenPasswordText} 
+                        style={forgottenPasswordText} 
                         onPress={() => navigation.navigate('ForgottenPasswordNavigator')}
                     >Esqueceu palavra-passe?</Text>
                 </View>
                 <View>
-                    <CustomButton style={styles.buttosignIn}
+                    <CustomButton
                         text={'Entrar'}
                         backgroundColor={'#486D31'}
                         textColor={'white'}
@@ -185,7 +202,7 @@ const LoginScreen = ({route, navigation}) => {
                                         setAlertDescription(logRes.body);
                                         setAlertVisible(true);
                                     } else
-                                        navigation.dispatch(StackActions.replace('AppNavigator'));
+                                        navigation.dispatch(StackActions.replace(await getAppGatewayAsync()));
                                 } else {
                                     setLoading(false);
                                     setAlertTitle(valRes.header);
@@ -197,17 +214,17 @@ const LoginScreen = ({route, navigation}) => {
                     />
                 </View>
                 <Pressable
-                    style={styles.googleSignInContainer}
+                    style={googleSignInContainer}
                     onPress={signInGoogle}
                 >
                     <Image
                         source={require('../../../../assets/google.png')}
-                        style={styles.googleLogo}
+                        style={googleLogo}
                         resizeMode='contain'
                     />
-                    <Text style={[Fonts.headlineSmall, {flex: 3}]}>Acessar com Google</Text>
+                    <Text style={accessGoogle}>Acessar com Google</Text>
                 </Pressable>
-                <Text style={styles.createAccount} onPress={() => navigation.navigate('CreateAccountNavigator')}>
+                <Text style={createAccount} onPress={() => navigation.navigate('CreateAccountNavigator')}>
                     Ir para criar conta
                 </Text> 
             </ScrollView>
@@ -242,7 +259,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#222222',
     },
-    scrollViewContainer: {
+    scrollView: {
         width: Dimensions.get('window').width, 
         height: Dimensions.get('window').height, 
         alignItems: 'center', 
@@ -266,7 +283,7 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontWeight: 'bold',
     },
-    cifrao: {
+    dollar: {
         fontSize: 40,
         fontWeight: 'bold',
         color: 'gold',
@@ -312,6 +329,10 @@ const styles = StyleSheet.create({
         flex: 1, 
         width: Dimensions.get('window').width * .085, 
         height: Dimensions.get('window').height * .041, 
+    },
+    accessGoogle: {
+        flex: 3,
+        ...Fonts.headlineSmall, 
     },
     passwordInput: {
         flexDirection: 'row',

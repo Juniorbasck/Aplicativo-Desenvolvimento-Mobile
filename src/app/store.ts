@@ -9,6 +9,7 @@ import historicReducer from '../features/historic/historicSlice';
 import userMinAgeReducer from '../features/userMinAge/userMinAgeSlice';
 import issuersReducer from '../features/issuers/issuersSlice';
 import citiesReducer from '../features/cities/citiesSlice';
+import usersReducer from '../features/users/usersSlice';
 
 export const store = configureStore({
     reducer: {
@@ -17,7 +18,8 @@ export const store = configureStore({
         historic: historicReducer,
         userMinAge: userMinAgeReducer,
         issuers: issuersReducer,
-        cities: citiesReducer
+        cities: citiesReducer,
+        users: usersReducer
     },
 });
 

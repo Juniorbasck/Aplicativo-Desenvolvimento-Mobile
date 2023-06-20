@@ -5,6 +5,7 @@ import LoginScreen from './screens/LoginScreen';
 import AppNavigator from '../appNavigator/AppNavigator';
 import CreateAccountNavigator from '../createAccountNavigator/CreateAccountNavigator';
 import ForgottenPasswordNavigator from '../forgottenPasswordNavigator/ForgottenPasswordNavigator';
+import AdminNavigator from '../adminNavigator/AdminNavigator';
 
 const Stack = createStackNavigator();
 
@@ -42,6 +43,11 @@ const LoginNavigator = () => {
                 <Stack.Screen
                     name={'AppNavigator'}
                     component={AppNavigator}
+                    options={{headerShown: false}}
+                />
+                <Stack.Screen
+                    name={'AdminNavigator'}
+                    component={AdminNavigator}
                     options={{headerShown: false}}
                 />
             </Stack.Navigator>

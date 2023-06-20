@@ -5,7 +5,7 @@ import EditExpenseScreen from '../expenseNavigator/screens/EditExpenseScreen';
 
 const Stack = createStackNavigator();
 
-const HomeNavigator = ({route}) => {
+const HomeNavigator = _ => {
     return (
         <Stack.Navigator
             initialRouteName={'Home'}

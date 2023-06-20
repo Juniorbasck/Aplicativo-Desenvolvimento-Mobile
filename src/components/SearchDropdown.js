@@ -99,7 +99,7 @@ const SearchDropdown = (
                             let filtered = elements.filter(e => e[nameProp].toLowerCase() === state.toLowerCase());
                             if (filtered.length > 0) {
                                 setState(filtered[0][nameProp]);
-                                onChosen && onChosen();
+                                onChosen && onChosen(filtered[0][nameProp]);
                             } else 
                                 setState('');
                             setElements([]);

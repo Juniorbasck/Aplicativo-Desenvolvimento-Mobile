@@ -1,3 +1,4 @@
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Colors from '../../utils/Colors';
@@ -7,20 +8,19 @@ import ExpenseNavigator from '../expenseNavigator/ExpenseNavigator';
 
 const Tab = createBottomTabNavigator();
 
-const AppNavigator = ({route}) => {
+const AppNavigator = _ => {
     return (
         <Tab.Navigator
             initialRouteName={'HomeNavigator'}
             screenOptions={({ route }) =>({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
-                    if (route.name == 'HomeNavigator') {
+                    if (route.name == 'HomeNavigator')
                         iconName = focused ? 'pie-chart' : 'pie-chart-outline';
-                    } else if (route.name == 'Profile') {
+                     else if (route.name == 'Profile')
                         iconName = focused ? 'person' : 'person-outline';
-                    } else {
+                    else 
                         iconName = focused ? 'folder' : 'folder-outline';
-                    }
                     return <Ionicons name={iconName} size={size} color={Colors.onSecondaryKeyColor}/>;
                 },
                 tabBarActiveBackgroundColor: Colors.secondaryKeyColor,
