@@ -13,10 +13,10 @@ const UserCard = props => {
         surname, 
         email,
         username,
-        onPress, 
-        onLongPress 
     } = props.data;
 
+    const { onPress, onLongPress } = props;
+    
     const {
         pressable,
         idStyle

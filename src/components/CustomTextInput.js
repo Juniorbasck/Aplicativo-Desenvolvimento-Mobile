@@ -22,7 +22,8 @@ const CustomTextInput = (
         onSubmitEditing=null,
         blurOnSubmit=true,
         setRef=null,
-        pullBack=false
+        pullBack=false,
+        backgroundColor=null
 }) => {
     return ( 
         <TextInput
@@ -40,7 +41,8 @@ const CustomTextInput = (
                         marginTop: marginTop / 100 * Dimensions.get('window').height, 
                         marginBottom: marginBottom / 100 * Dimensions.get('window').height
                     },
-                    pullBack ? {zIndex: -10} : {}
+                    pullBack ? {zIndex: -10} : {},
+                    backgroundColor ? {backgroundColor: backgroundColor} : {}
                 ]
             }
             onChangeText={text => setState(text)}

@@ -38,7 +38,8 @@ const UsersScreen = ({navigation}) => {
 
     const {
         container,
-        flatListStyle
+        flatListStyle,
+        separator
     } = styles;
 
     if (usersStatus === 'loading')
@@ -49,8 +50,9 @@ const UsersScreen = ({navigation}) => {
             <FlatList
                 contentContainerStyle={flatListStyle}
                 data={users.value}
-                renderItem={({item}) => <UserCard data={{...item, onPress: onPress, onLongPress: onLongPress}}/>}
+                renderItem={({item}) => <UserCard data={{...item}} onPress={onPress} onLongPress={onLongPress}/>}
                 keyExtractor={item => item.id}
+                ItemSeparatorComponent={_ => <View style={separator}/>}
             />
             <YesNoAlert
                 visible={alertVisible}
@@ -79,6 +81,9 @@ const styles = StyleSheet.create({
     flatListStyle: {
         marginTop: '5%',
         width: Dimensions.get('screen').width
+    },
+    separator: {
+        marginVertical: 10
     }
 });
 

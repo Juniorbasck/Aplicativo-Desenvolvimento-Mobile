@@ -26,7 +26,8 @@ const SearchDropdown = (
         nameProp='label',
         valProp='value',
         top=50,
-        wide=true
+        wide=true,
+        backgroundColor=null
     }
 ) => {
     const [elements, setElements] = useState([]);
@@ -47,7 +48,8 @@ const SearchDropdown = (
                             paddingVertical: '4%'
                         } : {
                             paddingVertical: '2%'
-                        }
+                        },
+                        backgroundColor ? {backgroundColor: backgroundColor} : {}
                     ]
                 }
                 key={item[nameProp] + '' + item[valProp]}
@@ -73,7 +75,8 @@ const SearchDropdown = (
                             paddingVertical: '4%'
                         } : {
                             paddingVertical: '2%'
-                        }
+                        },
+                        backgroundColor ? {backgroundColor: backgroundColor} : {}
                     ]
                 }
             >
@@ -119,7 +122,8 @@ const SearchDropdown = (
                             padding: '2%',
                             margin: '2%',
                             borderWidth: 1
-                        } : {}
+                        } : {},
+                        backgroundColor ? {backgroundColor: backgroundColor} : {}
                     ]
                 }
             >

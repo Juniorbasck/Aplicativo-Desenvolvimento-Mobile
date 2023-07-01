@@ -85,7 +85,9 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: '100%',
         backgroundColor: 'white',
-        padding: '5%'
+        padding: '5%',
+        borderWidth: .5,
+        borderColor: 'black'
     },
     modalButton: {
         margin: 10

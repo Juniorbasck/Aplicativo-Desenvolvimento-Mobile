@@ -17,7 +17,8 @@ const PostalCodeInput = (
         placeholder='postal code',
         setRef=null,
         onSubmitEditing=null,
-        blurOnSubmit=true
+        blurOnSubmit=true,
+        backgroundColor=null
     }
 ) => {
 
@@ -43,10 +44,11 @@ const PostalCodeInput = (
                         marginTop: marginTop / 100 * Dimensions.get('window').height,
                         marginBottom: marginBottom / 100 * Dimensions.get('window').height,
                         width: width / 100 * Dimensions.get('window').width
-                    }
+                    },
+                    backgroundColor ? {backgroundColor: backgroundColor} : {}
                 ]
             }
-            ref={e => setRef(e)}
+            ref={e => setRef && setRef(e)}
             placeholder={placeholder}
             defaultValue={code}
             keyboardType='numeric'

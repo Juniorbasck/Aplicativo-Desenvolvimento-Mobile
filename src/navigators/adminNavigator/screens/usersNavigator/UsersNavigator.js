@@ -23,9 +23,8 @@ const UsersNavigator = ({navigation}) => {
                         headerTitleAlign: 'center'
                     }
                 }
-            >
-                {() => <UserDetailsScreen navigation={navigation}/>}
-            </Stack.Screen>
+                component={UserDetailsScreen}
+            />
         </Stack.Navigator>
     );
 };

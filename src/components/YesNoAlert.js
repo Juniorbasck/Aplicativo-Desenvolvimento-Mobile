@@ -63,7 +63,9 @@ const styles = StyleSheet.create({
         top: '35%',
         width: .8 * Dimensions.get('window').width,
         backgroundColor: 'white',
-        padding: 15
+        padding: 15,
+        borderColor: 'black',
+        borderWidth: .5
     },
     title: {
         margin: 5,
