@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import UsersNavigator from './screens/usersNavigator/UsersNavigator';
-import CitiesScreen from './screens/citiesScreen';
+import CitiesScreen from './screens/CitiesScreen';
 import IssuersNavigator from './screens/issuersNavigator/IssuersNavigator';
 import PaymentMethodsScreen from './screens/PaymentMethodsScreen';
 import { Feather, FontAwesome5, MaterialIcons } from '@expo/vector-icons';

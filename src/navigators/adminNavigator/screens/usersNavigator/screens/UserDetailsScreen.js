@@ -33,6 +33,12 @@ const UserDetailsScreen = ({route, navigation}) => {
     const [pullBack, setPullBack] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
 
+    const [surnameInput, setSurnameInput] = useState();
+    const [usernameInput, setUsernameInput] = useState();
+    const [cityInput, setCityInput] = useState();
+    const [postalCodeInput, setPostalCodeInput] = useState();
+    const [emailInput, setEmailInput] = useState();
+
     const cities = useAppSelector(selectCities);
     const citiesStatus = useAppSelector(status => status.cities.status);
 
@@ -95,6 +101,8 @@ const UserDetailsScreen = ({route, navigation}) => {
                     backgroundColor={'white'}
                     autofocus={true}
                     marginTop={1}
+                    onSubmitEditing={_ => surnameInput.focus()}
+                    blurOnSubmit={false}
                 />
                 <Text style={topLabel}>Apelido</Text>
                 <CustomTextInput
@@ -103,6 +111,9 @@ const UserDetailsScreen = ({route, navigation}) => {
                     placeholder='Apelido'
                     backgroundColor={'white'}
                     marginTop={1}
+                    setRef={setSurnameInput}
+                    onSubmitEditing={_ => usernameInput.focus()}
+                    blurOnSubmit={false}
                 />
                 <Text style={topLabel}>Nome de Utilizador</Text>
                 <CustomTextInput
@@ -111,6 +122,7 @@ const UserDetailsScreen = ({route, navigation}) => {
                     placeholder='Nome de Utilizador'
                     backgroundColor={'white'}
                     marginTop={1}
+                    setRef={setUsernameInput}
                 />
                 <Text style={topLabel}>Data de Nascimento</Text>
                 <CustomDatePicker
@@ -130,7 +142,7 @@ const UserDetailsScreen = ({route, navigation}) => {
                                 state={street}
                                 setState={setStreet}
                                 maxLength={100}
-                                // onSubmitEditing={() => cityInput.focus()}
+                                onSubmitEditing={() => cityInput.focus()}
                                 blurOnSubmit={false}
                                 backgroundColor={'white'}
                             />
@@ -145,13 +157,14 @@ const UserDetailsScreen = ({route, navigation}) => {
                                 marginBottom={2}
                                 options={cities.value}
                                 onFocus={() => setPullBack(true)}
-                                // onChosen={() => {
-                                //         setPullBack(false);
-                                //         postalCodeInput.focus();
-                                //     }
-                                // }
-                                // setRef={setCityInput}
+                                onChosen={() => {
+                                        setPullBack(false);
+                                        postalCodeInput.focus();
+                                    }
+                                }
+                                setRef={setCityInput}
                                 backgroundColor={'white'}
+                                blurOnSubmit={false}
                             />
                         </View>
                     </View>
@@ -159,13 +172,14 @@ const UserDetailsScreen = ({route, navigation}) => {
                     <PostalCodeInput
                         code={postalCode}
                         setCode={setPostalCode}
-                        // setRef={setPostalCodeInput}
+                        setRef={setPostalCodeInput}
                         width={43}
                         marginTop={1}
                         type={postcodeType}  // xxxx-xxx
                         placeholder={'Código Postal'}
                         backgroundColor={'white'}
-                        
+                        onSubmitEditing={_ => emailInput.focus()}
+                        blurOnSubmit={false}
                     />
                 </View>
                 <Text style={topLabel}>E-mail</Text>
@@ -177,6 +191,7 @@ const UserDetailsScreen = ({route, navigation}) => {
                     marginTop={1}
                     backgroundColor={'white'}
                     pullBack={pullBack}
+                    setRef={setEmailInput}
                 />
                 <View style={[rowContainer, bottomButtonsContainer]}>
                     <Text 

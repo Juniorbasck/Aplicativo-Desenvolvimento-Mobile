@@ -56,6 +56,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: '5%',
         backgroundColor: 'white',
+        borderColor: 'black',
+        borderWidth: .5
     },
     idStyle: {
         alignSelf: 'flex-end',
