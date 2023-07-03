@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Pressable,
     View,
@@ -8,24 +8,26 @@ import {
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import YesNoAlert from '../../../components/YesNoAlert';
+import CustomDropdown from '../../../components/CustomDropdown';
 
-const CityInput = ({label, onDelete}) => {
-    const [labelState, setLabelState] = useState(label);
+const IssuerInput = ({name, defaultPaymentMethod, onDelete, options}) => {
+    const [nameState, setNameState] = useState(name);
+    const [dpmState, setDpmState] = useState(defaultPaymentMethod);
     const [errorMsg, setErrorMsg] = useState('');
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-
     const [iconColor, setIconColor] = useState('black');
     
     const {
         container,
         listItem,
         errorStyle,
+        dropdownStyle
     } = styles;
 
-    const deleteCity = _ => {
-        onDelete && onDelete(label);
-        console.log('DELETE CITY ' + label);
+    const deleteIssuer = _ => {
+        onDelete && onDelete(name);
+        console.log('DELETE ISSUER ' + name);
     };
 
     return (
@@ -35,19 +37,19 @@ const CityInput = ({label, onDelete}) => {
                 <View style={listItem}>
                     <TextInput
                         style={{flex: 1}}
-                        defaultValue={labelState}
+                        defaultValue={nameState}
                         onChangeText={text => {
                                 if (!text.length)
                                     setErrorMsg('Não pode ser vazio')
                                 else {
                                     setErrorMsg('');
-                                    setLabelState(text)
+                                    setNameState(text)
                                 }
                             }
                         }
                         onBlur={_ => {
                                 if (errorMsg) {
-                                    setLabelState(label);
+                                    setNameState(name);
                                     setErrorMsg('');
                                 } else {
                                     console.log('SAVE TO DATABASE');
@@ -66,13 +68,22 @@ const CityInput = ({label, onDelete}) => {
                         <AntDesign name="delete" size={24} color={iconColor} />
                     </Pressable>
                 </View>
+                <View style={dropdownStyle}>
+                    <CustomDropdown
+                        state={dpmState}
+                        setState={setDpmState}
+                        options={options}
+                        width={43}
+                        marginBottom={0}
+                    />
+                </View>
             </View>
             <YesNoAlert
                 visible={showDeleteModal}
                 setVisible={setShowDeleteModal}
-                title={'Excluir cidade'}
-                description={`Tem certeza que desejas excluir a cidade '${label}'?`}
-                onPressYes={deleteCity}
+                title={'Excluir emissor'}
+                description={`Tem certeza que desejas excluir o emissor '${name}'?`}
+                onPressYes={deleteIssuer}
             />
         </>
     );
@@ -80,6 +91,7 @@ const CityInput = ({label, onDelete}) => {
 
 const styles = StyleSheet.create({
     container: {
+        alignItems: 'flex-start',
         marginHorizontal: 15,
         marginVertical: 5
     },
@@ -97,6 +109,11 @@ const styles = StyleSheet.create({
         fontStyle: 'italic',
         fontSize: 10,
     },
+    dropdownStyle: {
+        marginLeft: 0,
+        justifyContent: 'center',
+        margin: 15
+    }
 });
 
-export default CityInput;
+export default IssuerInput;

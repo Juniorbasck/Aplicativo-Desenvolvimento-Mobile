@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
     View,
-    Text,
     StyleSheet,
     FlatList,
     Dimensions
@@ -10,14 +9,11 @@ import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
 import { selectUsers, setUsersAsync } from '../../../../../features/users/usersSlice';
 import LoadingIndicator from '../../../../../components/LoadingIndicator';
 import UserCard from '../../../components/UserCard';
-import YesNoAlert from '../../../../../components/YesNoAlert';
 
 const UsersScreen = ({navigation}) => {
+    const [usersState, setUsersState] = useState([]);
     const users = useAppSelector(selectUsers);
     const usersStatus = useAppSelector(state => state.users.status);
-
-    const [alertVisible, setAlertVisible] = useState(false);
-    const [userToBlock, setUserToBlock] = useState('');
 
     const dispatch = useAppDispatch();
 
@@ -25,15 +21,15 @@ const UsersScreen = ({navigation}) => {
         dispatch(setUsersAsync());
     }, []);
 
+    useEffect(() => {
+        if (users.value)
+            setUsersState(users.value);
+    }, [users]);
+
     const onPress = user => {
         navigation.navigate('UserDetails', {
             user: user
         });
-    };
-
-    const onLongPress = user => {
-        setUserToBlock(user?.username);
-        setAlertVisible(true);
     };
 
     const {
@@ -49,24 +45,10 @@ const UsersScreen = ({navigation}) => {
         <View style={container}>
             <FlatList
                 contentContainerStyle={flatListStyle}
-                data={users.value}
-                renderItem={({item}) => <UserCard data={{...item}} onPress={onPress} onLongPress={onLongPress}/>}
+                data={usersState}
+                renderItem={({item}) => <UserCard data={{...item}} onPress={onPress}/>}
                 keyExtractor={item => item.id}
                 ItemSeparatorComponent={_ => <View style={separator}/>}
-            />
-            <YesNoAlert
-                visible={alertVisible}
-                setVisible={setAlertVisible}
-                title={'Bloquear Utilizador'}
-                description={`Desejas realmente bloquear utilizador '${userToBlock}'?`}
-                onPressYes={() => {
-                        console.log('BLOCKED');
-                    }
-                }
-                onPressNo={() => {
-                        console.log('CANCELED');
-                    }
-                }
             />
         </View>
     );

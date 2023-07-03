@@ -351,9 +351,9 @@ const getPaymentMethods = _ => {
     ];
 };
 
-const getPaymentMethodsAsync = async onGet => {
+const getPaymentMethodsAsync = async _ => {
     const configDoc = await getConfigDocAsync();
-    onGet(configDoc.get('paymentMethods'));
+    return configDoc.get('paymentMethods');
 };
 
 const updateUserAsync = async newUserData => {

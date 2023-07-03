@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
+    View,
     Text,
     StyleSheet,
     Pressable
 } from 'react-native';
+import { Entypo } from '@expo/vector-icons';
 import TextRow from './TextRow';
+import YesNoAlert from '../../../components/YesNoAlert';
 
 const UserCard = props => {
+    const [blocked, setBlocked] = useState(false);
+    const [blockAlertVisible, setBlockAlertVisible] = useState(false);
+    const [unblockAlertVisible, setUnblockAlertVisible] = useState(false);
+
     const { 
         id,
         name, 
@@ -15,37 +22,71 @@ const UserCard = props => {
         username,
     } = props.data;
 
-    const { onPress, onLongPress } = props;
+    const { onPress } = props;
     
     const {
         pressable,
-        idStyle
+        idStyle,
     } = styles;
 
     return (
-        <Pressable
-            style={pressable}
-            onPress={_ => onPress(props.data)}
-            onLongPress={_ => onLongPress(props.data)}
-        >   
-            <Text style={idStyle}>{id}</Text>
-            <TextRow
-                label={'Nome'}
-                text={name}
+        <>
+            <Pressable
+                style={pressable}
+                onPress={_ => onPress(props.data)}
+                onLongPress={_ => {
+                        if (blocked)
+                            setUnblockAlertVisible(true);
+                        else
+                            setBlockAlertVisible(true);
+                    }
+                }
+            >   
+                { blocked ? (
+                        <Entypo name="block" size={24} color="red"/>
+                    ) : (
+                        <View style={{margin: 12}}/>
+                    )
+                }
+                <Text style={idStyle}>{id}</Text>
+                <TextRow
+                    label={'Nome'}
+                    text={name}
+                />
+                <TextRow
+                    label={'Apelido'}
+                    text={surname}
+                />
+                <TextRow
+                    label={'Nome de utilizador'}
+                    text={username}
+                />
+                <TextRow
+                    label={'E-mail'}
+                    text={email}
+                />
+            </Pressable>
+            <YesNoAlert
+                visible={blockAlertVisible}
+                setVisible={setBlockAlertVisible}
+                title={'Bloquear Utilizador'}
+                description={`Desejas realmente bloquear utilizador '${name}'?`}
+                onPressYes={() => {
+                        setBlocked(true);
+                    }
+                }
             />
-            <TextRow
-                label={'Apelido'}
-                text={surname}
+            <YesNoAlert
+                visible={unblockAlertVisible}
+                setVisible={setUnblockAlertVisible}
+                title={'Desbloquear Utilizador'}
+                description={`Desbloquear utilizador '${name}?'`}
+                onPressYes={() => {
+                        setBlocked(false);
+                    }
+                }
             />
-            <TextRow
-                label={'Nome de utilizador'}
-                text={username}
-            />
-            <TextRow
-                label={'E-mail'}
-                text={email}
-            />
-        </Pressable>
+        </>
     );
 };
 
@@ -62,7 +103,7 @@ const styles = StyleSheet.create({
     idStyle: {
         alignSelf: 'flex-end',
         fontWeight: 'bold'
-    }
+    },
 });
 
 export default UserCard;

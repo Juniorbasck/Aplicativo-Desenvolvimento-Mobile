@@ -1,4 +1,3 @@
-// import 'react-native-gesture-handler';
 import React from 'react';
 import {
     Text,
@@ -6,7 +5,7 @@ import {
 } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import UsersNavigator from './screens/usersNavigator/UsersNavigator';
-import CitiesScreen from './screens/CitiesScreen';
+import CitiesNavigator from './screens/citiesNavigator/CitiesNavigator';
 import IssuersNavigator from './screens/issuersNavigator/IssuersNavigator';
 import PaymentMethodsScreen from './screens/PaymentMethodsScreen';
 import { Feather, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
@@ -44,8 +43,8 @@ const AdminNavigator = ({navigation}) => {
                 {() => <UsersNavigator navigation={navigation}/>}
             </Drawer.Screen>
             <Drawer.Screen 
-                component={CitiesScreen} 
-                name='Cities' 
+                component={CitiesNavigator} 
+                name='CitiesNavigator' 
                 options={
                     {
                         drawerActiveTintColor: '#4287f5',

@@ -10,6 +10,7 @@ import userMinAgeReducer from '../features/userMinAge/userMinAgeSlice';
 import issuersReducer from '../features/issuers/issuersSlice';
 import citiesReducer from '../features/cities/citiesSlice';
 import usersReducer from '../features/users/usersSlice';
+import paymentMethodsReducer from '../features/paymentMethods/paymentMethodsSlice';
 
 export const store = configureStore({
     reducer: {
@@ -19,7 +20,8 @@ export const store = configureStore({
         userMinAge: userMinAgeReducer,
         issuers: issuersReducer,
         cities: citiesReducer,
-        users: usersReducer
+        users: usersReducer,
+        paymentMethods: paymentMethodsReducer
     },
 });
 

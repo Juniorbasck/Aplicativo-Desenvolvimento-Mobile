@@ -15,14 +15,16 @@ const CustomDropdown = (
         setState, 
         options, 
         width=90, 
-        marginBottom=5
+        marginBottom=5,
+        labelField='label',
+        valueField='value'
     }
 ) => {
 
     const renderItem = item => {
         return (
             <View style={styles.itemContainer}>
-                <Text style={Fonts.bodyLarge}>{item.label}</Text>
+                <Text style={Fonts.bodyLarge}>{item[labelField]}</Text>
             </View>
         );
     };
@@ -45,8 +47,8 @@ const CustomDropdown = (
                 placeholder='Pagamento'
                 placeholderStyle={[styles.placeholder, Fonts.bodyLarge]}
                 selectedTextStyle={Fonts.bodyLarge}
-                labelField='label'
-                valueField='value'
+                labelField={labelField}
+                valueField={valueField}
                 onChange={item => setState(item.value)}
                 maxHeight={'90%'}
                 renderItem={renderItem}
@@ -57,7 +59,6 @@ const CustomDropdown = (
 
 const styles = StyleSheet.create({
     container: {
-        alignSelf: 'flex-end',
         backgroundColor: 'white',
         padding: '2%',
         marginRight: '5%',

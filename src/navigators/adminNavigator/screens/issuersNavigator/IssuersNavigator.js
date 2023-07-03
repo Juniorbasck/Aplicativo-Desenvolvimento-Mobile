@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import IssuerDetailsScreen from './screens/IssuerDetailsScreen';
-import IssuersScreen from '../IssuersScreen';
+import IssuersScreen from './screens/IssuersScreen';
+import CreateIssuerScreen from './screens/CreateIssuerScreen';
 
 const Stack = createStackNavigator();
 
@@ -14,9 +14,9 @@ const IssuersNavigator = _ => {
                 options={{headerShown: false}}
             />
             <Stack.Screen 
-                name='IssuerDetails' 
-                component={IssuerDetailsScreen}
-                options={{headerShown: false}}
+                name='CreateIssuer' 
+                component={CreateIssuerScreen}
+                options={{headerTitle: 'Criar Emissor', headerTitleAlign: 'center'}}
             />
         </Stack.Navigator>
     );
