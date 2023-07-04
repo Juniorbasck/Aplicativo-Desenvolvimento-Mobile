@@ -6,54 +6,33 @@ import {
     ScrollView,
 } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
-import { selectIssuers, setIssuersAsync } from '../../../../../features/issuers/issuersSlice';
 import { selectPaymentMethods, setPaymentMethodsAsync } from '../../../../../features/paymentMethods/paymentMethodsSlice';
 import LoadingIndicator from '../../../../../components/LoadingIndicator';
-import IssuerInput from '../../../components/IssuerInput';
+import DeletableInput from '../../../components/DeletableInput';
 import Fonts from '../../../../../utils/Fonts';
 import AddButton from '../../../components/AddButton';
 
-const IssuersScreen = ({route, navigation}) => {
-    const [issuersState, setIssuersState] = useState([]);
+const PaymentMethodsScreen = ({route, navigation}) => {
     const [paymentMethodsState, setPaymentMethodsState] = useState([]);
-
-    const issuers = useAppSelector(selectIssuers);
-    const issuersStatus = useAppSelector(status => status.issuers.status);
-
     const paymentMethods = useAppSelector(selectPaymentMethods);
     const paymentMethodsStatus = useAppSelector(status => status.paymentMethods.status);
-
     const dispatch = useAppDispatch();
     
     useEffect(() => {
-        dispatch(setIssuersAsync());
         dispatch(setPaymentMethodsAsync());
     }, []);
-
-    useEffect(() => {
-        if (issuers?.value)
-            setIssuersState(issuers.value);
-    }, [issuers]);
 
     useEffect(() => {
         if (paymentMethods?.value)
             setPaymentMethodsState(paymentMethods.value);
     }, [paymentMethods]);
     
-    if (issuersStatus === 'loading' || paymentMethodsStatus === 'loading')
+    if (paymentMethodsStatus === 'loading')
         return <LoadingIndicator/>
     
-    const onDelete = item => setIssuersState(issuersState.filter(issuer => issuer.name != item));
+    const onDelete = item => setPaymentMethodsState(paymentMethodsState.filter(paymentMethod => paymentMethod.label != item));
 
-    const renderItem = item => (
-        <IssuerInput 
-            name={item.name} 
-            defaultPaymentMethod={item.defaultPaymentMethod}
-            options={paymentMethodsState}
-            onDelete={onDelete} 
-            key={item.name + ' ' + item.defaultPaymentMethod}
-        />
-    );
+    const renderItem = item => <DeletableInput label={item.label} onDelete={onDelete} key={item.value}/>;
 
     const {
         container,
@@ -65,21 +44,21 @@ const IssuersScreen = ({route, navigation}) => {
     return (
         <View style={container}>
             {
-                issuersState.length > 0 ? (
+                paymentMethodsState.length > 0 ? (
                     <ScrollView
                         contentContainerStyle={list}
                         keyboardDismissMode='on-drag'
                         showsVerticalScrollIndicator={false}
                     >
-                        { issuersState.map(ele => renderItem(ele)) }
+                        { paymentMethodsState.map(ele => renderItem(ele)) }
                     </ScrollView>
                 ) : (
-                    <Text style={noCityStyle}>Sem Emissores</Text>
+                    <Text style={noCityStyle}>Sem Método de Pagamento</Text>
                 )
             }
             <AddButton
                 onPress={_ => {
-                        navigation.navigate('CreateIssuer', {'paymentMethods': paymentMethodsState});
+                        navigation.navigate('CreatePaymentMethod');
                     }
                 }
             />
@@ -111,4 +90,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default IssuersScreen;
+export default PaymentMethodsScreen;

@@ -95,10 +95,11 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'flex-start',
         justifyContent: 'center',
-        padding: '5%',
+        padding: 15,
+        marginHorizontal: 30,
         backgroundColor: 'white',
         borderColor: 'black',
-        borderWidth: .5
+        borderWidth: 1
     },
     idStyle: {
         alignSelf: 'flex-end',

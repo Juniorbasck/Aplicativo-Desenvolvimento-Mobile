@@ -11,6 +11,78 @@ import LoadingIndicator from '../../../../../components/LoadingIndicator';
 import UserCard from '../../../components/UserCard';
 
 const UsersScreen = ({navigation}) => {
+    // const [usersState, setUsersState] = useState([
+    //     {
+    //         'id': 1,
+    //         'name': 'Mariano',
+    //         'surname': 'Neves',
+    //         'username': 'mari_ne',
+    //         'email': 'mariano@google.com'
+    //     },
+    //     {
+    //         'id': 2,
+    //         'name': 'Mariano',
+    //         'surname': 'Neves',
+    //         'username': 'mari_ne',
+    //         'email': 'mariano@google.com'
+    //     },
+    //     {
+    //         'id': 3,
+    //         'name': 'Mariano',
+    //         'surname': 'Neves',
+    //         'username': 'mari_ne',
+    //         'email': 'mariano@google.com'
+    //     },
+    //     {
+    //         'id': 4,
+    //         'name': 'Mariano',
+    //         'surname': 'Neves',
+    //         'username': 'mari_ne',
+    //         'email': 'mariano@google.com'
+    //     },
+    //     {
+    //         'id': 5,
+    //         'name': 'Mariano',
+    //         'surname': 'Neves',
+    //         'username': 'mari_ne',
+    //         'email': 'mariano@google.com'
+    //     },
+    //     {
+    //         'id': 6,
+    //         'name': 'Mariano',
+    //         'surname': 'Neves',
+    //         'username': 'mari_ne',
+    //         'email': 'mariano@google.com'
+    //     },
+    //     {
+    //         'id': 7,
+    //         'name': 'Mariano',
+    //         'surname': 'Neves',
+    //         'username': 'mari_ne',
+    //         'email': 'mariano@google.com'
+    //     },
+    //     {
+    //         'id': 8,
+    //         'name': 'Mariano',
+    //         'surname': 'Neves',
+    //         'username': 'mari_ne',
+    //         'email': 'mariano@google.com'
+    //     },
+    //     {
+    //         'id': 9,
+    //         'name': 'Mariano',
+    //         'surname': 'Neves',
+    //         'username': 'mari_ne',
+    //         'email': 'mariano@google.com'
+    //     },
+    //     {
+    //         'id': 10,
+    //         'name': 'Mariano',
+    //         'surname': 'Neves',
+    //         'username': 'mari_ne',
+    //         'email': 'mariano@google.com'
+    //     },
+    // ]);
     const [usersState, setUsersState] = useState([]);
     const users = useAppSelector(selectUsers);
     const usersStatus = useAppSelector(state => state.users.status);
@@ -61,7 +133,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     flatListStyle: {
-        marginTop: '5%',
+        paddingVertical: 15,
         width: Dimensions.get('screen').width
     },
     separator: {

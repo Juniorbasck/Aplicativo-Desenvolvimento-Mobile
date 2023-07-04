@@ -4,14 +4,13 @@ import {
     Text,
     StyleSheet,
     ScrollView,
-    Pressable
 } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
 import { selectCities, setCitiesAsync } from '../../../../../features/cities/citiesSlice';
-import { Ionicons } from '@expo/vector-icons';
 import LoadingIndicator from '../../../../../components/LoadingIndicator';
-import CityInput from '../../../components/CityInput';
+import DeletableInput from '../../../components/DeletableInput';
 import Fonts from '../../../../../utils/Fonts';
+import AddButton from '../../../components/AddButton';
 
 const CitiesScreen = ({route, navigation}) => {
     const [citiesState, setCitiesState] = useState([]);
@@ -33,12 +32,10 @@ const CitiesScreen = ({route, navigation}) => {
     
     const onDelete = item => setCitiesState(citiesState.filter(city => city.label != item));
 
-    const renderItem = item => <CityInput label={item.label} onDelete={onDelete} key={item.value}/>;
+    const renderItem = item => <DeletableInput label={item.label} onDelete={onDelete} key={item.value}/>;
 
     const {
         container,
-        list,
-        addButton,
         noCityStyle
     } = styles;
     
@@ -47,7 +44,6 @@ const CitiesScreen = ({route, navigation}) => {
             {
                 citiesState.length > 0 ? (
                     <ScrollView
-                        contentContainerStyle={list}
                         keyboardDismissMode='on-drag'
                         showsVerticalScrollIndicator={false}
                     >
@@ -57,15 +53,12 @@ const CitiesScreen = ({route, navigation}) => {
                     <Text style={noCityStyle}>Sem Cidades</Text>
                 )
             }
-            <Pressable
-                style={addButton}
+            <AddButton    
                 onPress={_ => {
                         navigation.navigate('CreateCity');
                     }
                 }
-            >
-                <Ionicons name="add-outline" size={24} color="black" />
-            </Pressable>
+            />
         </View>
     );
 };
@@ -74,24 +67,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
-    },
-    addButton: {
-        alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'white',
-        position: 'absolute',
-        left: 330,
-        top: 700,
-        width: 50,
-        height: 50,
-        borderRadius: 50,
-        borderColor: '#fffff',
-        borderWidth: .5
     },
     noCityStyle: {
         ...Fonts.headlineLarge
-    }
+    },
 });
 
 export default CitiesScreen;

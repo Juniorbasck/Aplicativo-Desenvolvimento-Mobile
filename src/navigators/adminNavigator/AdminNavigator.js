@@ -4,11 +4,11 @@ import {
     StyleSheet
 } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Feather, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import UsersNavigator from './screens/usersNavigator/UsersNavigator';
 import CitiesNavigator from './screens/citiesNavigator/CitiesNavigator';
 import IssuersNavigator from './screens/issuersNavigator/IssuersNavigator';
-import PaymentMethodsScreen from './screens/PaymentMethodsScreen';
-import { Feather, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import PaymentMethodsNavigator from './screens/paymentMethodsNavigator/PaymentMethodsNavigator';
 
 const Drawer = createDrawerNavigator();
 
@@ -81,8 +81,8 @@ const AdminNavigator = ({navigation}) => {
                 }
             />
             <Drawer.Screen 
-                component={PaymentMethodsScreen} 
-                name='PaymentMethods' 
+                component={PaymentMethodsNavigator} 
+                name='PaymentMethodsNavigator' 
                 options={
                     {
 

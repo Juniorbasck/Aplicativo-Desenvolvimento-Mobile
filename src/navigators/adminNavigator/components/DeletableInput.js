@@ -9,7 +9,7 @@ import {
 import { AntDesign } from '@expo/vector-icons';
 import YesNoAlert from '../../../components/YesNoAlert';
 
-const CityInput = ({label, onDelete}) => {
+const DeletableInput = ({label, onDelete}) => {
     const [labelState, setLabelState] = useState(label);
     const [errorMsg, setErrorMsg] = useState('');
 
@@ -18,19 +18,18 @@ const CityInput = ({label, onDelete}) => {
     const [iconColor, setIconColor] = useState('black');
     
     const {
-        container,
         listItem,
         errorStyle,
     } = styles;
 
-    const deleteCity = _ => {
+    const deleteItem = _ => {
         onDelete && onDelete(label);
-        console.log('DELETE CITY ' + label);
+        console.log('DELETE ' + label);
     };
 
     return (
         <>
-            <View style={container}>
+            <View>
                 <Text style={errorStyle}>{errorMsg}</Text>
                 <View style={listItem}>
                     <TextInput
@@ -70,26 +69,23 @@ const CityInput = ({label, onDelete}) => {
             <YesNoAlert
                 visible={showDeleteModal}
                 setVisible={setShowDeleteModal}
-                title={'Excluir cidade'}
-                description={`Tem certeza que desejas excluir a cidade '${label}'?`}
-                onPressYes={deleteCity}
+                title={'Excluir'}
+                description={`Tem certeza que desejas excluir '${label}'?`}
+                onPressYes={deleteItem}
             />
         </>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        marginHorizontal: 15,
-        marginVertical: 5
-    },
     listItem: {
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
         width: 350,
+        backgroundColor: 'white',
         borderColor: 'black',
-        borderWidth: .5,
+        borderWidth: 1,
         padding: 15
     },
     errorStyle: {
@@ -99,4 +95,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CityInput;
+export default DeletableInput;

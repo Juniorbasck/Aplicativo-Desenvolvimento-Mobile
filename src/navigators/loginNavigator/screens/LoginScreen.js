@@ -103,6 +103,7 @@ const LoginScreen = ({route, navigation}) => {
     const [createdAccountEmail, setCreatedAccountEmail] = useState();
 
     const [loading, setLoading] = useState(false);
+    const [opacity, setOpacity] = useState(1);
 
     useEffect(() => {
         const subscriber = getAuth().onAuthStateChanged(user => {
@@ -117,6 +118,7 @@ const LoginScreen = ({route, navigation}) => {
         (async () => {
             if (!loading)
                 if (user) {
+                    setOpacity(0);
                     setLoading(true);
                     let gateway = await getAppGatewayAsync();
                     navigation.dispatch(StackActions.replace(gateway));
@@ -157,7 +159,7 @@ const LoginScreen = ({route, navigation}) => {
         return <LoadingIndicator loadingMessage='Validando credenciais...'/>;
 
     return (
-        <View style={styles.outerContainer}>
+        <View style={[styles.outerContainer, {opacity: opacity}]}>
             <ScrollView
                 contentContainerStyle={scrollView}
                 keyboardDismissMode='on-drag'

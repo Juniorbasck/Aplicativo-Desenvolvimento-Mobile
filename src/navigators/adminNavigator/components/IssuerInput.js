@@ -92,16 +92,15 @@ const IssuerInput = ({name, defaultPaymentMethod, onDelete, options}) => {
 const styles = StyleSheet.create({
     container: {
         alignItems: 'flex-start',
-        marginHorizontal: 15,
-        marginVertical: 5
     },
     listItem: {
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
         width: 350,
+        backgroundColor: 'white',
         borderColor: 'black',
-        borderWidth: .5,
+        borderWidth: 1,
         padding: 15
     },
     errorStyle: {

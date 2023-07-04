@@ -15,6 +15,7 @@ import PostalCodeInput from '../../../../../components/PostalCodeInput';
 import LoadingIndicator from '../../../../../components/LoadingIndicator';
 import ProfilePicture from '../../../../../components/ProfilePicture';
 import PickImageModal from '../../../../../components/PickImageModal';
+import AdminButton from '../../../components/AdminButton';
 
 const UserDetailsScreen = ({route, navigation}) => {
     const { user } = route.params;
@@ -71,8 +72,8 @@ const UserDetailsScreen = ({route, navigation}) => {
         topLabel,
         softView,
         rowContainer,
-        underlined,
-        bottomButtonsContainer
+        bottomButtonsContainer,
+        btnContainer
     } = styles;
 
     if (citiesStatus === 'loading')
@@ -194,14 +195,18 @@ const UserDetailsScreen = ({route, navigation}) => {
                     setRef={setEmailInput}
                 />
                 <View style={[rowContainer, bottomButtonsContainer]}>
-                    <Text 
-                        style={underlined}
-                        onPress={changePassword}
-                    >Mudar Palavra-Passe</Text>
-                    <Text 
-                        style={underlined}
-                        onPress={onUpdate}
-                    >Salvar</Text>
+                    <View style={btnContainer}>
+                        <AdminButton
+                            text={'Mudar Palavra-Passe'}
+                            onPress={changePassword}
+                        />
+                    </View>
+                    <View style={btnContainer}>
+                        <AdminButton 
+                            text={'Salvar'}
+                            onPress={onUpdate}
+                        />
+                    </View>
                 </View>
             </ScrollView>
             <PickImageModal
@@ -237,13 +242,13 @@ const styles = StyleSheet.create({
     rowContainer: {
         flexDirection: 'row',
     },
-    underlined: {
-        textDecorationLine: 'underline'
-    },
     bottomButtonsContainer: {
         marginTop: 20,
         width: Dimensions.get('screen').width, 
         justifyContent: 'space-evenly'
+    },
+    btnContainer: {
+        flex: 1, margin: 10
     }
 });
 

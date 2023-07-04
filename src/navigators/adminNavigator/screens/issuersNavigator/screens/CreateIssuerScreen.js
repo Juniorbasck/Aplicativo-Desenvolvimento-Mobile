@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import {
     View,
     ScrollView,
-    Text,
     TextInput,
     StyleSheet
 } from 'react-native';
 import CustomDropdown from '../../../../../components/CustomDropdown';
+import AdminButton from '../../../components/AdminButton';
 
 const CreateIssuerScreen = ({route, navigation}) => {
     const { paymentMethods } = route.params;
@@ -14,7 +14,6 @@ const CreateIssuerScreen = ({route, navigation}) => {
     const {
         container,
         textInput,
-        createStyle,
         dropdownStyle
     } = styles;
 
@@ -47,12 +46,10 @@ const CreateIssuerScreen = ({route, navigation}) => {
                         marginBottom={3}
                     />
                 </View>
-                <Text
-                    style={createStyle}
+                <AdminButton
+                    text={'Criar'}
                     onPress={createIssuer}
-                >
-                    Criar
-                </Text>
+                />
             </ScrollView>
         </View>
     );
@@ -72,10 +69,6 @@ const styles = StyleSheet.create({
         padding: 15,
         borderColor: 'grey',
         borderWidth: .5
-    },
-    createStyle: {
-        textDecorationLine: 'underline',
-        textAlign: 'center'
     },
     dropdownStyle: {
         alignItems: 'flex-start'

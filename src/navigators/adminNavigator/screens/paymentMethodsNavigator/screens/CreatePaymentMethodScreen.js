@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import {
     View,
-    StyleSheet,
     ScrollView,
     TextInput,
+    StyleSheet
 } from 'react-native';
 import AdminButton from '../../../components/AdminButton';
 
-const CreateCityScreen = ({route, navigation}) => {
-    const [city, setCity] = useState('');
-
+const CreatePaymentMethodScreen = ({route, navigation}) => {
     const {
         container,
         textInput,
+        createStyle,
     } = styles;
 
-    const createCity = _ => {
-        console.log('CREATE CITY');
+    const createPaymentMethod = () => {
+        console.log('CREATE PAYMENT METHOD');
         navigation.goBack();
     };
+
+    const [paymentMethod, setPaymentMethod] = useState('');
 
     return (
         <View style={container}>
@@ -28,13 +29,13 @@ const CreateCityScreen = ({route, navigation}) => {
                 <TextInput
                     autoFocus={true}
                     style={textInput}
-                    defaultValue={city}
-                    onChangeText={text => setCity(text)}
-                    placeholder='Cidade'
+                    defaultValue={paymentMethod}
+                    onChangeText={text => setPaymentMethod(text)}
+                    placeholder='Método de Pagamento'
                 />
                 <AdminButton
                     text={'Criar'}
-                    onPress={createCity}
+                    onPress={createPaymentMethod}
                 />
             </ScrollView>
         </View>
@@ -56,6 +57,13 @@ const styles = StyleSheet.create({
         borderColor: 'grey',
         borderWidth: .5
     },
+    createStyle: {
+        textDecorationLine: 'underline',
+        textAlign: 'center'
+    },
+    dropdownStyle: {
+        alignItems: 'flex-start'
+    }
 });
 
-export default CreateCityScreen;
+export default CreatePaymentMethodScreen;
