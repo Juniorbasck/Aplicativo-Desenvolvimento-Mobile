@@ -116,8 +116,12 @@ const LoginScreen = ({route, navigation}) => {
     useEffect(() => {
         (async () => {
             if (!loading)
-                if (user)
-                    navigation.dispatch(StackActions.replace(await getAppGatewayAsync()));
+                if (user) {
+                    setLoading(true);
+                    let gateway = await getAppGatewayAsync();
+                    navigation.dispatch(StackActions.replace(gateway));
+                    setLoading(false);
+                }
         })();
     }, [user]);
 
