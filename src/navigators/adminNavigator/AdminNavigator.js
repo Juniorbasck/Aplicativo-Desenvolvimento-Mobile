@@ -10,7 +10,12 @@ import {
     DrawerItemList, 
     DrawerItem
 } from '@react-navigation/drawer';
-import { Feather, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import { 
+    Feather, 
+    FontAwesome5, 
+    MaterialIcons, 
+    MaterialCommunityIcons 
+} from '@expo/vector-icons';
 import UsersNavigator from './screens/usersNavigator/UsersNavigator';
 import CitiesNavigator from './screens/citiesNavigator/CitiesNavigator';
 import IssuersNavigator from './screens/issuersNavigator/IssuersNavigator';
@@ -20,36 +25,40 @@ const Drawer = createDrawerNavigator();
 
 const CustomDrawerContent = props => {
     return (
-        <DrawerContentScrollView 
-            {...props} 
-            contentContainerStyle={
-                {
-                    // justifyContent: 'space-evenly',
-                    flex: 1,
-                    flexDirection: 'column',
-                    backgroundColor: 'red',
-                    height: '100%',
-                }
-            }
-        >
-            <DrawerItemList 
-                {...props}
-            />
+        <DrawerContentScrollView {...props}>
+            <DrawerItemList {...props}/>
             <DrawerItem 
                 style={
                     {
-                        backgroundColor: 'blue', 
-                        justifyContent: 'flex-end', 
-                        marginTop: Dimensions.get('screen').height * .6
+                        width: '100%',
+                        marginTop: Dimensions.get('screen').height * .58,
+                        marginBottom: -20
                     }
                 }
-                label={'Version'}
+                label={'Version 1.1.102'}  // commits number: git rev-list --all --count
                 labelStyle={
                     {
                         textAlign: 'center',
-                        color: 'white'
+                        color: 'grey',
+                        fontStyle: 'italic',
                     }
                 }
+                pressColor='white'
+            />
+            <DrawerItem
+                icon={
+                    ({focused, size, color}) => (
+                        <MaterialCommunityIcons 
+                            name="mustache" 
+                            size={20} 
+                            color="grey"
+                            style={{marginLeft: '34%'}}
+                        />
+                    )
+                }
+                label={'YoungMrs'}
+                labelStyle={[{width: 80, marginLeft: -30, fontSize: 10}]}
+                pressColor='white'
             />
         </DrawerContentScrollView>
     );
@@ -154,7 +163,7 @@ const styles = StyleSheet.create({
     drawerLabelStyle: {
         textAlign: 'center', 
         fontWeight: 'bold'
-    }
+    },
 });
 
 export default AdminNavigator;

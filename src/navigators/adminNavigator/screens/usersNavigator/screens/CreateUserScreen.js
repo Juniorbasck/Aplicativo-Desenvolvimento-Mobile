@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+    Pressable,
     View,
     ScrollView,
     Text,
@@ -98,9 +99,12 @@ const CreateUserScreen = ({route, navigation}) => {
             >
                 <Text style={[topLabel, bold]}>Tipo de Utilizador</Text>
                 <View style={[rowContainer, softView]}>
-                    <View style={{flex: 1}}>
+                    <Pressable 
+                        style={{flex: 1}}
+                        onPress={_ => setAdminUser(false)}
+                    >
                         <Text style={{textAlign: 'center'}}>Comum</Text>
-                    </View>
+                    </Pressable>
                     <View style={{flex: 1, alignItems: 'center'}}>
                         <Switch
                             value={adminUser}
@@ -115,9 +119,12 @@ const CreateUserScreen = ({route, navigation}) => {
                             ios_backgroundColor={'#0077ff'}
                         />
                     </View>
-                    <View style={{flex: 1}}>
+                    <Pressable 
+                        style={{flex: 1}}
+                            onPress={_ => {setAdminUser(true); emailInput.focus(); }}
+                    >
                         <Text style={{textAlign: 'center'}}>Administrador</Text>
-                    </View>
+                    </Pressable>
                 </View>
                 {
                     !adminUser &&
