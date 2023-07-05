@@ -101,7 +101,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderColor: 'black',
         borderWidth: 1,
-        padding: 15
+        padding: 15,
+        borderRadius: 5
     },
     errorStyle: {
         color: 'red',

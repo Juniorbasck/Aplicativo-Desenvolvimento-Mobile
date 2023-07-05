@@ -15,6 +15,88 @@ import AddButton from '../../../components/AddButton';
 
 const IssuersScreen = ({route, navigation}) => {
     const [issuersState, setIssuersState] = useState([]);
+    // const [issuersState, setIssuersState] = useState([
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     },
+    //     {
+    //         'defaultPaymentMethod': 1,
+    //         'name': 'Lidl'
+    //     }
+    // ]);
     const [paymentMethodsState, setPaymentMethodsState] = useState([]);
 
     const issuers = useAppSelector(selectIssuers);
@@ -58,8 +140,7 @@ const IssuersScreen = ({route, navigation}) => {
     const {
         container,
         list,
-        addButton,
-        noCityStyle
+        noDataStyle
     } = styles;
     
     return (
@@ -74,7 +155,7 @@ const IssuersScreen = ({route, navigation}) => {
                         { issuersState.map(ele => renderItem(ele)) }
                     </ScrollView>
                 ) : (
-                    <Text style={noCityStyle}>Sem Emissores</Text>
+                    <Text style={noDataStyle}>Sem Emissores</Text>
                 )
             }
             <AddButton
@@ -106,8 +187,9 @@ const styles = StyleSheet.create({
         borderColor: '#fffff',
         borderWidth: .5
     },
-    noCityStyle: {
-        ...Fonts.headlineLarge
+    noDataStyle: {
+        ...Fonts.headlineLarge,
+        textAlign: 'center'
     }
 });
 

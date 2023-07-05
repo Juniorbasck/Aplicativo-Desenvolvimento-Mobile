@@ -73,7 +73,8 @@ const UserDetailsScreen = ({route, navigation}) => {
         softView,
         rowContainer,
         bottomButtonsContainer,
-        btnContainer
+        btnContainer,
+        bold
     } = styles;
 
     if (citiesStatus === 'loading')
@@ -94,7 +95,7 @@ const UserDetailsScreen = ({route, navigation}) => {
                         src={image}
                     />
                 </View>
-                <Text style={topLabel}>Nome</Text>
+                <Text style={[topLabel, bold]}>Nome</Text>
                 <CustomTextInput
                     state={name}
                     setState={setName}
@@ -105,7 +106,7 @@ const UserDetailsScreen = ({route, navigation}) => {
                     onSubmitEditing={_ => surnameInput.focus()}
                     blurOnSubmit={false}
                 />
-                <Text style={topLabel}>Apelido</Text>
+                <Text style={[topLabel, bold]}>Apelido</Text>
                 <CustomTextInput
                     state={surname}
                     setState={setSurname}
@@ -116,7 +117,7 @@ const UserDetailsScreen = ({route, navigation}) => {
                     onSubmitEditing={_ => usernameInput.focus()}
                     blurOnSubmit={false}
                 />
-                <Text style={topLabel}>Nome de Utilizador</Text>
+                <Text style={[topLabel, bold]}>Nome de Utilizador</Text>
                 <CustomTextInput
                     state={username}
                     setState={setUsername}
@@ -125,15 +126,15 @@ const UserDetailsScreen = ({route, navigation}) => {
                     marginTop={1}
                     setRef={setUsernameInput}
                 />
-                <Text style={topLabel}>Data de Nascimento</Text>
+                <Text style={[topLabel, bold]}>Data de Nascimento</Text>
                 <CustomDatePicker
                     state={birthday}
                     setState={setBirthday}
                     marginTop={1}
                 />
-                <Text style={[topLabel, {fontWeight: 'bold'}]}>Endereço</Text>
-                <View style={{marginLeft: '5%'}}>
-                    <View style={[rowContainer, {marginTop: '2%'}]}>
+                <Text style={[topLabel, bold]}>Endereço</Text>
+                <View>
+                    <View style={rowContainer}>
                         <View style={softView}>
                             <Text style={topLabel}>Logradouro</Text>
                             <CustomTextInput
@@ -183,11 +184,12 @@ const UserDetailsScreen = ({route, navigation}) => {
                         blurOnSubmit={false}
                     />
                 </View>
-                <Text style={topLabel}>E-mail</Text>
+                <Text style={[topLabel, bold]}>E-mail</Text>
                 <CustomTextInput
                     state={email}
                     setState={setEmail}
                     placeholder='E-mail'
+                    keyboardType='email-address'
                     width={90}
                     marginTop={1}
                     backgroundColor={'white'}
@@ -244,11 +246,14 @@ const styles = StyleSheet.create({
     },
     bottomButtonsContainer: {
         marginTop: 20,
-        width: Dimensions.get('screen').width, 
+        width: 390, 
         justifyContent: 'space-evenly'
     },
     btnContainer: {
         flex: 1, margin: 10
+    },
+    bold: {
+        fontWeight: 'bold'
     }
 });
 

@@ -67,8 +67,9 @@ const styles = StyleSheet.create({
         height: 50,
         marginVertical: 15,
         padding: 15,
-        borderColor: 'grey',
-        borderWidth: .5
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 5
     },
     dropdownStyle: {
         alignItems: 'flex-start'

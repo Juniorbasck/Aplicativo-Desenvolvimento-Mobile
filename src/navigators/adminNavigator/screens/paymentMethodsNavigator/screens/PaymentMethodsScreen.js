@@ -14,6 +14,88 @@ import AddButton from '../../../components/AddButton';
 
 const PaymentMethodsScreen = ({route, navigation}) => {
     const [paymentMethodsState, setPaymentMethodsState] = useState([]);
+    // const [paymentMethodsState, setPaymentMethodsState] = useState([
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 1
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 2
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 3
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 4
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 5
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 6
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 7
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 8
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 9
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 10
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 11
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 12
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 13
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 14
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 15
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 16
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 17
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 18
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 19
+    //     },
+    //     {
+    //         'label': 'MBWay',
+    //         'value': 20
+    //     }
+    // ]);
     const paymentMethods = useAppSelector(selectPaymentMethods);
     const paymentMethodsStatus = useAppSelector(status => status.paymentMethods.status);
     const dispatch = useAppDispatch();
@@ -38,7 +120,7 @@ const PaymentMethodsScreen = ({route, navigation}) => {
         container,
         list,
         addButton,
-        noCityStyle
+        noDataStyle
     } = styles;
     
     return (
@@ -53,7 +135,7 @@ const PaymentMethodsScreen = ({route, navigation}) => {
                         { paymentMethodsState.map(ele => renderItem(ele)) }
                     </ScrollView>
                 ) : (
-                    <Text style={noCityStyle}>Sem Método de Pagamento</Text>
+                    <Text style={noDataStyle}>Sem Métodos de Pagamento</Text>
                 )
             }
             <AddButton
@@ -85,8 +167,9 @@ const styles = StyleSheet.create({
         borderColor: '#fffff',
         borderWidth: .5
     },
-    noCityStyle: {
-        ...Fonts.headlineLarge
+    noDataStyle: {
+        ...Fonts.headlineLarge,
+        textAlign: 'center'
     }
 });
 

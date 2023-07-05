@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import UsersScreen from './screens/UsersScreen';
 import UserDetailsScreen from './screens/UserDetailsScreen';
+import CreateUserScreen from './screens/CreateUserScreen';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +25,17 @@ const UsersNavigator = ({navigation}) => {
                     }
                 }
                 component={UserDetailsScreen}
+            />
+            <Stack.Screen 
+                name='CreateUser' 
+                options={
+                    {
+                        headerShown: true, 
+                        headerTitle: 'Criar Utilizador', 
+                        headerTitleAlign: 'center'
+                    }
+                }
+                component={CreateUserScreen}
             />
         </Stack.Navigator>
     );

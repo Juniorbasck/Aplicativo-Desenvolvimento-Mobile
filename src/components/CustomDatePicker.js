@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         borderColor: Colors.primaryKeyColor,
+        backgroundColor: 'white',
         borderWidth: 1,
         borderRadius: 5,
         padding: '1%',
@@ -94,7 +95,10 @@ const styles = StyleSheet.create({
         top: '26%',
         width: '90%',
         height: '48%',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        borderColor: 'black',
+        borderWidth: 1,
+        zIndex: 15
     },
     sideView: {
         flex: 1, 

@@ -1,9 +1,15 @@
 import React from 'react';
 import {
     Text,
-    StyleSheet
+    StyleSheet,
+    Dimensions
 } from 'react-native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { 
+    createDrawerNavigator, 
+    DrawerContentScrollView, 
+    DrawerItemList, 
+    DrawerItem
+} from '@react-navigation/drawer';
 import { Feather, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import UsersNavigator from './screens/usersNavigator/UsersNavigator';
 import CitiesNavigator from './screens/citiesNavigator/CitiesNavigator';
@@ -11,6 +17,43 @@ import IssuersNavigator from './screens/issuersNavigator/IssuersNavigator';
 import PaymentMethodsNavigator from './screens/paymentMethodsNavigator/PaymentMethodsNavigator';
 
 const Drawer = createDrawerNavigator();
+
+const CustomDrawerContent = props => {
+    return (
+        <DrawerContentScrollView 
+            {...props} 
+            contentContainerStyle={
+                {
+                    // justifyContent: 'space-evenly',
+                    flex: 1,
+                    flexDirection: 'column',
+                    backgroundColor: 'red',
+                    height: '100%',
+                }
+            }
+        >
+            <DrawerItemList 
+                {...props}
+            />
+            <DrawerItem 
+                style={
+                    {
+                        backgroundColor: 'blue', 
+                        justifyContent: 'flex-end', 
+                        marginTop: Dimensions.get('screen').height * .6
+                    }
+                }
+                label={'Version'}
+                labelStyle={
+                    {
+                        textAlign: 'center',
+                        color: 'white'
+                    }
+                }
+            />
+        </DrawerContentScrollView>
+    );
+};
 
 const AdminNavigator = ({navigation}) => {
     const {
@@ -20,7 +63,10 @@ const AdminNavigator = ({navigation}) => {
     const drawLabel = text => ({focused, color}) => <Text style={drawerLabelStyle}>{text}</Text>;
 
     return (
-        <Drawer.Navigator initialRouteName='Users'>
+        <Drawer.Navigator 
+            initialRouteName='Users'
+            drawerContent={props => <CustomDrawerContent {...props}/>}
+        >
             <Drawer.Screen 
                 name='UsersNavigator' 
                 options={

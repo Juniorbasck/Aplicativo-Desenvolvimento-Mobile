@@ -21,7 +21,8 @@ const PasswordInput = ({
         setRef=null,
         onSubmitEditing=null,
         blurOnSubmit=true,
-        pullBack=false
+        pullBack=false,
+        backgroundColor=null
 }) => {
     const [passwordIcon, setPasswordIcon] = useState('eye');
 
@@ -33,7 +34,8 @@ const PasswordInput = ({
                 marginTop: marginTop / 100 * Dimensions.get('window').height,
                 marginBottom: marginBottom / 100 * Dimensions.get('window').height
             },
-            pullBack ? {zIndex: -10} : {}
+            pullBack ? {zIndex: -10} : {},
+            backgroundColor ? {backgroundColor: backgroundColor} : {}
         ]}>
             <TextInput
                 style={{flex: 1}}

@@ -6,6 +6,7 @@ import {
     TextInput,
 } from 'react-native';
 import AdminButton from '../../../components/AdminButton';
+import CustomTextInput from '../../../../../components/CustomTextInput';
 
 const CreateCityScreen = ({route, navigation}) => {
     const [city, setCity] = useState('');
@@ -53,8 +54,9 @@ const styles = StyleSheet.create({
         height: 50,
         marginVertical: 15,
         padding: 15,
-        borderColor: 'grey',
-        borderWidth: .5
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 5
     },
 });
 

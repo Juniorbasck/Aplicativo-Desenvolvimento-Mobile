@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
 import { selectUsers, setUsersAsync } from '../../../../../features/users/usersSlice';
 import LoadingIndicator from '../../../../../components/LoadingIndicator';
 import UserCard from '../../../components/UserCard';
+import AddButton from '../../../components/AddButton';
 
 const UsersScreen = ({navigation}) => {
     // const [usersState, setUsersState] = useState([
@@ -121,6 +122,9 @@ const UsersScreen = ({navigation}) => {
                 renderItem={({item}) => <UserCard data={{...item}} onPress={onPress}/>}
                 keyExtractor={item => item.id}
                 ItemSeparatorComponent={_ => <View style={separator}/>}
+            />
+            <AddButton
+                onPress={_ => navigation.navigate('CreateUser')}
             />
         </View>
     );

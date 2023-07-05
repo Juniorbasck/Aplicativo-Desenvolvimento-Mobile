@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     btnStyle: {
         backgroundColor: '#0077ff',
         padding: 10,
-        borderRadius: 10,
+        borderRadius: 5,
         borderColor: 'black',
         borderWidth: 1
     },
