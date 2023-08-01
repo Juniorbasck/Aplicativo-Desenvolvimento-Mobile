@@ -5,6 +5,10 @@ import {
     StyleSheet,
     Dimensions
 } from 'react-native';
+import {
+    getAuth,
+    signOut
+} from 'firebase/auth';
 import AdminButton from '../../../components/AdminButton';
 
 const MyProfileScreen = () => {
@@ -21,8 +25,9 @@ const MyProfileScreen = () => {
             <View style={buttonContainer}>
                 <AdminButton
                     text={'Sair'}
-                    onPress={() => {
-
+                    onPress={async () => {
+                            const auth = getAuth();
+                            await signOut(auth);
                         }
                     }
                     backgroundColor='#990f00'
