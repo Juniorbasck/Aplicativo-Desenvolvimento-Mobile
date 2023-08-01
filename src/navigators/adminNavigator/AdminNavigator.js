@@ -14,12 +14,14 @@ import {
     Feather, 
     FontAwesome5, 
     MaterialIcons, 
-    MaterialCommunityIcons 
+    MaterialCommunityIcons,
+    AntDesign
 } from '@expo/vector-icons';
 import UsersNavigator from './screens/usersNavigator/UsersNavigator';
 import CitiesNavigator from './screens/citiesNavigator/CitiesNavigator';
 import IssuersNavigator from './screens/issuersNavigator/IssuersNavigator';
 import PaymentMethodsNavigator from './screens/paymentMethodsNavigator/PaymentMethodsNavigator';
+import MyProfileNavigator from './screens/myProfileNavigator/MyProfileNavigator';
 
 const Drawer = createDrawerNavigator();
 
@@ -76,6 +78,26 @@ const AdminNavigator = ({navigation}) => {
             initialRouteName='Users'
             drawerContent={props => <CustomDrawerContent {...props}/>}
         >
+            <Drawer.Screen 
+                name='MyProfileNavigator'
+                options={
+                    {
+                        drawerActiveTintColor: '#4287f5',
+                        drawerInactiveTintColor: 'black',
+                        drawerLabel: drawLabel('Meu Perfil'), 
+                        headerShown: true,
+                        headerTitle: 'Meu Perfil',
+                        headerTitleAlign: 'center',
+                        drawerIcon: ({color, focused, size}) => {
+                            let theColor = focused ? '#4287f5' : 'black';
+                            return (
+                                <AntDesign name="user" size={24} color={theColor} />
+                            );
+                        }
+                    }
+                }
+                component={MyProfileNavigator}
+            />
             <Drawer.Screen 
                 name='UsersNavigator' 
                 options={

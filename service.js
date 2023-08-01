@@ -587,7 +587,10 @@ const getUsersAsync = async _ => {
                     city: user.get('city'),
                     street: user.get('street'),
                     postcode: user.get('postcode'),
-
+                    nextExpenseId: user.get('nextExpenseId'),
+                    expenses: user.get('expenses'),
+                    historic: user.get('historic'),
+                    image: user.get('image')
                 }
             );
     });

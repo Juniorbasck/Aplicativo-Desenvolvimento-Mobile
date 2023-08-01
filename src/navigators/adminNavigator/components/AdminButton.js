@@ -5,7 +5,12 @@ import {
     StyleSheet
 } from 'react-native';
 
-const AdminButton = ({text, onPress}) => {
+const AdminButton = ({
+    text, 
+    onPress, 
+    backgroundColor = '#0077ff',
+    underlayColor = '#96c5fa'
+}) => {
     const {
         btnStyle,
         btnText
@@ -13,9 +18,9 @@ const AdminButton = ({text, onPress}) => {
 
     return (
         <TouchableHighlight
-            style={btnStyle}
+            style={[btnStyle, {backgroundColor: backgroundColor}]}
             onPress={onPress}
-            underlayColor={'#96c5fa'}
+            underlayColor={underlayColor}
         >
             <Text style={btnText}>{text}</Text>
         </TouchableHighlight>
@@ -24,7 +29,6 @@ const AdminButton = ({text, onPress}) => {
 
 const styles = StyleSheet.create({
     btnStyle: {
-        backgroundColor: '#0077ff',
         padding: 10,
         borderRadius: 5,
         borderColor: 'black',

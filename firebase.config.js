@@ -28,6 +28,8 @@ const firestore = getFirestore(app);
 
 const storage = getStorage(app);
 
+console.log('Firebase.config.js initialized...');
+
 export { 
   firestore,
   storage

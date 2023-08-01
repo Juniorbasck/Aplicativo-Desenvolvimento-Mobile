@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+    Alert,
     View,
     ScrollView,
     Text,
@@ -16,6 +17,34 @@ import LoadingIndicator from '../../../../../components/LoadingIndicator';
 import ProfilePicture from '../../../../../components/ProfilePicture';
 import PickImageModal from '../../../../../components/PickImageModal';
 import AdminButton from '../../../components/AdminButton';
+import { 
+    usernameNotTakenAsync, 
+    emailNotExistsOnAppAsync 
+} from '../../../../../../service';
+import { validateEmail } from '../../../../../utils/Validator';
+import { validatePostcode } from '../../../../../utils/Validator';
+import {
+    doc,
+    setDoc,
+    updateDoc,
+    deleteDoc
+} from 'firebase/firestore';
+import {
+    getAuth,
+    sendEmailVerification,
+    updateEmail
+} from 'firebase/auth';
+import { firestore } from '../../../../../../firebase.config';
+
+const drawPostcodePattern = postcodeType => {
+    let str = '';
+    for (let i = 0; i < postcodeType[0]; i++)
+        str += 'x';
+    str += '-';
+    for (let i = 0; i < postcodeType[1]; i++)
+        str += 'x';
+    return str;
+};
 
 const UserDetailsScreen = ({route, navigation}) => {
     const { user } = route.params;
@@ -40,6 +69,16 @@ const UserDetailsScreen = ({route, navigation}) => {
     const [postalCodeInput, setPostalCodeInput] = useState();
     const [emailInput, setEmailInput] = useState();
 
+    const [changedName, setChangedName] = useState(false);
+    const [changedSurname, setChangedSurname] = useState(false);
+    const [changedUsername, setChangedUsername] = useState(false);
+    const [changedBirthday, setChangedBirthday] = useState(false);
+    const [changedStreet, setChangedStreet] = useState(false);
+    const [changedCity, setChangedCity] = useState(false);
+    const [changedPostalCode, setChangedPostalCode] = useState(false);
+    const [changedEmail, setChangedEmail] = useState(false);
+    const [changedImage, setChangedImage] = useState(false);
+
     const cities = useAppSelector(selectCities);
     const citiesStatus = useAppSelector(status => status.cities.status);
 
@@ -49,19 +88,110 @@ const UserDetailsScreen = ({route, navigation}) => {
         dispatch(setCitiesAsync());
     }, []);
 
-    useEffect(() => navigation.addListener('beforeRemove', e => {
-    }), [navigation]);
+    // useEffect(() => navigation.addListener('beforeRemove', e => {
+    // }), [navigation]);
+    
+    const postcodeType = [4, 3];
 
-    const update = async _ => {
+    const checkData = async _ => {
+        let trimmedName = name.trim(), 
+        trimmedSurname = surname.trim(), 
+        trimmedUsername = username.trim(),
+        trimmedStreet = street.trim(),
+        trimmedCity = city.trim(),
+        trimmedPostcode = postalCode.trim(),
+        trimmedEmail = email.trim();
+        if (trimmedName != user?.name) {
+            if (trimmedName.length < 2) {
+                Alert.alert('Nome Inválido', 'O campo de nome deve ter pelos menos 2 caracteres');
+                return false;
+            }
+            setChangedName(true);
+        } 
+        if (trimmedSurname != user?.surname) {
+            if (trimmedSurname.length < 2) {
+                Alert.alert('Sobrenome Inválido', 'O campo de sobrenome deve ter pelos menos 2 caracteres');
+                return false;
+            }
+            setChangedSurname(true);
+        } 
+        if (trimmedUsername != user?.username) {
+            if (trimmedUsername.length < 2) {
+                Alert.alert('Nome de Utilizador Inválido', 'O campo de nome de utilizador deve ter pelos menos 2 caracteres');
+                return false;
+            }
+            if (!await usernameNotTakenAsync(trimmedUsername)) {
+                Alert.alert('Nome de Utilizador Já em Uso', 'O campo de nome de utilizador já está em uso');
+                return false;
+            }
+            setChangedUsername(true);
+        }
+        if (birthday != user?.birthdayDate)
+            setChangedBirthday(true);
+        if (trimmedStreet != user?.street) {
+            if (trimmedStreet.length < 2) {
+                Alert.alert('Logradouro Inválido', 'O logradouro deve ter pelos menos 2 caracteres');
+                return false;
+            }
+            setChangedStreet(true);
+        }
+        if (trimmedCity != user?.city) {
+            if (trimmedCity.length < 2) {
+                Alert.alert('Cidade Inválida', 'O nome da cidade deve ter pelos menos 2 caracteres');
+                return false;
+            }
+            if (cities.value.filter(ele => ele.label.toLowerCase() === city).length == 0) {
+                Alert.alert('Cidade Desconhecida', 'A cidade digitada não foi encontrada na base de dados');
+                return false;
+            }
+            setChangedCity(true);
+        }
+        if (trimmedPostcode != user?.postcode) {
+            if (!validatePostcode(trimmedPostcode, postcodeType)) {
+                Alert.alert('Código Postal Inválido', `O código postal deve ter o formato ${drawPostcodePattern(postcodeType)}`);
+                return false;
+            }
+            setChangedPostalCode(true);
+        }
+        if (trimmedEmail != user?.email) {
+            if (!validateEmail(trimmedEmail)) {
+                Alert.alert('E-mail Inválido', 'O campo de e-mail não possui um e-mail válido');
+                return false;
+            }
+            if (!await emailNotExistsOnAppAsync(trimmedEmail)) {
+                Alert.alert('E-mail Já em Uso', 'O e-mail digitado já está em uso por outro usuário');
+                return false;
+            }
+            setChangedEmail(true);
+        }
         return true;
     };
 
     const onUpdate = async _ => {
-        let updateStatus = await update();
-        if (updateStatus) 
-            navigation.navigate('Users', {
-                changed: true
-            });
+        let updateStatus = await checkData();
+        if (updateStatus) {  // If validation succeeded!
+            // if (changedEmail) {
+            //     const docRef = doc(firestore, 'users', email);
+            //     await setDoc(docRef, {
+            //         id: user?.id,
+            //         name: name,
+            //         surname: surname,
+            //         username: username,
+            //         birthdayDate: birthday,
+            //         street: street,
+            //         city: city,
+            //         postcode: postalCode,
+            //         email: email,
+            //         nextExpenseId: user?.nextExpenseId,
+            //         image: image,
+            //         expenses: user?.expenses,
+            //         historic: user?.historic
+            //     });
+            //     await deleteDoc(doc(firestore, 'users', user?.email));
+            // } else {
+            //     const docRef = doc(firestore, 'users', )
+            // }
+        }
     };
 
     const changePassword = _ => {};
@@ -79,8 +209,6 @@ const UserDetailsScreen = ({route, navigation}) => {
 
     if (citiesStatus === 'loading')
         return <LoadingIndicator/>
-
-    const postcodeType = [4, 3];
 
     return (
         <View style={outerContainer}>
